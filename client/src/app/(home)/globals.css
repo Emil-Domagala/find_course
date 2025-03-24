@@ -1,26 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import "tailwindcss";
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  @apply text-sm;
+  @apply text-gray-300;
+  @apply bg-customgreys-primarybg;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 8px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+input[type="color"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+    --sidebar-background: theme("colors.customgreys.primarybg");
+    --sidebar-foreground: theme("colors.white.50");
+    --sidebar-primary: theme("colors.primary.700");
+    --sidebar-primary-foreground: theme("colors.white.50");
+    --sidebar-accent: theme("colors.customgreys.darkerGrey");
+    --sidebar-accent-foreground: theme("colors.customgreys.dirtyGrey");
+    --sidebar-border: theme("colors.customgreys.secondarybg");
+    --sidebar-ring: theme("colors.primary.700");
+    --popover: theme("colors.customgreys.primarybg");
+    --popover-foreground: theme("colors.white.50");
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    --background: theme("colors.customgreys.primarybg");
+    --foreground: theme("colors.white.50");
+
+    --primary: theme("colors.primary.700");
+    --primary-foreground: theme("colors.white.50");
+
+    --muted: theme("colors.primary.600");
+    --muted-foreground: theme("colors.customgreys.dirtyGrey");
+
+    --accent: theme("colors.primary.600");
+    --accent-foreground: theme("colors.white.50");
+
+    --border: theme("colors.customgreys.secondarybg");
+    --ring: theme("colors.primary.700");
+
+    --card: theme("colors.customgreys.primarybg");
+    --card-foreground: theme("colors.white.50");
+  }
+
+  .dark {
+    --sidebar-background: theme("colors.customgreys.primarybg");
+    --sidebar-foreground: theme("colors.white.50");
+    --sidebar-primary: theme("colors.primary.700");
+    --sidebar-primary-foreground: theme("colors.white.50");
+    --sidebar-accent: theme("colors.customgreys.darkerGrey");
+    --sidebar-accent-foreground: theme("colors.customgreys.dirtyGrey");
+    --sidebar-border: theme("colors.customgreys.secondarybg");
+    --sidebar-ring: theme("colors.primary.700");
+    --popover: theme("colors.customgreys.primarybg");
+    --popover-foreground: theme("colors.white.50");
+
+    --background: theme("colors.customgreys.primarybg");
+    --foreground: theme("colors.white.50");
+
+    --primary: theme("colors.primary.700");
+    --primary-foreground: theme("colors.white.50");
+
+    --muted: theme("colors.primary.600");
+    --muted-foreground: theme("colors.customgreys.dirtyGrey");
+
+    --accent: theme("colors.primary.600");
+    --accent-foreground: theme("colors.white.50");
+
+    --border: theme("colors.customgreys.secondarybg");
+    --ring: theme("colors.primary.700");
+
+    --card: theme("colors.customgreys.primarybg");
+    --card-foreground: theme("colors.white.50");
+  }
 }
