@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
-import Providers from '../providers';
+import NonDashboardNav from '@/components/Navigation/NonDashboardNav';
+// import Providers from './providers';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -21,11 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.className} antialiased`}>
-      <Providers>
+      <body className={`${dmSans.className} antialiased bg-customgreys-primary`}>
+        <NonDashboardNav />
+        {/* <Providers> */}
         {children}
-      </Providers>
-        </body>
+        {/* </Providers> */}
+      </body>
     </html>
   );
 }
