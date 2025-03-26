@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
-import NonDashboardNav from '@/components/Navigation/NonDashboardNav';
+import NonDashboardNav from '@/components/NonDashboard/Navigation/NonDashboardNav';
 // import Providers from './providers';
 
 const dmSans = DM_Sans({

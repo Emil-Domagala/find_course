@@ -1,5 +1,6 @@
 package emil.find_course.domains.entities.course;
 
+import java.io.ObjectInputFilter.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,7 +66,7 @@ public class Course {
     private Level level;
 
     @Column(nullable = false)
-    private String status;
+    private Status status;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default
