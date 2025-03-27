@@ -1,6 +1,6 @@
 package emil.find_course.domains.entities.course;
 
-import java.io.ObjectInputFilter.Status;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -66,7 +67,7 @@ public class Course {
     private Level level;
 
     @Column(nullable = false)
-    private Status status;
+    private CourseStatus status;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default

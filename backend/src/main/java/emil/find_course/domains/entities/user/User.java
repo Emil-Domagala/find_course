@@ -10,7 +10,9 @@ import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.enums.Role;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +47,9 @@ public class User {
 
     @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
+    private String userLastname;
+
 
     @Column(nullable = false)
     @Builder.Default
