@@ -1,6 +1,7 @@
 package emil.find_course.services.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,12 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getCourses() {
 
         return courseRepository.findAllByStatus(CourseStatus.PUBLISHED);
+    }
+
+    @Override
+    public Course getPublishedCourse(UUID id) {
+       return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED);
+       
     }
 
 }

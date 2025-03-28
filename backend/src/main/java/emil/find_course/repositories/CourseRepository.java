@@ -13,4 +13,6 @@ import emil.find_course.domains.enums.CourseStatus;
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
     List<Course> findAllByStatus(CourseStatus status);
+
+    Course findByIdAndStatus(UUID id, CourseStatus status);
 }

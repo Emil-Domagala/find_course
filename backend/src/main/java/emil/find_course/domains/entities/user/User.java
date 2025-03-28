@@ -10,9 +10,7 @@ import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.enums.Role;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,7 +48,6 @@ public class User {
     @Column(nullable = false)
     private String userLastname;
 
-
     @Column(nullable = false)
     @Builder.Default
     private Set<Role> roles = new HashSet<>(List.of(Role.USER));
@@ -74,11 +71,11 @@ public class User {
     private LocalDateTime updatedAt;
 
     public void teachCourse(Course course) {
-        if (roles.contains(Role.TEACHER)) {
-            teachingCourses.add(course);
-        } else {
+        if (!roles.contains(Role.TEACHER)) {
             throw new IllegalStateException("Only teachers can teach courses.");
         }
+        teachingCourses.add(course);
+
     }
 
     @PrePersist
