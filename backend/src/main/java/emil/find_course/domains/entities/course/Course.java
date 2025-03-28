@@ -1,6 +1,5 @@
 package emil.find_course.domains.entities.course;
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,6 +13,8 @@ import emil.find_course.domains.enums.Level;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -64,6 +65,7 @@ public class Course {
     private double price;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Level level;
 
     @Column(nullable = false)

@@ -1,21 +1,26 @@
-// package emil.find_course.security.jwt;
+package emil.find_course.security.jwt;
 
-// import emil.find_course.domains.entities.user.User;
-// import emil.find_course.repositories.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-// // @Service
-// @RequiredArgsConstructor
-// public class UserDetailsServiceImpl implements UserDetailsService {
+import emil.find_course.domains.entities.user.User;
+import emil.find_course.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 
-//     private final UserRepository userRepository;
+@Service
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-//     @Override
-//     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//         User user = userRepository.findByEmail(email);
-//         if (user == null) {
-//             throw new UsernameNotFoundException("User not found");
-//         }
-//         return new UserPrincipal(user);
-//     }
+    private final UserRepository userRepository;
 
-// }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return new UserPrincipal(user);
+    }
+
+}

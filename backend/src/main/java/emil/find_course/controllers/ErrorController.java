@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,15 @@ public class ErrorController {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                                 .message("An unexpected error occured").build();
                 return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ApiErrorResponse> handBadCredentialsException(BadCredentialsException ex) {
+                log.error("Caught exception", ex);
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
+                                .message("Failed to login. Bad credentials").build();
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 
         }
 
