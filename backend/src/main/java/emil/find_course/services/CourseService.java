@@ -9,14 +9,21 @@ import emil.find_course.domains.requestDto.RequestCourseBody;
 
 public interface CourseService {
 
-    List<Course> getCourses();
-
+    // Public
     Course getPublishedCourse(UUID id);
 
+    List<Course> getPublishedCourses();
+
+
+// Teacher
+    
     Course createCourse(RequestCourseBody requestCourseBody, User teacher);
-
+    
     Course updateCourse(RequestCourseBody requestCourseBody, User teacher);
-
+    
     UUID deleteCourse(UUID id, UUID teacherId);
-
+    
+    
+    //Student 
+    List<Course> getUserEnrolledCourses(User student);
 }

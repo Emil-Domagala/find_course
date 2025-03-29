@@ -52,6 +52,8 @@ public class ErrorController {
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
+    
+
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
                         MethodArgumentNotValidException ex) {

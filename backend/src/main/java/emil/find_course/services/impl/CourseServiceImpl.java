@@ -21,18 +21,23 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
 
-    @Override
-    public List<Course> getCourses() {
+    // **************************
+    // ----------Public----------
+    // **************************
 
+    @Override
+    public List<Course> getPublishedCourses() {
         return courseRepository.findAllByStatus(CourseStatus.PUBLISHED);
     }
 
     @Override
     public Course getPublishedCourse(UUID id) {
         return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED);
-
     }
 
+    // **************************
+    // ---------Teacher----------
+    // **************************
     @Override
     public Course createCourse(RequestCourseBody requestCourseBody, User teacher) {
         if (!teacher.getRoles().contains(Role.TEACHER)) {
@@ -48,8 +53,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course updateCourse(RequestCourseBody requestCourseBody, User teacher) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCourse'");
+        if (!teacher.getRoles().contains(Role.TEACHER)) {
+            throw new IllegalStateException("Only teachers can create courses.");
+        }
+        
     }
 
     @Transactional
@@ -63,6 +70,15 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
 
         return id;
+    }
+
+    // **************************
+    // ---------Student----------
+    // **************************
+
+    @Override
+    public List<Course> getUserEnrolledCourses(User student) {
+        return courseRepository.findAllByStudent(student);
     }
 
 }
