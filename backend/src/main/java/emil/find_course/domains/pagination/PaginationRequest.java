@@ -2,27 +2,28 @@ package emil.find_course.domains.pagination;
 
 import org.springframework.data.domain.Sort;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class PaginationRequest {
 
-    @Builder.Default
-    private Integer page = 1;
+    private Integer page;
 
-    @Builder.Default
-    private Integer size = 10;
+    private Integer size;
 
-    @Builder.Default
-    private String sortField = "id";
+    private String sortField;
 
-    @Builder.Default
-    private Sort.Direction direction = Sort.Direction.DESC;
+    private Sort.Direction direction;
+
+    public PaginationRequest(Integer page, Integer size, String sortField, Sort.Direction direction) {
+        this.page = (page == null || page < 0) ? 0 : page;
+        this.size = (size == null || size <= 0) ? 12 : size;
+        this.sortField = (sortField == null || sortField.isEmpty()) ? "id" : sortField;
+        this.direction = (direction == null) ? Sort.Direction.ASC : direction;
+    }
+
 }

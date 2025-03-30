@@ -96,4 +96,13 @@ public class Course {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    @Override
+    public String toString() {
+        return "Course [id=" + id + ", teacher=" + teacher + ", title=" + title + ", description=" + description
+                + ", category=" + category + ", imageUrl=" + imageUrl + ", price=" + price + ", level=" + level
+                + ", status=" + status + ", sections=" + sections + ", students=" + students + ", createdAt="
+                + createdAt + ", updatedAt=" + updatedAt + "]";
+    }
+
 }
