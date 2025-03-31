@@ -66,8 +66,11 @@ public class CourseController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
-            @RequestParam(required = false) String category
-            ) {
+            @RequestParam(required = false) String category) {
+        if (sortField == null) {
+            sortField = "createdAt";
+        }
+
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
         final PagingResult<CourseDto> courses = courseService.getPublishedCourses(request);
         return ResponseEntity.ok(courses);

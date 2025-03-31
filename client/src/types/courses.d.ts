@@ -10,6 +10,16 @@ enum Level {
   PUBLISHED = "PUBLISHED",
 }
 
+
+
+ type SectionDto = {
+  id: string; 
+  title: string;
+  description: string;
+};
+
+// Courses
+
  type CourseDto = {
   id: string; 
   teacher: UserDto;
@@ -22,6 +32,13 @@ enum Level {
   status: CourseStatus;
   createdAt: string; 
   updatedAt: string;
-}}
+}
+
+type CourseDetailsPublicDto = CourseDto & {
+  sections?: SectionDto[];
+};
+
+
+}
 
 export {}

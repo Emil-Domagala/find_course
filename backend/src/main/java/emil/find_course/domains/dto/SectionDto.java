@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class SectionDto {
 
     private UUID id;
-    private String sectionTitle;
-    private String sectionDescription;
+    private String title;
+    private String description;
     
 }

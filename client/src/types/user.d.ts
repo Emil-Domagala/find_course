@@ -1,5 +1,5 @@
 declare global{
-export type UserDto = {
+ type UserDto = {
   id: string; 
   email: string;
   username: string;

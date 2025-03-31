@@ -42,7 +42,7 @@ public class AuthController {
 
         AuthResponse auth = authService.loginUser(request);
 
-        ResponseCookie cookie = ResponseCookie.from(cookieName, auth.getToken())
+        ResponseCookie cookie = ResponseCookie.from(cookieName, auth.token())
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
