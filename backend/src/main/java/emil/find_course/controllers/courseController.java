@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.RequestCourseBody;
@@ -59,20 +60,21 @@ public class CourseController {
     // ----------Public----------
     // **************************
 
-    // Show all published courses
+    // Find published courses
     @GetMapping("public/courses")
     public ResponseEntity<PagingResult<CourseDto>> getCourses(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
-            @RequestParam(required = false) String category) {
+            @RequestParam(required = false) CourseCategory category,
+            @RequestParam(required = false) String keyword) {
         if (sortField == null) {
             sortField = "createdAt";
         }
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
-        final PagingResult<CourseDto> courses = courseService.getPublishedCourses(request);
+        final PagingResult<CourseDto> courses = courseService.searchCourses(keyword,category, request);
         return ResponseEntity.ok(courses);
     }
 

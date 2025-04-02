@@ -10,7 +10,7 @@ import jakarta.validation.Payload;
 
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EnumValidator.class)
+@Constraint(validatedBy = EnumValidatorImpl.class)
 public @interface ValidEnum {
 
     String message() default "Invalid enum value";
@@ -19,5 +19,7 @@ public @interface ValidEnum {
 
     Class<? extends Payload>[] payload() default {};
 
-    Class<? extends Enum<?>> enumClass(); // Enum class to validate against
+    Class<? extends Enum<?>> enumClass();
+
+    boolean allowNull() default false;
 }

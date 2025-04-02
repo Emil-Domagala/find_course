@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { Skeleton } from '../../ui/skeleton';
 import Tag, { TagSkeleton } from './Tag';
+import { CourseCategory } from '@/types/courses-enum';
 
 export const TagsSkeleton = () => {
   return (
@@ -18,6 +19,11 @@ export const TagsSkeleton = () => {
 };
 
 const Tags = () => {
+  const getRandomCategories = (count: number = 4): CourseCategory[] => {
+    const categories = Object.values(CourseCategory);
+    return categories.sort(() => Math.random() - 0.5).slice(0, count);
+  };
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -30,8 +36,8 @@ const Tags = () => {
         From begginer to advance in no time! We have courses just for you.
       </p>
       <div className="flex flex-wrap gap-4 mb-8">
-        {['web development', 'enterprise IT', 'react', 'next', 'java'].map((item) => (
-          <Tag key={item}>{item}</Tag>
+        {getRandomCategories(4).map((item) => (
+          <Tag key={item}>{item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()}</Tag>
         ))}
       </div>
 

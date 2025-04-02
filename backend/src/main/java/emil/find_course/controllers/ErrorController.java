@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -52,8 +53,6 @@ public class ErrorController {
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
-    
-
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
                         MethodArgumentNotValidException ex) {
@@ -80,6 +79,14 @@ public class ErrorController {
                                 .message("Validation failed").errors(error).build();
 
                 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(
+                        HttpMessageNotReadableException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
 }

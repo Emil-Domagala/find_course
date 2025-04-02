@@ -41,13 +41,15 @@ export const api = createApi({
     // ******************
       
     // GET LIST OF PUBLIC DTO COURSES
-    getCoursesPublic:build.query<Page<CourseDto>,{category?:string,page?:number,size?:number}>({
-      query:({category,page,size})=>({
+    getCoursesPublic:build.query<Page<CourseDto>,{page?:number,size?:number,sortField?:string,direction?:string,keyword?:string,category?:CourseCategory}>({
+      query:({page,size,sortField,direction,keyword="",category})=>({
         url:"public/courses",
-        params:{category,page,size}
+        params:{page,size,sortField,direction,keyword,category}
       }),
       providesTags:(result)=>result?.content.map(course=>({type:"CourseDtos",courseId:course.id}))||[]
     }),
+
+    // NOT NEEDED PROB
     //  GET PUBLIC DTO COURSE DETAIL
   getCourseDetailPublic:build.query<CourseDetailsPublicDto,{courseId:string}>({
       query:({courseId})=>`public/courses${courseId}`,

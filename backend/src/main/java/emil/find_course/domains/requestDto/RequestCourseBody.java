@@ -1,8 +1,6 @@
 package emil.find_course.domains.requestDto;
 
-
-import emil.find_course.domains.entities.course.Section;
-
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Validate.ValidEnum;
@@ -24,9 +22,9 @@ public class RequestCourseBody {
     @Size(min = 3, max = 255, message = "Description must be between {min} and {max} characters")
     private String description;
 
-    @NotBlank(message = "Category is required")
-    @Size(min = 3, max = 30, message = "Category must be between {min} and {max} characters")
-    private String category;
+    @NotNull
+    @ValidEnum(enumClass = CourseCategory.class, message = "Invalid course category value")
+    private CourseCategory category;
 
     @NotBlank(message = "Image URL is required")
     @Size(min = 3, max = 255, message = "Image URL must be between {min} and {max} characters")
@@ -43,5 +41,4 @@ public class RequestCourseBody {
     @NotNull(message = "Course Status is required")
     @ValidEnum(enumClass = CourseStatus.class, message = "Invalid course status value")
     private CourseStatus status;
-
 }

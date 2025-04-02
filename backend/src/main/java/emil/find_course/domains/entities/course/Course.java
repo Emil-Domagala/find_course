@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import jakarta.persistence.CascadeType;
@@ -56,7 +57,8 @@ public class Course {
     private String description;
 
     @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CourseCategory category;
 
     @Column(nullable = false)
     private String imageUrl;

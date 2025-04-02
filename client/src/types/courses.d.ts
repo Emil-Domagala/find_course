@@ -1,16 +1,7 @@
+import { CourseCategory, CourseStatus, Level } from './courses-enum';
+
+
 declare global {
-enum Level {
-  BEGINNER = "BEGINNER",
-  INTERMEDIATE = "INTERMEDIATE",
-  ADVANCED = "ADVANCED",
-}
-
- enum CourseStatus {
-  DRAFT = "DRAFT",
-  PUBLISHED = "PUBLISHED",
-}
-
-
 
  type SectionDto = {
   id: string; 
@@ -25,16 +16,18 @@ enum Level {
   teacher: UserDto;
   title: string;
   description: string;
-  category: string;
+  category: CourseCategory;
   imageUrl: string;
   price: number;
   level: Level;
   status: CourseStatus;
+  studentsCount:number;
   createdAt: string; 
   updatedAt: string;
 }
 
-type CourseDetailsPublicDto = CourseDto & {
+type CourseDetailsPublicDto ={
+  courseDto:CourseDto
   sections?: SectionDto[];
 };
 

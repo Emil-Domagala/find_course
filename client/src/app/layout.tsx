@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
-import NonDashboardNav from '@/components/NonDashboard/Navigation/NonDashboardNav';
 import Providers from './providers';
 
 const dmSans = DM_Sans({
@@ -23,8 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.className} antialiased bg-customgreys-primary`}>
-        <NonDashboardNav />
-        <Providers>
+         <Providers>
         {children}
         </Providers>
       </body>

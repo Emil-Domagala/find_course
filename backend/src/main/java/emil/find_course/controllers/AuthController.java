@@ -27,6 +27,8 @@ public class AuthController {
     private String cookieName;
     @Value("${cookie.expiration}")
     private int cookieExpiration;
+    @Value("${frontend.domain}")
+    private String frontendDomain;
 
     private final AuthService authService;
 
@@ -45,6 +47,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from(cookieName, auth.token())
                 .httpOnly(true)
                 .secure(true)
+                .domain(frontendDomain)
                 .path("/")
                 .maxAge(cookieExpiration)
                 .sameSite(SameSiteCookies.STRICT.toString())
@@ -59,6 +62,7 @@ public class AuthController {
         ResponseCookie deleteCookie = ResponseCookie.from(cookieName, "")
                 .httpOnly(true)
                 .secure(true)
+                .domain(frontendDomain)
                 .sameSite("Strict")
                 .path("/")
                 .maxAge(0)

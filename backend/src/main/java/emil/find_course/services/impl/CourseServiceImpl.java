@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Role;
 import emil.find_course.domains.pagination.PaginationRequest;
@@ -34,9 +35,15 @@ public class CourseServiceImpl implements CourseService {
     // **************************
 
     @Override
-    public PagingResult<CourseDto> getPublishedCourses(PaginationRequest request) {
+    public Course getPublishedCourse(UUID id) {
+        return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED);
+    }
+
+    @Override
+    public PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
-        final Page<Course> courses = courseRepository.findAllByStatus(CourseStatus.PUBLISHED, pageable);
+        final Page<Course> courses = courseRepository.searchCourses(keyword, CourseStatus.PUBLISHED, category,
+                pageable);
         final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
 
         return new PagingResult<CourseDto>(
@@ -46,11 +53,6 @@ public class CourseServiceImpl implements CourseService {
                 courses.getSize(),
                 courses.getNumber(),
                 courses.isEmpty());
-    }
-
-    @Override
-    public Course getPublishedCourse(UUID id) {
-        return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED);
     }
 
     // **************************
@@ -99,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
     public PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
 
-        final Page<Course> courses = courseRepository.findAllByStudents(student,pageable);
+        final Page<Course> courses = courseRepository.findAllByStudents(student, pageable);
         final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
 
         return new PagingResult<CourseDto>(
@@ -109,7 +111,6 @@ public class CourseServiceImpl implements CourseService {
                 courses.getSize(),
                 courses.getNumber(),
                 courses.isEmpty());
-
 
     }
 

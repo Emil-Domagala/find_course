@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import java.util.UUID;
 
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import lombok.AllArgsConstructor;
@@ -21,11 +22,12 @@ public class CourseDto {
     private UserDto teacher;
     private String title;
     private String description;
-    private String category;
+    private CourseCategory category;
     private String imageUrl;
     private double price;
     private Level level;
     private CourseStatus status;
+    private long studentsCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -5,6 +5,7 @@ import java.util.UUID;
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.RequestCourseBody;
@@ -14,7 +15,7 @@ public interface CourseService {
     // Public
     Course getPublishedCourse(UUID id);
 
-    PagingResult<CourseDto> getPublishedCourses(PaginationRequest request);
+    PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request);
 
     // Teacher
 
