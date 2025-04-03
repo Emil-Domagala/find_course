@@ -14,3 +14,12 @@ export const getCoursesPublic = async (courseId: string) => {
     throw new Error('Failed to fetch courses');
   }
 };
+export const getRoles = async () => {
+  try {
+    const { data } = await api.get(`/public/get-roles`);
+    return data as string;
+  } catch (err) {
+    console.log(err);
+    throw new Error('Failed to fetch courses');
+  }
+};

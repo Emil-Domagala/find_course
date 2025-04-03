@@ -9,10 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary-700 bg-primary-600',
-        default: 'bg-transparent shadow-xs hover:bg-customgreys-darkGrey',
-        outline: 'border bg-background shadow-xs hover:bg-customgreys-darkGrey/90',
-        secondary: 'bg-customgreys-secondarybg  shadow-xs hover:bg-customgreys-darkGrey',
+        primary: 'bg-primary-700 hover:bg-primary-600',
+        default: 'bg-transparent shadow-xs hover:bg-customgreys-darkerGrey',
+        outline: 'border bg-background shadow-xs hover:bg-customgreys-darkerGrey/90',
+        secondary: 'bg-customgreys-secondarybg  shadow-xs hover:bg-customgreys-darkerGrey',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

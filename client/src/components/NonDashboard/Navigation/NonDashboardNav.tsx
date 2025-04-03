@@ -1,13 +1,17 @@
 import { BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
+const buttonsBasic = `text-md py-2 px-4 rounded-lg text-white-50 font-semibold duration-300 transition-colors`;
+
 const NonDashboardNav = () => {
   return (
     <nav className="w-full bg-customgreys-primarybg">
       <div className="flex container justify-between items-center py-8 mx-auto">
         {/* LEFT */}
         <div className="flex gap-10 md:gap-20 items-center ">
-          <Link href={'/'} className="font-bold text-lg sm:text-xl hover:text-customgreys-dirtyGrey duration-300">
+          <Link
+            href={'/'}
+            className="font-bold text-lg md:text-3xl text-white-50 sm:text-2xl hover:text-customgreys-dirtyGrey duration-300">
             Find Course
           </Link>
           <div className="flex items-center gap-4">
@@ -22,7 +26,18 @@ const NonDashboardNav = () => {
         </div>
 
         {/*  Auth buttons*/}
-        <button>Auth button</button>
+        <div className="flex flex-row gap-2">
+          <Link
+            href={'/register'}
+            className={`hidden sm:block ${buttonsBasic} bg-customgreys-secondarybg hover:bg-customgreys-darkerGrey `}>
+            Sign Up
+          </Link>
+          <Link
+            href={'/login'}
+            className={`${buttonsBasic} bg-primary-700 hover:text-customgreys-primarybg hover:bg-primary-600 `}>
+            Login
+          </Link>
+        </div>
       </div>
     </nav>
   );

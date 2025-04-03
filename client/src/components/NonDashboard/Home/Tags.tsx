@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Skeleton } from '../../ui/skeleton';
 import Tag, { TagSkeleton } from './Tag';
 import { CourseCategory } from '@/types/courses-enum';
+import { useEffect, useState } from 'react';
 
 export const TagsSkeleton = () => {
   return (
@@ -18,12 +19,18 @@ export const TagsSkeleton = () => {
   );
 };
 
-const Tags = () => {
-  const getRandomCategories = (count: number = 4): CourseCategory[] => {
-    const categories = Object.values(CourseCategory);
-    return categories.sort(() => Math.random() - 0.5).slice(0, count);
-  };
+const getRandomCategories = (count: number = 4): CourseCategory[] => {
+  const categories = Object.values(CourseCategory);
+  return categories.sort(() => Math.random() - 0.5).slice(0, count);
+};
 
+const Tags = () => {
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    setCategories(getRandomCategories(4)); 
+  }, []);
+  
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -36,12 +43,10 @@ const Tags = () => {
         From begginer to advance in no time! We have courses just for you.
       </p>
       <div className="flex flex-wrap gap-4 mb-8">
-        {getRandomCategories(4).map((item) => (
-          <Tag key={item}>{item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()}</Tag>
+        {categories.map((item) => (
+          <Tag key={item}>{item}</Tag>
         ))}
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">{/* Courses will be displayed here */}</div>
     </motion.div>
   );
 };

@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn, transformToFrontendFormat } from '@/lib/utils';
 import { Skeleton } from '../../ui/skeleton';
 import { cva, VariantProps } from 'class-variance-authority';
 
@@ -19,12 +19,12 @@ const tagVariants = cva('bg-customgreys-secondarybg rounded-full text-sm', {
 });
 
 interface TagProps extends VariantProps<typeof tagVariants> {
-  children: React.ReactNode;
+  children: string;
   className?: string;
 }
 
 const Tag = ({ children, size, className }: TagProps) => {
-  return <div className={cn(tagVariants({ size }), className)}>{children}</div>;
+  return <div className={cn(tagVariants({ size }), className)}>{transformToFrontendFormat(children)}</div>;
 };
 
 export default Tag;

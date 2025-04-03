@@ -23,7 +23,7 @@ const CourseCardSearch = ({ course }: { course: CourseDto }) => {
         </div>
         <div className="p-4 flex flex-col justify-between flex-grow">
           <Tag className="bg-customgreys-dirtyGrey/20 w-fit mb-2" size="small">
-            {course.category.charAt(0).toUpperCase() + course.category.slice(1).toLowerCase()}
+            {course.category}
           </Tag>
           <div>
             <h2 className="font-semibold line-clamp-1">{course.title}</h2>

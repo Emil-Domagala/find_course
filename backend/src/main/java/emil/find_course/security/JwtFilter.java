@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Value("${cookie.name}")
+    @Value("${cookie.auth.name}")
     private String cookieName;
 
     private final JwtUtils jwtUtils;

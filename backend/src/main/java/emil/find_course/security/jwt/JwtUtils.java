@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import emil.find_course.domains.entities.user.User;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -27,6 +28,20 @@ public class JwtUtils {
         String roles = user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.joining(","));
+
+        return Jwts.builder()
+                .subject(email)
+                .claim("roles", roles)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date().getTime() + jwtExpirationMs)))
+                .signWith(key())
+                .compact();
+    }
+
+    public String generateToken(User user) {
+        String email = user.getEmail();
+        String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
+
         return Jwts.builder()
                 .subject(email)
                 .claim("roles", roles)

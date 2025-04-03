@@ -2,6 +2,7 @@ import Tag from '@/components/NonDashboard/Home/Tag';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { getCoursesPublic } from '@/lib/api/api';
+import { FileText } from 'lucide-react';
 import Image from 'next/image';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
@@ -23,7 +24,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
             </p>
             <p className='text-customgreys-dirtyGrey text-sm"'>{course.courseDto.studentsCount} Enrollments</p>
             <Tag className="bg-customgreys-dirtyGrey/20 w-fit mt-2">
-              {course.courseDto.category.charAt(0).toUpperCase() + course.courseDto.category.slice(1).toLowerCase()}
+              {course.courseDto.category}
             </Tag>
 
             {/* BUY */}
@@ -52,7 +53,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
       </div>
       {/* Accordeon */}
       <div className="container">
-        <h4 className="text-white-50/90 font-semibold mb-2">Course content</h4>
+        <h4 className="text-white-50/90 text-lg font-semibold mb-2">Course content</h4>
 
         {course.sections ? (
           <Accordion type="multiple" className="w-full">
@@ -65,8 +66,14 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
                   <h5 className="text-gray-400 font-medium">{section.title}</h5>
                 </AccordionTrigger>
                 <AccordionContent className="bg-customgreys-secondarybg/50 px-4 py-4">
-                  {/* TODO ACCORDEON CHAPTERS */}
-                  {section.description}
+                  <ul>
+                    {section.chapter?.map((chapter) => (
+                      <li className="flex items-center text-gray-400/90 py-1" key={chapter.id}>
+                        <FileText className="mr-2 size-4" />
+                        <span className="text-sm">{chapter.title}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
             ))}

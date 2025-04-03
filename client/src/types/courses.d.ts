@@ -3,10 +3,16 @@ import { CourseCategory, CourseStatus, Level } from './courses-enum';
 
 declare global {
 
+type ChapterDto={
+    id:string,
+    title:string
+}
+
  type SectionDto = {
   id: string; 
   title: string;
   description: string;
+  chapter?:ChapterDto[];
 };
 
 // Courses

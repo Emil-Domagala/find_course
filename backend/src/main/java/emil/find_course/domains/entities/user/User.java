@@ -94,4 +94,12 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", email=" + email + ", username=" + username + ", userLastname=" + userLastname
+                + ", roles=" + roles + ", password=" + password + ", enrollmentCourses=" + enrollmentCourses
+                + ", teachingCourses=" + teachingCourses + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+                + "]";
+    }
+
 }

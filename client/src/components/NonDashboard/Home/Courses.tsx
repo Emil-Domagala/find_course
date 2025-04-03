@@ -1,3 +1,4 @@
+'use client'
 import CourseCardSearch, { CourseCardSearchSkeleton } from '../CourseCardSearch';
 import { motion } from 'framer-motion';
 import { useGetCoursesPublicQuery } from '@/state/api';
