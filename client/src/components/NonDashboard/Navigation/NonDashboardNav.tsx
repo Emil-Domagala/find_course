@@ -1,43 +1,36 @@
 import { BookOpen } from 'lucide-react';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import AuthButtons from './AuthButtons';
+import SearchButton from './SearchButton';
 
-const buttonsBasic = `text-md py-2 px-4 rounded-lg text-white-50 font-semibold duration-300 transition-colors`;
+const NonDashboardNav = async () => {
+  const cookieStore = await cookies();
 
-const NonDashboardNav = () => {
+  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
+  // const userRole = [];
+  // try {
+  //   const decoded = jwtDecode(authToken!) as any;
+  //   userRole.push(decoded.roles);
+  // } catch (err) {
+  //   console.error('JWT Verification Failed:', err);
+  // }
+
   return (
     <nav className="w-full bg-customgreys-primarybg">
-      <div className="flex container justify-between items-center py-8 mx-auto">
+      <div className="flex container justify-between items-center py-7 mx-auto">
         {/* LEFT */}
         <div className="flex gap-10 md:gap-20 items-center ">
           <Link
             href={'/'}
-            className="font-bold text-lg md:text-3xl text-white-50 sm:text-2xl hover:text-customgreys-dirtyGrey duration-300">
+            className="font-bold py-2 text-lg md:text-3xl text-white-50 sm:text-2xl hover:text-customgreys-dirtyGrey duration-300">
             Find Course
           </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href={'/search'}
-              className="bg-customgreys-secondarybg items-center flex flex-row gap-2  px-5 sm:px-14 py-3 sm:py-4 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base">
-              <BookOpen size={18} className="left-1 sm:left-5 transform top-1/2" />
-              <span className="hidden sm:inline">Search Courses</span>
-              <span className="sm:hidden">Search</span>
-            </Link>
-          </div>
+          <SearchButton />
         </div>
 
         {/*  Auth buttons*/}
-        <div className="flex flex-row gap-2">
-          <Link
-            href={'/register'}
-            className={`hidden sm:block ${buttonsBasic} bg-customgreys-secondarybg hover:bg-customgreys-darkerGrey `}>
-            Sign Up
-          </Link>
-          <Link
-            href={'/login'}
-            className={`${buttonsBasic} bg-primary-700 hover:text-customgreys-primarybg hover:bg-primary-600 `}>
-            Login
-          </Link>
-        </div>
+        <AuthButtons authToken={!!authToken} />
       </div>
     </nav>
   );

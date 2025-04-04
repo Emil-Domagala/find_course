@@ -1,4 +1,4 @@
-import { UserRegisterRequest } from '@/lib/validation/userRegister';
+import { UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import {
   createApi,

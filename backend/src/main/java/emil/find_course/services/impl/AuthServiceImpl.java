@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userLoginRequest.getEmail(), userLoginRequest.getPassword()));
+                        userLoginRequest.getEmail().trim(), userLoginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userPrincipal);
@@ -54,11 +54,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = User.builder()
-                .email(userRegisterRequest.getEmail())
+                .email(userRegisterRequest.getEmail()
+                        .trim())
                 .password(passwordEncoder.encode(userRegisterRequest
                         .getPassword()))
-                .username(userRegisterRequest.getUsername())
-                .userLastname(userRegisterRequest.getUserLastname()).build();
+                .username(userRegisterRequest.getUsername().trim())
+                .userLastname(userRegisterRequest.getUserLastname().trim()).build();
 
         User savedUser = userRepository.save(user);
 

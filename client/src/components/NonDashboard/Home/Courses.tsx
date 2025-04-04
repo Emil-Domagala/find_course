@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import CourseCardSearch, { CourseCardSearchSkeleton } from '../CourseCardSearch';
 import { motion } from 'framer-motion';
 import { useGetCoursesPublicQuery } from '@/state/api';
@@ -18,7 +18,6 @@ const Courses = () => {
 
   const { data: coursesPage, isLoading } = useGetCoursesPublicQuery({ size: desiredSize, page: 0 });
   const courses: CourseDto[] = coursesPage?.content ?? [];
-  console.log(coursesPage);
 
   if (isLoading) return <CoursesSkeleton size={desiredSize} />;
 
@@ -31,7 +30,7 @@ const Courses = () => {
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.3, delay: index * 0.2 }}
-            viewport={{ amount: 0.3, once: true }}
+            viewport={{ amount: 0.1, once: true }}
             key={course.id}>
             <CourseCardSearch course={course} />
           </motion.div>
