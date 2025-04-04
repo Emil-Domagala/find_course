@@ -5,8 +5,6 @@ import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserRegisterRequest, UserRegisterSchema } from '@/lib/validation/userAuth';
 import { Button } from '@/components/ui/button';
-import AuthFooter from '@/components/NonDashboard/auth/AuthFooter';
-import AuthHeader from '@/components/NonDashboard/auth/AuthHeader';
 import AuthField from '@/components/NonDashboard/auth/AuthField';
 import { useState } from 'react';
 import { useRegisterMutation } from '@/state/api';
@@ -38,8 +36,6 @@ const RegisterPage = () => {
     } catch (e) {
       const errorFull = e as ApiErrorResponse;
       const error = errorFull.data;
-
-      console.log(error);
       if (!error.errors) {
         form.setError('root', { message: 'An unexpected error occurred.' });
         return;
@@ -59,37 +55,29 @@ const RegisterPage = () => {
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center mt-10">
-        <div className="rounded-xl flex flex-col sm:mx-auto shadow-none mx-4 bg-customgreys-secondarybg border-none px-6 py-10 gap-0">
-          {/* Header */}
-          <AuthHeader header="Create Account" description="Welcome! Please fill in the details to get started" />
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-row gap-6">
-                <AuthField form={form} type="text" name="username" label="First Name" />
-                <AuthField form={form} type="text" name="userLastname" label="Last Name" />
-              </div>
-              <AuthField form={form} type="email" name="email" label="Email adress" />
-              <AuthField
-                form={form}
-                type="password"
-                name="password"
-                label="Password"
-                showDesc={errorInPassword}
-                description="Password must be beetween 6 and 30 characters"
-              />
-              <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-                Sign Up
-              </Button>
-            </form>
-          </Form>
-
-          <AuthFooter description="Already have an account? " link="Sign in" href="/login" />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-row gap-6">
+          <AuthField form={form} type="text" name="username" label="First Name" />
+          <AuthField form={form} type="text" name="userLastname" label="Last Name" />
         </div>
-      </div>
-    </>
+        <AuthField form={form} type="email" name="email" label="Email adress" />
+        <AuthField
+          form={form}
+          type="password"
+          name="password"
+          label="Password"
+          showDesc={errorInPassword}
+          description="Password must be beetween 6 and 30 characters"
+        />
+        {form.formState.errors.root && (
+          <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
+        )}
+        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
+          Sign Up
+        </Button>
+      </form>
+    </Form>
   );
 };
 

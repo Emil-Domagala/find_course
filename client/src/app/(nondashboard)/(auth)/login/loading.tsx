@@ -1,13 +1,9 @@
 import { AuthFieldSkeleton } from '@/components/NonDashboard/auth/AuthField';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const RegisterLoading = () => {
+const LoginLoading = () => {
   return (
     <>
-      <div className="flex flex-row gap-6">
-        <AuthFieldSkeleton />
-        <AuthFieldSkeleton />
-      </div>
       <AuthFieldSkeleton />
       <AuthFieldSkeleton />
       <Skeleton className="w-full mt-2 h-9" />
@@ -15,4 +11,4 @@ const RegisterLoading = () => {
   );
 };
 
-export default RegisterLoading;
+export default LoginLoading;

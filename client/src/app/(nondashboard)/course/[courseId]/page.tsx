@@ -23,19 +23,17 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
               Created by: {course.courseDto.teacher.username} {course.courseDto.teacher.userLastname}
             </p>
             <p className='text-customgreys-dirtyGrey text-sm"'>{course.courseDto.studentsCount} Enrollments</p>
-            <Tag className="bg-customgreys-dirtyGrey/20 w-fit mt-2">
-              {course.courseDto.category}
-            </Tag>
+            <Tag className="bg-customgreys-dirtyGrey/20 w-fit mt-2">{course.courseDto.category}</Tag>
 
             {/* BUY */}
 
             <span className="text-primary-500 text-xl font-semibold py-4">Only ${course.courseDto.price}</span>
             <div className="flex flex-row gap-2">
               <form action="">
-                <Button variant="secondary">Buy Now</Button>
+                <Button variant="primary">Buy Now</Button>
               </form>
               <form action="">
-                <Button variant="outline">Add to Cart</Button>
+                <Button variant="secondary">Add to Cart</Button>
               </form>
             </div>
           </div>

@@ -27,7 +27,7 @@ const AuthField = ({ form, showDesc = false, name, description, label, placehold
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="relative pb-5 mb-4">
+        <FormItem className="relative pb-5 mb-4 w-full">
           <FormLabel className="text-white-50 font-medium text-md">{label}</FormLabel>
           <FormControl>
             <Input
