@@ -11,6 +11,7 @@ import { useLoginMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { UserLoginRequest } from '@/types/auth';
+import { Loader } from 'lucide-react';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       await loginUser(values).unwrap();
-      // router.push('/dashboard');
+      router.push('/dashboard');
       router.refresh();
     } catch (e) {
       const errorFull = e as ApiErrorResponse;
@@ -55,7 +56,7 @@ const LoginPage = () => {
           <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
         )}
         <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Continue
+          Continue {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
         </Button>
       </form>
     </Form>

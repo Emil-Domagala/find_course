@@ -10,7 +10,7 @@ const LoginLayout = ({
     <>
       <AuthHeader header="Sign in to Find Course" description="Welcome back! Please sign in to continue" />
       {children}
-      <AuthFooter description="Don't have an account? " link="Sign up" href="/register" />
+      <AuthFooter description="Don't have an account? " link="Sign up" href="/auth/register" />
     </>
   );
 };

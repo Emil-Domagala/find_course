@@ -6,9 +6,8 @@ import { FileText } from 'lucide-react';
 import Image from 'next/image';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
-  const { courseId } = params;
+  const { courseId } = await params;
   const course = await getCoursesPublic(courseId);
-  console.log(course);
 
   return (
     <>
@@ -51,9 +50,9 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
       </div>
       {/* Accordeon */}
       <div className="container">
-        <h4 className="text-white-50/90 text-lg font-semibold mb-2">Course content</h4>
+        <h4 className="text-white-50/90 text-xl font-semibold my-2">Course content</h4>
 
-        {course.sections ? (
+        {course.sections && course.sections.length > 0 ? (
           <Accordion type="multiple" className="w-full">
             {course.sections.map((section) => (
               <AccordionItem

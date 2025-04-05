@@ -10,7 +10,7 @@ const RegisterLayout = ({
     <>
       <AuthHeader header="Create Account" description="Welcome! Please fill in the details to get started" />
       {children}
-      <AuthFooter description="Already have an account? " link="Sign in" href="/login" />
+      <AuthFooter description="Already have an account? " link="Sign in" href="/auth/login" />
     </>
   );
 };

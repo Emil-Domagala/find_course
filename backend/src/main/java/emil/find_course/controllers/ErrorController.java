@@ -33,7 +33,7 @@ public class ErrorController {
         @ExceptionHandler(BadCredentialsException.class)
         public ResponseEntity<ApiErrorResponse> handBadCredentialsException(BadCredentialsException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
-                                .message("Failed to login. Bad credentials").build();
+                                .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 
         }

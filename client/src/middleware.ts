@@ -1,20 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
+import { AuthToken } from './types/auth';
+
+const notLoggedIn = '/auth';
+const reqLoggedIn = '/dashboard';
+const reqTeacher = '/teacher';
+const reqAdmin = '/admin';
 
 export async function middleware(req: NextRequest) {
-  const cookieStore = await cookies();
+  // Make sure .env is setted
   if (!process.env.AUTH_COOKIE_NAME || !process.env.JWT_SECRET) {
     throw new Error('AUTH_COOKIE_NAME and JWT_SECRET are required');
   }
-
+  // get cookie
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME)?.value;
 
-  if (!authToken) return;
+  // protect dashboard
+  if (!authToken && req.nextUrl.pathname.includes(reqLoggedIn))
+    return NextResponse.redirect(new URL('/auth/login', req.url));
 
-  try {
-    const decoded = jwtDecode(authToken) as any;
-  } catch (err) {
-    console.error('JWT Verification Failed:', err);
-  }
+  // protect auth
+  if (authToken && req.nextUrl.pathname.includes(notLoggedIn))
+    return NextResponse.redirect(new URL('/dashboard', req.url));
+
+  // Do nothing if public routes
+  if (!authToken) return NextResponse.next();
+
+  // get roles from token
+  const decoded = jwtDecode(authToken) as AuthToken;
+
+  // Protect teacher routes
+  if (req.nextUrl.pathname.includes(reqTeacher) && !decoded.roles.includes('TEACHER'))
+    return NextResponse.redirect(new URL('/dashboard', req.url)); //Or not auth
+
+  // Protect admin routes
+  if (req.nextUrl.pathname.includes(reqAdmin) && !decoded.roles.includes('ADMIN'))
+    return NextResponse.redirect(new URL('/dashboard', req.url)); //Or not auth
+
+  // save switch it should be never reached
+  return NextResponse.next();
 }

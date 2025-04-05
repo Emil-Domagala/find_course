@@ -1,4 +1,4 @@
-import { BookOpen } from 'lucide-react';
+
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import AuthButtons from './AuthButtons';
@@ -28,8 +28,6 @@ const NonDashboardNav = async () => {
           </Link>
           <SearchButton />
         </div>
-
-        {/*  Auth buttons*/}
         <AuthButtons authToken={!!authToken} />
       </div>
     </nav>

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useRegisterMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
+import { Loader } from 'lucide-react';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -31,7 +32,7 @@ const RegisterPage = () => {
     try {
       setIsLoading(true);
       await registerUser(values).unwrap();
-      router.push('/');
+      router.push('/confirm-email');
       router.refresh();
     } catch (e) {
       const errorFull = e as ApiErrorResponse;
@@ -74,7 +75,7 @@ const RegisterPage = () => {
           <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
         )}
         <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Sign Up
+          Sign Up {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
         </Button>
       </form>
     </Form>
