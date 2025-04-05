@@ -41,4 +41,8 @@ public class UserPrincipal implements UserDetails {
         return user;
     }
 
+    public boolean isEmailVerified(){
+        return user.isEmailVerified();
+    }
+
 }

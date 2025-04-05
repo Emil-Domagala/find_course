@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,6 +37,12 @@ public class ErrorController {
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 
+        }
+        @ExceptionHandler(UsernameNotFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handUsernameNotFoundException(UsernameNotFoundException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
         }
 
         @ExceptionHandler(EntityNotFoundException.class)

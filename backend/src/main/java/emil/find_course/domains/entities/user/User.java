@@ -61,12 +61,15 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_course", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
     @Builder.Default
-
     private Set<Course> enrollmentCourses = new HashSet<>();
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Course> teachingCourses = new HashSet<>();
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isEmailVerified = false;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -98,8 +101,8 @@ public class User {
     public String toString() {
         return "User [id=" + id + ", email=" + email + ", username=" + username + ", userLastname=" + userLastname
                 + ", roles=" + roles + ", password=" + password + ", enrollmentCourses=" + enrollmentCourses
-                + ", teachingCourses=" + teachingCourses + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
-                + "]";
+                + ", teachingCourses=" + teachingCourses + ", isEmailVerified=" + isEmailVerified + ", createdAt="
+                + createdAt + ", updatedAt=" + updatedAt + "]";
     }
 
 }

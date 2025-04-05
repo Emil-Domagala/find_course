@@ -32,7 +32,8 @@ public class SecurityConfig {
         http.csrf(customizer -> customizer.disable());
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/public/**").permitAll()
-                .anyRequest().authenticated());
+                .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
         http.authenticationProvider(authProvider());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { CourseCategory } from '@/types/courses-enum';
 
 export enum SearchField {
   CreatedAt = 'createdAt',
   UpdatedAt = 'updatedAt',
   Title = 'title',
   Price = 'price',
-  None = '',
 }
 
 export enum SearchDirection {
@@ -18,11 +18,10 @@ export const useSearchFilters = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const [category, setCategory] = useState<CourseCategory | ''>((searchParams.get('category') as CourseCategory) || '');
   const [size, setSize] = useState(Number(searchParams.get('size')) || 12);
   const [page, setPage] = useState(Number(searchParams.get('page')) || 0);
-  const [sortField, setSortField] = useState<SearchField>(
-    (searchParams.get('sortField') as SearchField) || SearchField.None,
-  );
+  const [sortField, setSortField] = useState<SearchField | ''>((searchParams.get('sortField') as SearchField) || '');
   const [direction, setDirection] = useState<SearchDirection>(
     (searchParams.get('direction') as SearchDirection) || SearchDirection.ASC,
   );
@@ -36,9 +35,10 @@ export const useSearchFilters = () => {
     if (sortField) params.set('sortField', sortField);
     if (direction) params.set('direction', direction);
     if (keyword) params.set('keyword', keyword);
+    if (category) params.set('category', category);
 
     router.replace(`?${params.toString()}`, { scroll: false });
-  }, [size, page, sortField, direction, keyword, router]);
+  }, [size, page, sortField, direction, keyword, category, router]);
 
   return {
     size,
@@ -51,5 +51,7 @@ export const useSearchFilters = () => {
     setDirection,
     keyword,
     setKeyword,
+    category,
+    setCategory,
   };
 };

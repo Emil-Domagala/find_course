@@ -65,4 +65,4 @@ export const api = createApi({
  
 });
 
-export const {useGetCoursesPublicQuery,useGetCourseDetailPublicQuery,useLoginMutation,useLogoutMutation,useRegisterMutation} = api;
+export const {useGetCoursesPublicQuery,useLazyGetCoursesPublicQuery,useGetCourseDetailPublicQuery,useLoginMutation,useLogoutMutation,useRegisterMutation} = api;

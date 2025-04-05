@@ -1,95 +1,161 @@
 'use client';
 
-import CourseCardSearch, { CourseCardSearchSkeleton } from '@/components/NonDashboard/CourseCardSearch';
+import DisplayCourses from '@/components/NonDashboard/Search/DisplayCourses';
+import PageSize from '@/components/NonDashboard/Search/PageSize';
+import Pagination from '@/components/NonDashboard/Search/Pagination';
 import { Button } from '@/components/ui/button';
-import { useSearchFilters } from '@/hooks/useSearchFilters';
+import { Input } from '@/components/ui/input';
+import { SearchDirection, SearchField, useSearchFilters } from '@/hooks/useSearchFilters';
+import { transformKey, transformToFrontendFormat } from '@/lib/utils';
 import { useGetCoursesPublicQuery } from '@/state/api';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-const SearchCoursesSkeleton = ({ size }: { size: number }) => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[...Array(+size)].map((_, index) => (
-        <CourseCardSearchSkeleton key={index} />
-      ))}
-    </div>
-  );
-};
+import { CourseCategory } from '@/types/courses-enum';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectViewport } from '@radix-ui/react-select';
 
 const SearchPage = () => {
-  const { size, setSize, page, setPage, sortField, setSortField, direction, setDirection, keyword, setKeyword } =
-    useSearchFilters();
+  const {
+    size,
+    setSize,
+    page,
+    setPage,
+    sortField,
+    setSortField,
+    direction,
+    setDirection,
+    keyword,
+    setKeyword,
+    category,
+    setCategory,
+  } = useSearchFilters();
 
-  const { data: coursesPage, isLoading } = useGetCoursesPublicQuery({ size, page, sortField, direction, keyword });
-  const courses: CourseDto[] = coursesPage?.content ?? [];
-  console.log(coursesPage);
+  const {
+    data: coursesPage,
+    isLoading,
+    refetch,
+  } = useGetCoursesPublicQuery(
+    {
+      size,
+      page,
+      sortField,
+      direction,
+      keyword,
+      category,
+    },
+    { skip: true },
+  );
+
+  const label = 'text-sm mb-1';
+  const itemContainer = 'w-fit';
+  const selectItemStyle =
+    'text-center cursor-pointer bg-customgreys-darkGrey min-w-[100%] p-2 hover:bg-customgreys-darkerGrey hover:!outline-none';
+  const selectTriggerStyleBasic = 'bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 h-12';
+  const selectContentStyleBasic = 'mt-1 py-2 bg-customgreys-darkGrey rounded-md';
 
   return (
-    <div className="container">
-      {/* Filter */}
-      <></>
-      {/* Courses */}
-      <h1 className="font-normal text-2xl mt-14">List of available courses</h1>
-      <h2 className="text-gray-500 mb-3">{coursesPage?.totalElements || 0} courses available</h2>
-      {!isLoading ? (
-        <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${courses.length === 0 ? '!grid-cols-1' : ''}`}>
-          {courses && courses.length > 0 ? (
-            courses.map((course) => (
-              <div key={course.id}>
-                <CourseCardSearch course={course} />
-              </div>
-            ))
-          ) : (
-            <p className="mx-auto text-lg text-gray-400">There are no courses yet</p>
-          )}
-        </div>
-      ) : (
-        <SearchCoursesSkeleton size={size} />
-      )}
+    <div>
+      <div className="w-full bg-customgreys-secondarybg py-5">
+        <div className="container">
+          {/* <form action=""> */}
+          <div className="flex flex-row gap-5 justify-center items-end w-full ">
+            {/* category */}
+            <div className={itemContainer}>
+              <p className={label}>Category</p>
+              <Select
+                value={category}
+                onValueChange={(value) => setCategory(value === '__clear__' ? '' : (value as CourseCategory))}>
+                <SelectTrigger className={`${selectTriggerStyleBasic} w-32`}>
+                  <SelectValue placeholder="Category">{transformToFrontendFormat(category)}</SelectValue>
+                </SelectTrigger>
+                <SelectContent className={`max-h-60 ${selectContentStyleBasic}`} position="popper">
+                  <SelectViewport className="max-h-60 overflow-auto ">
+                    <SelectItem value="__clear__" className={selectItemStyle}>
+                      All
+                    </SelectItem>
+                    {Object.values(CourseCategory).map((cat) => (
+                      <SelectItem value={cat} key={cat} className={selectItemStyle}>
+                        {transformToFrontendFormat(cat)}
+                      </SelectItem>
+                    ))}
+                  </SelectViewport>
+                </SelectContent>
+              </Select>
+            </div>
 
-      <div className="flex flex-row gap-2 justify-center">
-        {page != 0 && (
-          <Button onClick={() => setPage((prev) => prev - 1)}>
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
-        )}
-        {page > 1 && (
-          <>
-            <Button onClick={() => setPage(0)}>First Page</Button>
-            ...
-          </>
-        )}
-        <Button variant="outline">{page + 1}</Button>
-        {coursesPage?.totalPages && page < coursesPage?.totalPages - 1 && (
-          <>
-            <span>...</span>
-            <Button onClick={() => setPage(coursesPage?.totalPages - 1)}>{coursesPage?.totalPages}</Button>
-            <Button onClick={() => setPage((prev) => prev + 1)}>
-              Next
-              <ChevronRight className="h-4 w-4" />
+            {/* Keyword */}
+            <div className={`${itemContainer} w-full`}>
+              <p className={label}>Search by title</p>
+              <Input
+                onChange={(e) => setKeyword(e.target.value)}
+                className="bg-customgreys-primarybg h-12 text-white-50 !shadow-none border-none font-medium text-md md:text-lg selection:bg-primary-750"
+              />
+            </div>
+
+            {/* Filter */}
+            <div className={itemContainer}>
+              <p className={label}>Order by</p>
+              <Select value={sortField} onValueChange={(value) => setSortField(value as SearchField)}>
+                <SelectTrigger className={`${selectTriggerStyleBasic} w-24`}>
+                  <SelectValue placeholder="Created At">{transformKey(sortField)}</SelectValue>
+                </SelectTrigger>
+                <SelectContent className={`w-24 ${selectContentStyleBasic}`} position="popper">
+                  {Object.values(SearchField).map((field) => (
+                    <SelectItem value={field} key={field} className={selectItemStyle}>
+                      {transformKey(field)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Direction */}
+            <div className={itemContainer}>
+              <p className={label}>Direction</p>
+              <Select value={direction} onValueChange={(value) => setDirection(value as SearchDirection)}>
+                <SelectTrigger className={`${selectTriggerStyleBasic} w-14`}>
+                  <SelectValue placeholder="Category">{direction}</SelectValue>
+                </SelectTrigger>
+                <SelectContent className={`w-14 ${selectContentStyleBasic}`} position="popper">
+                  {Object.values(SearchDirection).map((dir) => (
+                    <SelectItem value={dir} key={dir} className={selectItemStyle}>
+                      {dir}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Page size */}
+
+            <div className={itemContainer}>
+              <p className={label}>Elements</p>
+              <Select value={String(size)} onValueChange={(value) => setSize(Number(value))}>
+                <SelectTrigger className={`${selectTriggerStyleBasic} w-14`}>
+                  <SelectValue placeholder="Select page size">{String(size)}</SelectValue>
+                </SelectTrigger>
+                <SelectContent className={`w-14 ${selectContentStyleBasic}`} position="popper">
+                  {[12, 24, 48, 100].map((option) => (
+                    <SelectItem className={selectItemStyle} key={option} value={String(option)}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Apply */}
+            <Button variant="primary" className="h-12 text-md" onClick={refetch}>
+              Search
             </Button>
-          </>
-        )}
-        {/* Select page size */}
-        <Select value={String(size)} onValueChange={(value) => setSize(Number(value))}>
-          <SelectTrigger className="px-2 ml-5 min-w-10 bg-customgreys-secondarybg rounded-md">
-            <SelectValue placeholder="Select page size">{String(size)}</SelectValue>
-          </SelectTrigger>
-          <SelectContent className="rounded-md overflow-hidden">
-            {[12, 24, 48, 100].map((option) => (
-              <SelectItem
-                className="text-center bg-customgreys-secondarybg min-w-[100%] p-2 hover:bg-customgreys-darkGrey hover:!outline-none"
-                key={option}
-                value={String(option)}>
-                {option}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          </div>
+          {/* </form> */}
+        </div>
       </div>
+
+      {/* Courses */}
+      <div className="container">
+        <DisplayCourses isLoading={isLoading} coursesPage={coursesPage} size={size} />
+      </div>
+      <Pagination setPage={setPage} page={page} coursesPage={coursesPage} />
+      {/* Select page size */}
     </div>
   );
 };

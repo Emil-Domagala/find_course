@@ -35,8 +35,7 @@ const AuthButtons = ({ authToken }: { authToken: boolean }) => {
       ) : (
         <form action={handleLogout}>
           <Button variant={'secondary'} className={`${buttonsBasic} `} disabled={isLoading}>
-            Logout
-            {isLoading && <Loader />}
+            {isLoading ? <Loader size={20} className="animate-[spin_2s_linear_infinite]" /> : 'Logout'}
           </Button>
         </form>
       )}
