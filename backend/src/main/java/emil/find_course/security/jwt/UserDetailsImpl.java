@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @RequiredArgsConstructor
-public class UserPrincipal implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final User user;
 
@@ -41,7 +41,7 @@ public class UserPrincipal implements UserDetails {
         return user;
     }
 
-    public boolean isEmailVerified(){
+    public boolean isEmailVerified() {
         return user.isEmailVerified();
     }
 

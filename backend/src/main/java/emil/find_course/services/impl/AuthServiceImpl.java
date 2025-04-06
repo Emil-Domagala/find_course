@@ -15,7 +15,7 @@ import emil.find_course.domains.requestDto.UserRegisterRequest;
 import emil.find_course.exceptions.FieldValidationException;
 import emil.find_course.repositories.UserRepository;
 import emil.find_course.security.jwt.JwtUtils;
-import emil.find_course.security.jwt.UserPrincipal;
+import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.AuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,13 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
 
-    
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userLoginRequest.getEmail().trim(), userLoginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userPrincipal);
         String roles = authentication.getAuthorities().toString().replace(" ", "").replace(",", "|");
 
@@ -65,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
         if (savedUser == null) {
             throw new IllegalArgumentException("Problem saving to database");
         }
-        
+
         return loginRegisteredUser(savedUser);
 
     }

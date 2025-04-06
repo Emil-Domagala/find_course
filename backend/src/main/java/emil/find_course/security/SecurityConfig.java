@@ -25,18 +25,22 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
+    // private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(customizer -> customizer.disable());
+        // http.addFilterBefore(corsConfig.corsFilter(),
+        // UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/public/**").permitAll()
-                .anyRequest().authenticated())
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+                .anyRequest().authenticated());
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
         http.authenticationProvider(authProvider());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(emailVerificationFilter(), JwtFilter.class);
         return http.build();
     }
 
@@ -61,6 +65,11 @@ public class SecurityConfig {
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter(jwtUtils, userDetailsService);
+    }
+
+    @Bean
+    public EmailVerificationFilter emailVerificationFilter() {
+        return new EmailVerificationFilter();
     }
 
 }

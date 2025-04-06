@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/public")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -38,7 +38,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/public/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
         AuthResponse auth = authService.registerUser(request);
 
@@ -49,7 +49,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserLoginRequest request, HttpServletResponse response) {
         AuthResponse auth = authService.loginUser(request);
 
@@ -59,7 +59,7 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), roleCookie.toString()).body(auth);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/public/logout")
     public ResponseEntity<Void> logout() {
         ResponseCookie deleteCookie = setCookieHelper(authCookieName, "", 0);
         ResponseCookie deleteRoleCookie = setCookieHelper(roleCookieName, "", 0);
@@ -72,9 +72,12 @@ public class AuthController {
 
     @PostMapping("/get-roles")
     public ResponseEntity<String> getRoles(Principal principal) {
+
         if (principal == null) {
+            System.out.println("no principal");
             return ResponseEntity.ok("");
         }
+        System.out.println("get-roles");
         String roles = userService.getRoles(principal);
         return ResponseEntity.ok(roles);
     }

@@ -3,9 +3,10 @@ export type UserLoginRequest = {
   password: string;
 };
 
-export type AuthToken={  
+export type AuthToken = {
   sub: string;
-    roles: string;
-    iat: number;
-    exp: number;
-  }
+  roles: string;
+  isEmailVerified: boolean;
+  iat: number;
+  exp: number;
+};
