@@ -17,6 +17,7 @@ import emil.find_course.domains.dto.ApiErrorResponse;
 import emil.find_course.exceptions.EmailConfirmException;
 import emil.find_course.exceptions.FieldValidationException;
 import emil.find_course.exceptions.JwtAuthException;
+import emil.find_course.exceptions.UnauthorizedException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,8 +62,8 @@ public class ErrorController {
 
         }
 
-        @ExceptionHandler(EmailConfirmException.class)
-        public ResponseEntity<ApiErrorResponse> handAccesDenied(EmailConfirmException ex) {
+        @ExceptionHandler({EmailConfirmException.class, UnauthorizedException.class})
+        public ResponseEntity<ApiErrorResponse> handleEmailConfirmException(Exception ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);

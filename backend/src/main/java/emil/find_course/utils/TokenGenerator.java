@@ -13,4 +13,12 @@ public class TokenGenerator {
         }
         return token.toString();
     }
+
+    public static String generateToken24NumCharToken() {
+        StringBuilder token = new StringBuilder(24);
+        for (int i = 0; i < 24; i++) {
+            token.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+        return token.toString();
+    }
 }

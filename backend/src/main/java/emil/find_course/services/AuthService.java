@@ -11,6 +11,7 @@ public interface AuthService {
 
     public AuthResponse loginUser(UserLoginRequest userLoginRequest);
 
-    public AuthResponse loginRegisteredUser(User user);
+    public String refreshAuthToken(String token);
+
 
 }

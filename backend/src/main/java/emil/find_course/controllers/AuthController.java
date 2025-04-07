@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import emil.find_course.domains.dto.AuthResponse;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
+import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.services.AuthService;
 import emil.find_course.services.EmailVerificationService;
 import emil.find_course.services.UserService;
@@ -33,6 +35,12 @@ public class AuthController {
     @Value("${jwt.authToken.expiration}")
     private int cookieExpiration;
 
+    @Value("${cookie.auth.refreshToken.name}")
+    private String refreshCookieName;
+    @Value("${jwt.refreshToken.expiration}")
+    private int refreshCookieExpiration;
+
+    private final JwtUtils jwtUtils;
     private final AuthService authService;
     private final UserService userService;
     private final EmailVerificationService emailVerificationService;
@@ -40,14 +48,16 @@ public class AuthController {
     @PostMapping("/public/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
         User user = authService.registerUser(request);
-        AuthResponse auth = authService.loginRegisteredUser(user);
+        String refreshToken = jwtUtils.generateRefreshToken(user);
+        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), refreshToken);
         emailVerificationService.generateConfirmEmailToken(user);
 
         ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration, "/");
-        // ResponseCookie refreshCookie = CookieHelper.setCookieHelper(authCookieName,
-        // auth.token(), cookieExpiration,"/api/v1/public/refresh-cookie");
+        ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
+                refreshCookieName, refreshToken, refreshCookieExpiration, "/api/v1/public/refresh-cookie");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(auth);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
+                .body(auth);
     }
 
     @PostMapping("/public/login")
@@ -55,34 +65,37 @@ public class AuthController {
         AuthResponse auth = authService.loginUser(request);
 
         ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration, "/");
-        // ResponseCookie refreshCookie = CookieHelper.setCookieHelper(authCookieName,
-        // auth.token(), cookieExpiration,"/api/v1/public/refresh-cookie");
+        ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
+                refreshCookieName, auth.refreshToken(), refreshCookieExpiration, "/api/v1/public/refresh-cookie");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(auth);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
+                .body(auth);
     }
 
     @PostMapping("/public/logout")
     public ResponseEntity<Void> logout() {
         ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/");
-        // ResponseCookie refreshCookie = CookieHelper.setCookieHelper(authCookieName,
-        // "", 0,"/api/v1/public/refresh-cookie");
+        ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
+                "/api/v1/public/refresh-cookie");
 
         return ResponseEntity.noContent()
-                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())
                 .build();
     }
 
     // refresh-cookie
-    // @PostMapping("/public/refresh-cookie")
-    // public ResponseEntity<AuthResponse> refreshCookie() {
-    // AuthResponse auth = authService.loginUser(new UserLoginRequest(getName(),
-    // ""));
+    @PostMapping("/public/refresh-cookie")
+    public ResponseEntity<String> refreshCookie(
+            @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
-    // ResponseCookie cookie = setCookieHelper(authCookieName, auth.token(),
-    // cookieExpiration, "/");
-    // return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-    // cookie.toString()).body(auth);
-    // }
+        String authToken = authService.refreshAuthToken(refreshToken);
+        ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName,
+                authToken,
+                cookieExpiration, "/");
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+                cookie.toString()).body(authToken);
+    }
 
     // It will be deleted
 

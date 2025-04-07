@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.exceptions.JwtAuthException;
+import emil.find_course.exceptions.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -24,6 +25,19 @@ public class JwtUtils {
 
     @Value("${jwt.authToken.expiration}")
     private int jwtAuthTokenExpirationMs;
+
+    @Value("${jwt.refreshToken.expiration}")
+    private int refreshTokenExpirationMs;
+
+    public String generateRefreshToken(User user) {
+        String email = user.getEmail();
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date().getTime() + refreshTokenExpirationMs)))
+                .signWith(key())
+                .compact();
+    }
 
     public String generateToken(UserDetailsImpl user) {
         String email = user.getUsername();
@@ -69,6 +83,7 @@ public class JwtUtils {
 
     public boolean validateToken(String authToken) {
         try {
+            System.out.println("validate auth token");
             Jwts.parser().verifyWith((SecretKey) key())
                     .build().parseSignedClaims(authToken);
             return true;
@@ -79,6 +94,17 @@ public class JwtUtils {
         } catch (Exception e) {
             throw new RuntimeException("An unexpected problem occured in Jwt filter", e);
         }
+    }
 
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parser().verifyWith((SecretKey) key())
+                    .build().parseSignedClaims(refreshToken);
+            return true;
+        } catch (ExpiredJwtException e) {
+            throw new UnauthorizedException("Refresh token expired");
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid refresh token", e);
+        }
     }
 }

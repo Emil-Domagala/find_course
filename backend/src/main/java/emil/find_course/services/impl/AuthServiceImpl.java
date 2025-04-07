@@ -2,6 +2,7 @@ package emil.find_course.services.impl;
 
 import org.springframework.security.core.Authentication;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +14,12 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
 import emil.find_course.exceptions.FieldValidationException;
+import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.repositories.UserRepository;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.AuthService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -24,10 +27,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    @Value("${jwt.refreshToken.expiration}")
+    private int jwtRefreshTokenExpirationMs;
+
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;;
 
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
@@ -37,9 +43,8 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userPrincipal);
-        String roles = authentication.getAuthorities().toString().replace(" ", "").replace(",", "|");
-
-        return new AuthResponse(token, roles);
+        String refreshToken = jwtUtils.generateRefreshToken(userPrincipal.getUser());
+        return new AuthResponse(token, refreshToken);
     }
 
     @Transactional
@@ -61,12 +66,27 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse loginRegisteredUser(User user) {
-        String token = jwtUtils.generateToken(user);
-        String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).toList().toString()
-                .replace(" ", "").replace(",", "|");
+    public String refreshAuthToken(String recivedRefreshToken) {
+        if (recivedRefreshToken == null) {
+            throw new UnauthorizedException("Didn't recive refresh token");
+        }
+        try {
+            if (!jwtUtils.validateRefreshToken(recivedRefreshToken)) {
+                throw new UnauthorizedException("Invalid refresh token");
+            }
+            String email = jwtUtils.getUserEmailFromJwtToken(recivedRefreshToken);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        return new AuthResponse(token, roles);
+            String newAuthToken = jwtUtils.generateToken(user);
+            return newAuthToken;
+
+        } catch (UnauthorizedException ex) {
+            throw new UnauthorizedException(ex.getMessage());
+        } catch (EntityNotFoundException ex) {
+            throw new UnauthorizedException(ex.getMessage());
+        } catch (Exception ex) {
+            throw new UnauthorizedException("Invalid refresh token", ex);
+        }
     }
-
 }
