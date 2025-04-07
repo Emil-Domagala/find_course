@@ -2,7 +2,6 @@ package emil.find_course.security;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +15,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import emil.find_course.exceptions.JwtAuthException;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.security.jwt.UserDetailsImpl;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -29,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Value("${cookie.auth.name}")
-    private String cookieName;
+    @Value("${cookie.auth.authToken.name}")
+    private String authCookieName;
 
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
@@ -41,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("In JWT FILTER");
+
         // Ignore public routes
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/api/v1/public/")) {
@@ -56,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals(cookieName)) {
+                    if (cookie.getName().equals(authCookieName)) {
                         token = cookie.getValue();
                         break;
                     }

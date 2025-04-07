@@ -7,11 +7,10 @@ import emil.find_course.domains.requestDto.UserRegisterRequest;
 
 public interface AuthService {
 
-    public AuthResponse registerUser(UserRegisterRequest userRegisterRequest);
+    public User registerUser(UserRegisterRequest userRegisterRequest);
 
     public AuthResponse loginUser(UserLoginRequest userLoginRequest);
 
-    public AuthResponse validateEmail(User user, String token);
+    public AuthResponse loginRegisteredUser(User user);
 
-    public void resendConfirmEmail(User user);
 }

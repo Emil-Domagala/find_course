@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import emil.find_course.domains.entities.user.User;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,19 +12,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "validate_email_ott")
-public class ConfirmEmailOTT {
+@Table(name = "refresh_token")
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,10 +34,10 @@ public class ConfirmEmailOTT {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(nullable = false, length = 6)
+
+    @Column(nullable = false, length = 24)
     private String token;
 
     @Column(nullable = false)
     private Instant expiration;
-
 }

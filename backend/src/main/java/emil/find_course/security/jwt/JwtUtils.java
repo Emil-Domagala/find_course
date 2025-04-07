@@ -22,8 +22,8 @@ public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
-    private int jwtExpirationMs;
+    @Value("${jwt.authToken.expiration}")
+    private int jwtAuthTokenExpirationMs;
 
     public String generateToken(UserDetailsImpl user) {
         String email = user.getUsername();
@@ -35,7 +35,7 @@ public class JwtUtils {
                 .subject(email)
                 .claim("roles", roles)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + jwtExpirationMs)))
+                .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
                 .signWith(key())
                 .compact();
     }
@@ -51,7 +51,7 @@ public class JwtUtils {
                 .claim("isEmailVerified",
                         isVerified)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + jwtExpirationMs)))
+                .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
                 .signWith(key())
                 .compact();
     }

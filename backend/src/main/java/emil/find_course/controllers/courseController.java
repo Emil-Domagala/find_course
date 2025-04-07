@@ -72,7 +72,6 @@ public class CourseController {
             sortField = "createdAt";
         }
 
-        System.out.println("Fetching data");
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
         final PagingResult<CourseDto> courses = courseService.searchCourses(keyword, category, request);
         return ResponseEntity.ok(courses);
