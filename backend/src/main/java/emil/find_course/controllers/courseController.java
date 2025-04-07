@@ -1,7 +1,6 @@
 package emil.find_course.controllers;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Sort;

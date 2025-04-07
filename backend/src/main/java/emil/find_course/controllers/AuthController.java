@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.domains.dto.AuthResponse;
+import emil.find_course.domains.requestDto.RequestConfirmEmailOTT;
 import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
 import emil.find_course.services.AuthService;
@@ -69,6 +70,24 @@ public class AuthController {
                         deleteRoleCookie.toString())
                 .build();
     }
+
+    // Confirm Email
+
+    @PostMapping("/confirm-email")
+    public ResponseEntity<Void> confirmEmail(Principal principal,
+            @Validated @RequestBody RequestConfirmEmailOTT token) {
+
+        System.out.println(token);
+        authService.validateEmail(userService.findByEmail(principal.getName()), token.getToken());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/confirm-email/resend")
+    public ResponseEntity<Void> resendConfirmEmail(Principal principal) {
+        authService.resendConfirmEmail(userService.findByEmail(principal.getName()));
+        return ResponseEntity.noContent().build();
+    }
+    
 
     @PostMapping("/get-roles")
     public ResponseEntity<String> getRoles(Principal principal) {

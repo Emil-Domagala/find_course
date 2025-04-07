@@ -2,8 +2,6 @@ package emil.find_course.security;
 
 import java.io.IOException;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,12 +31,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
-
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
+    HttpServletResponse response,
+    FilterChain filterChain)
+    throws ServletException, IOException {
+                System.out.println("In JWT FILTER");
         // Ignore public routes
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/api/v1/public/")) {
@@ -63,18 +62,6 @@ public class JwtFilter extends OncePerRequestFilter {
             if (token != null && jwtUtils.validateToken(token)) {
                 String email = jwtUtils.getUserEmailFromJwtToken(token);
                 UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
-                // boolean isEmailVerified = jwtUtils.getIsEmailVerifiedFromJwtToken(token);
-
-                System.out.println("In JWT FILTER");
-                // System.out.println(email);
-                // System.out.println(userDetails.isEmailVerified());
-                // System.out.println(userDetails);
-                // System.out.println(isEmailVerified);
-
-                // if (!requestURI.contains("confirm-email") && !isEmailVerified) {
-                // response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                // return;
-                // }
 
                 if (userDetails != null) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

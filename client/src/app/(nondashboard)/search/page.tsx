@@ -1,7 +1,6 @@
 'use client';
 
 import DisplayCourses from '@/components/NonDashboard/Search/DisplayCourses';
-import PageSize from '@/components/NonDashboard/Search/PageSize';
 import Pagination from '@/components/NonDashboard/Search/Pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

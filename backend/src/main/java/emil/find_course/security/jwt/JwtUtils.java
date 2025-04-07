@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
-import javax.security.sasl.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -74,16 +73,18 @@ public class JwtUtils {
             return true;
         } catch (ExpiredJwtException e) {
             System.out.println("ExpiredJwtException in Jwt Utils");
-            throw new ExpiredJwtException(null, null, "JWT token has expired!");
+            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), e.getMessage());
+            // throw new JwtAuthException("JWT token has expired!", e);
         } catch (JwtException e) {
             System.out.println("JwtException in Jwt Utils");
-            throw new JwtException("JWT token has expired");
+            throw new JwtException("JWT token is invalid", e);
         } catch (IllegalArgumentException e) {
             System.out.println("IllegalArgumentException in Jwt filter");
-            throw new IllegalArgumentException("Invalid token");
+            throw new IllegalArgumentException("Invalid token format", e);
         } catch (Exception e) {
             System.out.println("RuntimeException in Jwt filter");
             throw new RuntimeException(e);
         }
+
     }
 }

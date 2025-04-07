@@ -3,7 +3,6 @@ package emil.find_course.security;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,17 +24,16 @@ public class EmailVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-        String requestURI = request.getRequestURI();
-        System.out.println("doFilterInternal-EmailVerificationFilter");
+        System.out.println("In EmailVerificationFilter");
 
         // Skip public and verify email
-        if (requestURI.startsWith("/api/v1/public/") || requestURI.startsWith("/api/v1/confirm-email/")) {
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/api/v1/public/") || requestURI.contains("confirm-email")) {
             filterChain.doFilter(request, response);
             return;
         }
+        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
 
         if (!userDetailsImpl.isEmailVerified()) {
             System.out.println("EMAIL NOT VERIFIED");

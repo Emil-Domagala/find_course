@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.domains.dto.ApiErrorResponse;
 import emil.find_course.exceptions.FieldValidationException;
+import emil.find_course.security.jwt.JwtAuthException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,8 +37,18 @@ public class ErrorController {
         }
 
         // Auth
+
+        @ExceptionHandler(JwtAuthException.class)
+        public ResponseEntity<Object> handleJwtAuthException(JwtAuthException ex) {
+                ApiErrorResponse errorResponse = new ApiErrorResponse();
+                errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                errorResponse.setMessage(ex.getMessage());
+
+                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        }
+
         @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
-        public ResponseEntity<ApiErrorResponse> handAuthException(BadCredentialsException ex) {
+        public ResponseEntity<ApiErrorResponse> handAuthException(RuntimeException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
                                 .message("Email or password is incorrect").build();
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
@@ -48,15 +59,6 @@ public class ErrorController {
         public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
                                 .message("Access Denied").build();
-                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
-
-        }
-
-        @ExceptionHandler({ ExpiredJwtException.class, JwtException.class })
-        public ResponseEntity<ApiErrorResponse> handleExpiredJwtException(ExpiredJwtException ex) {
-                System.out.println("Jwt excp");
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
-                                .message("Your auth token expired. Please log in again.").build();
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 
         }
@@ -72,6 +74,13 @@ public class ErrorController {
 
         @ExceptionHandler(IllegalStateException.class)
         public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
