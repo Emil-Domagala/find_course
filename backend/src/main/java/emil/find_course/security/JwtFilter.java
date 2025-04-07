@@ -2,6 +2,7 @@ package emil.find_course.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import emil.find_course.exceptions.JwtAuthException;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.security.jwt.UserDetailsImpl;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,13 +34,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
-    
+    private final HandlerExceptionResolver exceptionResolver;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-    HttpServletResponse response,
-    FilterChain filterChain)
-    throws ServletException, IOException {
-                System.out.println("In JWT FILTER");
+            HttpServletResponse response,
+            FilterChain filterChain)
+            throws ServletException, IOException {
+        System.out.println("In JWT FILTER");
         // Ignore public routes
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/api/v1/public/")) {
@@ -74,18 +78,18 @@ public class JwtFilter extends OncePerRequestFilter {
             } else {
 
                 System.out.println("ELSE IN JWT FILTER");
-                throw new JwtException("Invalid or expired token.");
+                exceptionResolver.resolveException(request, response, null,
+                        new JwtAuthException("Invalid or expired token."));
+                return;
             }
-        } catch (ExpiredJwtException e) {
-            // e.printStackTrace();
-            System.out.println("Expired JWT EXCEPTION");
-            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), e.getMessage());
-        } catch (JwtException e) {
-            System.out.println("JWT EXCEPTION ");
-
+        } catch (JwtAuthException e) {
+            System.out.println("JwtAuthException EXCEPTION");
+            exceptionResolver.resolveException(request, response, null, e);
+            return;
         } catch (Exception e) {
-            System.out.println("Exception in JWT FILTER");
-            e.printStackTrace();
+            System.out.println("unknown Exception in JWT FILTER");
+            exceptionResolver.resolveException(request, response, null, e);
+            return;
         }
 
         filterChain.doFilter(request, response);

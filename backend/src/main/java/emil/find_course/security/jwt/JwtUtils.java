@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.exceptions.JwtAuthException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -72,18 +73,11 @@ public class JwtUtils {
                     .build().parseSignedClaims(authToken);
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("ExpiredJwtException in Jwt Utils");
-            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), e.getMessage());
-            // throw new JwtAuthException("JWT token has expired!", e);
+            throw new JwtAuthException("JWT token has expired!", e);
         } catch (JwtException e) {
-            System.out.println("JwtException in Jwt Utils");
-            throw new JwtException("JWT token is invalid", e);
-        } catch (IllegalArgumentException e) {
-            System.out.println("IllegalArgumentException in Jwt filter");
-            throw new IllegalArgumentException("Invalid token format", e);
+            throw new JwtAuthException("JWT token exception!", e);
         } catch (Exception e) {
-            System.out.println("RuntimeException in Jwt filter");
-            throw new RuntimeException(e);
+            throw new RuntimeException("An unexpected problem occured in Jwt filter", e);
         }
 
     }

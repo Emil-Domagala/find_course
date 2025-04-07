@@ -1,4 +1,4 @@
-package emil.find_course.security.jwt;
+package emil.find_course.exceptions;
 
 public class JwtAuthException extends RuntimeException {
     public JwtAuthException(String message) {

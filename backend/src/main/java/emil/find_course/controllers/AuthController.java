@@ -2,7 +2,6 @@ package emil.find_course.controllers;
 
 import java.security.Principal;
 
-import org.apache.tomcat.util.http.SameSiteCookies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -74,12 +73,12 @@ public class AuthController {
     // Confirm Email
 
     @PostMapping("/confirm-email")
-    public ResponseEntity<Void> confirmEmail(Principal principal,
+    public ResponseEntity<AuthResponse> confirmEmail(Principal principal,
             @Validated @RequestBody RequestConfirmEmailOTT token) {
 
-        System.out.println(token);
-        authService.validateEmail(userService.findByEmail(principal.getName()), token.getToken());
-        return ResponseEntity.noContent().build();
+        AuthResponse auth = authService.validateEmail(userService.findByEmail(principal.getName()), token.getToken());
+        ResponseCookie cookie = setCookieHelper(authCookieName, auth.token(), cookieExpiration);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(auth);
     }
 
     @PostMapping("/confirm-email/resend")
@@ -87,7 +86,6 @@ public class AuthController {
         authService.resendConfirmEmail(userService.findByEmail(principal.getName()));
         return ResponseEntity.noContent().build();
     }
-    
 
     @PostMapping("/get-roles")
     public ResponseEntity<String> getRoles(Principal principal) {

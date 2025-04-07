@@ -1,5 +1,7 @@
 package emil.find_course.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import emil.find_course.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,11 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver exceptionResolver;
+
     // private final CorsConfig corsConfig;
 
     @Bean
@@ -36,7 +44,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/public/**").permitAll()
                 .anyRequest().authenticated());
-        // http.exceptionHandling(ex -> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
         http.authenticationProvider(authProvider());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -64,12 +71,12 @@ public class SecurityConfig {
 
     @Bean
     public JwtFilter jwtFilter() {
-        return new JwtFilter(jwtUtils, userDetailsService);
+        return new JwtFilter(jwtUtils, userDetailsService, exceptionResolver);
     }
 
     @Bean
     public EmailVerificationFilter emailVerificationFilter() {
-        return new EmailVerificationFilter();
+        return new EmailVerificationFilter(exceptionResolver);
     }
 
 }

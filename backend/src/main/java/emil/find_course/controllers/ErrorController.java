@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.domains.dto.ApiErrorResponse;
+import emil.find_course.exceptions.EmailConfirmException;
 import emil.find_course.exceptions.FieldValidationException;
-import emil.find_course.security.jwt.JwtAuthException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
+import emil.find_course.exceptions.JwtAuthException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,11 +39,10 @@ public class ErrorController {
 
         @ExceptionHandler(JwtAuthException.class)
         public ResponseEntity<Object> handleJwtAuthException(JwtAuthException ex) {
-                ApiErrorResponse errorResponse = new ApiErrorResponse();
-                errorResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                errorResponse.setMessage(ex.getMessage());
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(HttpStatus.FORBIDDEN.value()).message(ex.getMessage()).build();
 
-                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
 
         @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
@@ -57,9 +55,17 @@ public class ErrorController {
 
         @ExceptionHandler(AccessDeniedException.class)
         public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
                                 .message("Access Denied").build();
-                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+
+        }
+
+        @ExceptionHandler(EmailConfirmException.class)
+        public ResponseEntity<ApiErrorResponse> handAccesDenied(EmailConfirmException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 
         }
 
