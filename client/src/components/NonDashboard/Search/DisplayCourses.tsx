@@ -1,3 +1,4 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import CourseCardSearch, { CourseCardSearchSkeleton } from '../CourseCardSearch';
 
 type Props = { isLoading: boolean; coursesPage?: Page<CourseDto>; size: number };
@@ -9,6 +10,15 @@ export const DisplayCoursesSkeleton = ({ size }: { size: number }) => {
         <CourseCardSearchSkeleton key={index} />
       ))}
     </div>
+  );
+};
+
+export const DisplayCoursesHeadingSkele = () => {
+  return (
+    <>
+      <Skeleton className="w-72 h-8 mb-2 mt-14" />
+      <Skeleton className="w-32 h-4 mb-5" />
+    </>
   );
 };
 
@@ -31,7 +41,7 @@ const DisplayCourses = ({ isLoading, coursesPage, size }: Props) => {
               </div>
             ))
           ) : (
-            <p className="mx-auto text-lg text-gray-400">There are no courses yet</p>
+            <p className="mx-auto h-full text-lg text-gray-400 mt-5 mb-10">There are no courses yet</p>
           )}
         </div>
       ) : (

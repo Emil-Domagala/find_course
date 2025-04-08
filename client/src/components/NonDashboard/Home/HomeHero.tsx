@@ -10,9 +10,9 @@ export const HomeHeroSkeleton = () => {
   return (
     <div className="mt-12 flex h-[500px] items-center justify-between rounded-lg bg-customgreys-secondarybg">
       <div className="mx-auto basis-1/2 px-16">
-        <Skeleton className="mb-4 h-8 w-48"></Skeleton>
-        <Skeleton className="mb-2 h-4 w-96"></Skeleton>
-        <Skeleton className="mb-8 h-4 w-72"></Skeleton>
+        <Skeleton className="mb-4 h-10 w-44"></Skeleton>
+        <Skeleton className="mb-8 h-40 w-full md:mb-2 md:h-4 md:w-96"></Skeleton>
+        <Skeleton className="mb-8 hidden md:block md:h-4 md:w-72"></Skeleton>
         <Skeleton className="h-10 w-40"></Skeleton>
       </div>
       <Skeleton className="h-full basis-1/2 rounded-r-lg"></Skeleton>
@@ -37,7 +37,7 @@ const HomeHero = () => {
           Everyday learn something new!
         </p>
         <Link href={'/search'}>
-          <div className="w-fit rounded-md bg-primary-700 px-4 py-2 duration-300 hover:bg-primary-600">
+          <div className="w-fit text-center rounded-md bg-primary-700 px-4 py-2 duration-300 hover:bg-primary-600">
             Search for courses
           </div>
         </Link>
