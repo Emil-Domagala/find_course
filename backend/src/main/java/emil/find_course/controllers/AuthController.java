@@ -70,7 +70,12 @@ public class AuthController {
                                 "/");
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/api/v1/public/refresh-cookie");
+                                "/api/v1/public/refresh-token");
+
+                System.out.println("refreshCookie:");
+                System.out.println(refreshCookie.toString());
+                System.out.println("AuthCookie:");
+                System.out.println(cookie.toString());
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(auth);

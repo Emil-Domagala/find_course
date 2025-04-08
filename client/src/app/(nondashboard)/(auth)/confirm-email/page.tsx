@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from '@/state/api';
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 import { useState } from 'react';
 
@@ -9,8 +10,15 @@ const ConfirmEmailPage = () => {
   const [showInputs, setShowInputs] = useState(true);
   const [message, setMessage] = useState('Request Send');
 
-  const handleVerifyEmail = (args: string) => {
+  const [confirmEmail] = useConfirmEmailMutation();
+  const [resendConfirmEmail] = useResendConfirmEmailTokenMutation();
+  const handleVerifyEmail = async (args: string) => {
     setShowInputs(false);
+    try {
+      await confirmEmail(args);
+    } catch (err) {
+      console.log(err);
+    }
     console.log(args);
   };
 
@@ -38,6 +46,7 @@ const ConfirmEmailPage = () => {
       <div className="mx-auto mt-10">
         <span className="text-md ">Didn&apos;t recive an email? </span>
         <Button
+          onClick={resendConfirmEmail}
           variant="link"
           className="text-primary-750 hover:text-primary-600 text-md transition-colors duration-300">
           Resend

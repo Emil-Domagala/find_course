@@ -4,8 +4,30 @@ import { UserLoginRequest } from '@/types/auth';
 import { CourseCategory } from '@/types/courses-enum';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+  credentials: 'include',
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraOptions: any) => {
+  let result = await baseQuery(args, api, extraOptions);
+
+  if (result?.error?.status === 403) {
+    console.log('SENDED REFRESH');
+    const refreshResult = await baseQuery('/public/refresh-cookie', api, extraOptions);
+    if (refreshResult.data) {
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+
+      api.logout();
+    }
+  }
+  return result;
+};
+
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL, credentials: 'include' }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['CourseDtos'],
   endpoints: (build) => ({
     // *******************

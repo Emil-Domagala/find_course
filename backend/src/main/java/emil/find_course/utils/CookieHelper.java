@@ -15,10 +15,10 @@ public class CookieHelper {
         return ResponseCookie.from(cookieName, value)
                 .httpOnly(true)
                 .secure(true)
-                // .domain(frontendDomain)
+                .domain(frontendDomain)
                 .sameSite("Strict")
                 .path(path)
-                .maxAge(maxAge)
+                .maxAge(maxAge / 1)
                 .build();
     }
 }
