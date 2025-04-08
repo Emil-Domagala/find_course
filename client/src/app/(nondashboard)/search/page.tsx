@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SearchDirection, SearchField, useSearchFilters } from '@/hooks/useSearchFilters';
 import { transformKey, transformToFrontendFormat } from '@/lib/utils';
-import { useGetCoursesPublicQuery } from '@/state/api';
+import { useLazyGetCoursesPublicQuery } from '@/state/api';
 import { CourseCategory } from '@/types/courses-enum';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectViewport } from '@radix-ui/react-select';
+import { useEffect } from 'react';
 
 const SearchPage = () => {
   const {
@@ -26,21 +27,14 @@ const SearchPage = () => {
     setCategory,
   } = useSearchFilters();
 
-  const {
-    data: coursesPage,
-    isLoading,
-    refetch,
-  } = useGetCoursesPublicQuery(
-    {
-      size,
-      page,
-      sortField,
-      direction,
-      keyword,
-      category,
-    },
-    { skip: true },
-  );
+  const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesPublicQuery();
+
+  const handleFetchCourses = () => {
+    return fetchCourses({ page, size, sortField, direction, keyword, category });
+  };
+  useEffect(() => {
+    handleFetchCourses();
+  }, []);
 
   const label = 'text-sm mb-1';
   const itemContainer = 'w-fit';
@@ -141,7 +135,7 @@ const SearchPage = () => {
             </div>
 
             {/* Apply */}
-            <Button variant="primary" className="h-12 text-md" onClick={refetch}>
+            <Button variant="primary" className="h-12 text-md" onClick={handleFetchCourses}>
               Search
             </Button>
           </div>

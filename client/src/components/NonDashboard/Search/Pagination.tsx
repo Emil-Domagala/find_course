@@ -21,15 +21,21 @@ const Pagination = ({ setPage, page, coursesPage }: Props) => {
       )}
       {/* Current Page */}
       <Button variant="outline">{page + 1}</Button>
-      {coursesPage?.totalPages && page < coursesPage?.totalPages - 1 && (
-        <>
-          <span>...</span>
-          <Button onClick={() => setPage(coursesPage?.totalPages - 1)}>{coursesPage?.totalPages}</Button>
-          <Button onClick={() => setPage((prev) => prev + 1)}>
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </>
+      {coursesPage?.totalPages ? (
+        page < coursesPage?.totalPages - 1 ? (
+          <>
+            <span>...</span>
+            <Button onClick={() => setPage(coursesPage?.totalPages - 1)}>{coursesPage?.totalPages}</Button>
+            <Button onClick={() => setPage((prev) => prev + 1)}>
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          ''
+        )
+      ) : (
+        ''
       )}
     </div>
   );
