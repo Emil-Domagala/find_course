@@ -33,14 +33,13 @@ public class SecurityConfig {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver exceptionResolver;
 
-    // private final CorsConfig corsConfig;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(customizer -> customizer.disable());
-        // http.addFilterBefore(corsConfig.corsFilter(),
-        // UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/public/**").permitAll()
                 .anyRequest().authenticated());

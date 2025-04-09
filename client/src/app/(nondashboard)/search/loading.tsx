@@ -1,5 +1,5 @@
 import { DisplayCoursesHeadingSkele, DisplayCoursesSkeleton } from '@/components/NonDashboard/Search/DisplayCourses';
-import { FilterSkeleton } from './FilterSkeleton';
+import { FilterSkeleton } from '../../../components/Common/Filter/FilterSkeleton';
 
 const LoadingSearchPage = () => {
   return (

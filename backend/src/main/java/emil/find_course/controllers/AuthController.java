@@ -97,6 +97,8 @@ public class AuthController {
         public ResponseEntity<String> refreshCookie(
                         @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
+                System.out.println(refreshToken);
+
                 String authToken = authService.refreshAuthToken(refreshToken);
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
 

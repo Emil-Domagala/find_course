@@ -23,12 +23,22 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
 
         @Query("SELECT c FROM Course c WHERE " +
                         "c.status = :status AND (" +
-                        "LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')) AND " +
                         "(COALESCE(:category, NULL) IS NULL OR c.category = :category))")
         Page<Course> searchCourses(
                         @Param("keyword") String keyword,
                         @Param("status") CourseStatus status,
                         @Param("category") CourseCategory category,
+                        Pageable pageable);
+
+        @Query("SELECT c FROM Course c WHERE " +
+                        "c.teacher.id = :teacherId AND " +
+                        "(LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR :keyword IS NULL) AND " +
+                        "(COALESCE(:category, NULL) IS NULL OR c.category = :category)")
+        Page<Course> searchTeacherCourses(
+                        @Param("keyword") String keyword,
+                        @Param("category") CourseCategory category,
+                        @Param("teacherId") UUID teacherId,
                         Pageable pageable);
 
         Course findByIdAndStatus(UUID id, CourseStatus status);

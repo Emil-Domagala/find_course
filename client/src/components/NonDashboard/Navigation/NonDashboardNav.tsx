@@ -1,20 +1,20 @@
-
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import AuthButtons from './AuthButtons';
-import SearchButton from './SearchButton';
+import SearchButton from '../../Common/Navigation/SearchButton';
+import { jwtDecode } from 'jwt-decode';
 
 const NonDashboardNav = async () => {
   const cookieStore = await cookies();
 
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
-  // const userRole = [];
-  // try {
-  //   const decoded = jwtDecode(authToken!) as any;
-  //   userRole.push(decoded.roles);
-  // } catch (err) {
-  //   console.error('JWT Verification Failed:', err);
-  // }
+  const userRole = [];
+  try {
+    const decoded = jwtDecode(authToken!) as any;
+    userRole.push(decoded.roles);
+  } catch (err) {
+    console.error('JWT Verification Failed:', err);
+  }
 
   return (
     <nav className="w-full bg-customgreys-primarybg">
@@ -28,6 +28,7 @@ const NonDashboardNav = async () => {
           </Link>
           <SearchButton />
         </div>
+        <Link href={'/user/profile'}>Your profile</Link>
         <AuthButtons authToken={!!authToken} />
       </div>
     </nav>

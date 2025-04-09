@@ -15,11 +15,11 @@ import lombok.Data;
 public class RequestCourseBody {
 
     @NotBlank(message = "Title is required")
-    @Size(min = 3, max = 30, message = "Title must be between {min} and {max} characters")
+    @Size(min = 3, max = 50, message = "Title must be between {min} and {max} characters")
     private String title;
 
     @NotBlank(message = "Description is required")
-    @Size(min = 3, max = 255, message = "Description must be between {min} and {max} characters")
+    @Size(min = 3, max = 500, message = "Description must be between {min} and {max} characters")
     private String description;
 
     @NotNull

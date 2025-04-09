@@ -22,13 +22,16 @@ type Props = { authToken?: string };
 
 const navLinks = {
   user: [
-    { icon: BookOpen, label: 'Courses', href: '/dashboard/user/courses' },
-    { icon: User, label: 'Profile', href: '/dashboard/user/profile' },
-    { icon: Settings, label: 'Settings', href: '/dashboard/user/settings' },
-    { icon: BookOpen, label: 'Become Teacher', href: '/dashboard/user/become-teacher' },
+    { icon: BookOpen, label: 'Courses', href: '/user/courses' },
+    { icon: User, label: 'Profile', href: '/user/profile' },
+    { icon: Settings, label: 'Settings', href: '/user/settings' },
+    { icon: BookOpen, label: 'Become Teacher', href: '/user/become-teacher' },
   ],
-  teacher: [{ icon: NotebookPen, label: 'My courses', href: '/dashboard/teacher/courses' }],
-  admin: [{ icon: UserRoundPlus, label: 'New Teachers', href: '/dashboard/admin/teacher-requests' }],
+  teacher: [
+    { icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' },
+    { icon: NotebookPen, label: 'Create courses', href: '/teacher/courses/create' },
+  ],
+  admin: [{ icon: UserRoundPlus, label: 'New Teachers', href: '/admin/teacher-requests' }],
 };
 
 const AppSidebar = ({ authToken }: Props) => {

@@ -21,6 +21,9 @@ public interface CourseService {
 
     Course createCourse(RequestCourseBody requestCourseBody, User teacher);
 
+    PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category, PaginationRequest request,
+            User teacher);
+
     // Course updateCourse(RequestCourseBody requestCourseBody, User teacher);
 
     UUID deleteCourse(UUID id, UUID teacherId);

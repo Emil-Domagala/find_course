@@ -6,7 +6,7 @@ type Props = { setPage: React.Dispatch<SetStateAction<number>>; page: number; co
 
 const Pagination = ({ setPage, page, coursesPage }: Props) => {
   return (
-    <div className="flex flex-row gap-2 justify-center">
+    <div className="flex flex-row gap-2 justify-center py-4">
       {page != 0 && (
         <Button onClick={() => setPage((prev) => prev - 1)}>
           <ChevronLeft className="h-4 w-4" />

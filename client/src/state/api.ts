@@ -3,6 +3,7 @@ import { UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CourseCategory } from '@/types/courses-enum';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { get } from 'http';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -15,12 +16,25 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
   if (result?.error?.status === 403) {
     console.log('SENDED REFRESH');
-    const refreshResult = await baseQuery('/public/refresh-cookie', api, extraOptions);
+    const refreshResult = await baseQuery(
+      {
+        url: '/public/refresh-token',
+        method: 'POST',
+      },
+      api,
+      extraOptions,
+    );
     if (refreshResult.data) {
       result = await baseQuery(args, api, extraOptions);
     } else {
-
-      api.logout();
+      await baseQuery(
+        {
+          url: 'public/logout',
+          method: 'POST',
+        },
+        api,
+        extraOptions,
+      );
     }
   }
   return result;
@@ -106,6 +120,27 @@ export const api = createApi({
     // *******************
     // --Private Courses--
     // *******************
+
+    // *****************
+    // -----Teacher-----
+    // *****************
+    getCoursesTeacher: build.query<
+      Page<CourseDto>,
+      {
+        page?: number;
+        size?: number;
+        sortField?: SearchField | '';
+        direction?: SearchDirection;
+        keyword?: string;
+        category?: CourseCategory | '';
+      }
+    >({
+      query: ({ page, size, sortField, direction, keyword = '', category }) => ({
+        url: 'teacher/courses',
+        params: { page, size, sortField, direction, keyword, category },
+      }),
+      providesTags: (result) => result?.content.map((course) => ({ type: 'CourseDtos', courseId: course.id })) || [],
+    }),
   }),
 });
 
@@ -118,4 +153,5 @@ export const {
   useRegisterMutation,
   useConfirmEmailMutation,
   useResendConfirmEmailTokenMutation,
+  useLazyGetCoursesTeacherQuery,
 } = api;

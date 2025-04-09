@@ -42,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
+        System.out.println(category);
         final Page<Course> courses = courseRepository.searchCourses(keyword, CourseStatus.PUBLISHED, category,
                 pageable);
         final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
@@ -69,6 +70,24 @@ public class CourseServiceImpl implements CourseService {
                 .level(requestCourseBody.getLevel()).status(requestCourseBody.getStatus()).build();
 
         return courseRepository.save(course);
+    }
+
+    @Override
+    public PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category,
+            PaginationRequest request, User teacher) {
+        final Pageable pageable = PaginationUtils.getPageable(request);
+        System.out.println(teacher.getId());
+        final Page<Course> courses = courseRepository.searchTeacherCourses(keyword, category,
+                teacher.getId(), pageable);
+        final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
+
+        return new PagingResult<CourseDto>(
+                coursesDto,
+                courses.getTotalPages(),
+                courses.getTotalElements(),
+                courses.getSize(),
+                courses.getNumber(),
+                courses.isEmpty());
     }
 
     // @Override

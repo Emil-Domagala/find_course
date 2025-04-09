@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from './types/auth';
 
 const notLoggedIn = '/auth';
-const reqLoggedIn = '/dashboard';
+const reqUser = '/user';
 const reqTeacher = '/teacher';
 const reqAdmin = '/admin';
 
@@ -18,12 +18,17 @@ export async function middleware(req: NextRequest) {
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME)?.value;
 
   // protect dashboard
-  if (!authToken && req.nextUrl.pathname.includes(reqLoggedIn))
+  if (
+    !authToken &&
+    (req.nextUrl.pathname.includes(reqUser) ||
+      req.nextUrl.pathname.includes(reqTeacher) ||
+      req.nextUrl.pathname.includes(reqAdmin))
+  )
     return NextResponse.redirect(new URL('/auth/login', req.url));
 
-  // protect auth
+  // redirect auth users from auth
   if (authToken && req.nextUrl.pathname.includes(notLoggedIn))
-    return NextResponse.redirect(new URL('/dashboard', req.url));
+    return NextResponse.redirect(new URL('/user/courses', req.url));
 
   // Do nothing if public routes
   if (!authToken) return NextResponse.next();
@@ -33,11 +38,11 @@ export async function middleware(req: NextRequest) {
 
   // Protect teacher routes
   if (req.nextUrl.pathname.includes(reqTeacher) && !decoded.roles.includes('TEACHER'))
-    return NextResponse.redirect(new URL('/dashboard', req.url)); //Or not auth
+    return NextResponse.redirect(new URL('/user/courses', req.url)); //Or not auth
 
   // Protect admin routes
   if (req.nextUrl.pathname.includes(reqAdmin) && !decoded.roles.includes('ADMIN'))
-    return NextResponse.redirect(new URL('/dashboard', req.url)); //Or not auth
+    return NextResponse.redirect(new URL('/user/courses', req.url)); //Or not auth
 
   // save switch it should be never reached
   return NextResponse.next();

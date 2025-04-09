@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -90,7 +91,8 @@ public class CourseController {
     // **************************
 
     // Create course
-    @PostMapping("/courses")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @PostMapping("/teacher/courses")
     public ResponseEntity<?> postCourse(Principal principal,
             @Validated @RequestBody RequestCourseBody requestCourseBody) {
 
@@ -101,6 +103,26 @@ public class CourseController {
 
         return ResponseEntity.ok(course);
 
+    }
+
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @GetMapping("/teacher/courses")
+    public ResponseEntity<PagingResult<CourseDto>> getTeacherCourses(Principal principal,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortField,
+            @RequestParam(required = false) Sort.Direction direction,
+            @RequestParam(required = false) CourseCategory category,
+            @RequestParam(required = false) String keyword) {
+        if (sortField == null) {
+            sortField = "createdAt";
+        }
+
+        final User user = userService.findByEmail(principal.getName());
+        final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
+        final PagingResult<CourseDto> courses = courseService.searchTeacherCourses(keyword, category,
+                request, user);
+        return ResponseEntity.ok(courses);
     }
 
     // Update course
@@ -125,7 +147,7 @@ public class CourseController {
     // **************************
 
     // Show enrolled courses
-    @GetMapping("/{userId}/courses")
+    @GetMapping("/user/courses")
     public ResponseEntity<PagingResult<CourseDto>> getUserEnrolledCourses(Principal principal,
             @PathVariable UUID userId,
             @RequestParam(required = false) Integer page,
