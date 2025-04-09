@@ -1,22 +1,10 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { useLogoutMutation } from '@/state/api';
-import { Loader } from 'lucide-react';
+import UserButton from '@/components/Common/Navigation/UserButton';
+import { AuthToken } from '@/types/auth';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const buttonsBasic = `text-md py-2 px-4 rounded-lg text-white-50 font-semibold duration-300 transition-colors`;
 
-const AuthButtons = ({ authToken }: { authToken: boolean }) => {
-  const router = useRouter();
-  const [logoutUser, { isLoading }] = useLogoutMutation();
-
-  const handleLogout = async () => {
-    await logoutUser({});
-    router.push('/');
-    router.refresh();
-  };
-
+const AuthButtons = ({ authToken }: { authToken?: AuthToken }) => {
   return (
     <>
       {!authToken ? (
@@ -33,11 +21,7 @@ const AuthButtons = ({ authToken }: { authToken: boolean }) => {
           </Link>
         </div>
       ) : (
-        <form action={handleLogout}>
-          <Button variant={'secondary'} className={`${buttonsBasic} `} disabled={isLoading}>
-            {isLoading ? <Loader size={20} className="animate-[spin_2s_linear_infinite]" /> : 'Logout'}
-          </Button>
-        </form>
+        <UserButton authToken={authToken} />
       )}
     </>
   );

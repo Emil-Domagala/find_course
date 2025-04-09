@@ -3,15 +3,15 @@ import SearchButton from '../../Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { AuthToken } from '@/types/auth';
+import UserButton from '@/components/Common/Navigation/UserButton';
 
 const DashboardNav = async () => {
   const cookieStore = await cookies();
 
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
-  const userRole = [];
+  let decoded;
   try {
-    const decoded = jwtDecode(authToken!) as AuthToken;
-    userRole.push(decoded.roles);
+    decoded = jwtDecode(authToken!) as AuthToken;
   } catch (err) {
     console.error('JWT Verification Failed:', err);
   }
@@ -25,6 +25,11 @@ const DashboardNav = async () => {
           </div>
           <SearchButton className="bg-customgreys-primarybg" />
         </div>
+        <UserButton
+          authToken={decoded}
+          className="bg-customgreys-primarybg"
+          classNamePopover="bg-customgreys-primarybg hover:bg-customgreys-primarybg/50"
+        />
       </div>
     </nav>
   );

@@ -3,7 +3,6 @@ import { UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CourseCategory } from '@/types/courses-enum';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { get } from 'http';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -47,6 +46,12 @@ export const api = createApi({
     // *******************
     // -------AUTH--------
     // *******************
+    refetchToken: build.mutation({
+      query: () => ({
+        url: 'public/refresh-token',
+        method: 'POST',
+      }),
+    }),
 
     // LOGIN
     login: build.mutation({
@@ -141,10 +146,15 @@ export const api = createApi({
       }),
       providesTags: (result) => result?.content.map((course) => ({ type: 'CourseDtos', courseId: course.id })) || [],
     }),
+    // create mock course
+    createCourse: build.mutation<CourseDto, void>({
+      query: () => ({ url: 'teacher/courses', method: 'POST' }),
+    }),
   }),
 });
 
 export const {
+  useRefetchTokenMutation,
   useGetCoursesPublicQuery,
   useLazyGetCoursesPublicQuery,
   useGetCourseDetailPublicQuery,
@@ -154,4 +164,5 @@ export const {
   useConfirmEmailMutation,
   useResendConfirmEmailTokenMutation,
   useLazyGetCoursesTeacherQuery,
+  useCreateCourseMutation,
 } = api;

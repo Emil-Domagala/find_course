@@ -44,10 +44,16 @@ public class JwtUtils {
         String roles = user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.joining(","));
+        String imageUrl = user.getUser().getImageUrl();
+        boolean isVerified = user.isEmailVerified();
 
         return Jwts.builder()
                 .subject(email)
                 .claim("roles", roles)
+                .claim("isEmailVerified",
+                        isVerified)
+                .claim("picture",
+                        imageUrl)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
                 .signWith(key())
@@ -58,12 +64,15 @@ public class JwtUtils {
         String email = user.getEmail();
         String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
         boolean isVerified = user.isEmailVerified();
+        String imageUrl = user.getImageUrl();
 
         return Jwts.builder()
                 .subject(email)
                 .claim("roles", roles)
                 .claim("isEmailVerified",
                         isVerified)
+                .claim("picture",
+                        imageUrl)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
                 .signWith(key())

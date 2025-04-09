@@ -35,10 +35,10 @@ public class Section {
     private UUID id;
 
     @Column(nullable = false)
-    private String sectionTitle;
+    private String title;
 
     @Column(nullable = false)
-    private String sectionDescription;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

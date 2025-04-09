@@ -16,8 +16,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SectionProtectedDto {
-    SectionDto sectionDto;
 
+    SectionDto sectionDto;
     List<ChapterProtectedDto> chapters;
 
 }

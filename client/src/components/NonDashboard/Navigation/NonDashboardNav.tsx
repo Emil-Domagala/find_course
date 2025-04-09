@@ -3,15 +3,16 @@ import { cookies } from 'next/headers';
 import AuthButtons from './AuthButtons';
 import SearchButton from '../../Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
+import { AuthToken } from '@/types/auth';
 
 const NonDashboardNav = async () => {
   const cookieStore = await cookies();
 
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
-  const userRole = [];
+  let decoded;
+
   try {
-    const decoded = jwtDecode(authToken!) as any;
-    userRole.push(decoded.roles);
+    decoded = jwtDecode(authToken!) as AuthToken;
   } catch (err) {
     console.error('JWT Verification Failed:', err);
   }
@@ -28,8 +29,7 @@ const NonDashboardNav = async () => {
           </Link>
           <SearchButton />
         </div>
-        <Link href={'/user/profile'}>Your profile</Link>
-        <AuthButtons authToken={!!authToken} />
+        <AuthButtons authToken={decoded} />
       </div>
     </nav>
   );

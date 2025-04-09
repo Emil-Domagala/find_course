@@ -50,6 +50,9 @@ public class User {
     @Column(nullable = false)
     private String userLastname;
 
+    @Column(nullable = true)
+    private String imageUrl;
+
     @Column(nullable = false)
     @Builder.Default
     @Enumerated(EnumType.STRING)

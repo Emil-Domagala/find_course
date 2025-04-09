@@ -4,8 +4,10 @@ import Filter from '@/components/Common/Filter/Filter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import Header from '@/components/Dashboard/Header';
 import TeacherCourseCard from '@/components/Dashboard/Teacher/TeacherCourseCard';
+import { Button } from '@/components/ui/button';
 import { useSearchFilters } from '@/hooks/useSearchFilters';
-import { useLazyGetCoursesTeacherQuery } from '@/state/api';
+import { useCreateCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/api';
+import { Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -29,6 +31,7 @@ const MyCourses = () => {
   } = useSearchFilters();
 
   const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesTeacherQuery();
+  const [createCourse, { data: createdCourse, isLoading: isCreating }] = useCreateCourseMutation();
 
   const handleFetchCourses = () => {
     return fetchCourses({ page, size, sortField, direction, keyword, category });
@@ -44,17 +47,20 @@ const MyCourses = () => {
     }
   };
 
+  const handleCreateCourse = async () => {
+    await createCourse();
+    router.push(`/teacher/courses/edit/${createdCourse?.id}`);
+  };
+
   return (
     <div className=" w-full h-full">
       <Header
         title="Your Courses"
         subtitle="Manage your courses"
         rightElement={
-          <Link
-            href={'/teacher/courses/create'}
-            className="p-4 rounded-sm text-white-50 bg-primary-700 hover:bg-primary-600">
-            Create Course
-          </Link>
+          <Button onClick={handleCreateCourse} variant="primary" className="p-3 text-white-50 font-medium text-md ">
+            Create Course {isCreating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
+          </Button>
         }
       />
       <Filter
@@ -69,6 +75,7 @@ const MyCourses = () => {
         size={size}
         setSize={setSize}
         handleFetchCourses={handleFetchCourses}
+        isLoading={isLoading}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 mt-6 w-full h-full flex-1">

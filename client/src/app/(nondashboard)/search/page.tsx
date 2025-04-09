@@ -53,7 +53,7 @@ const SearchPage = () => {
       </div>
 
       <div className="container flex-1">
-        <DisplayCourses isLoading={isLoading} coursesPage={coursesPage} size={size} />
+        <DisplayCourses coursesPage={coursesPage} size={size} />
       </div>
 
       <Pagination setPage={setPage} page={page} coursesPage={coursesPage} />

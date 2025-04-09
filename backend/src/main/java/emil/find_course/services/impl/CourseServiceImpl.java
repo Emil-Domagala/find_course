@@ -12,6 +12,7 @@ import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
+import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Role;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
@@ -60,14 +61,17 @@ public class CourseServiceImpl implements CourseService {
     // ---------Teacher----------
     // **************************
     @Override
-    public Course createCourse(RequestCourseBody requestCourseBody, User teacher) {
+    public Course createCourse(User teacher) {
         if (!teacher.getRoles().contains(Role.TEACHER)) {
             throw new IllegalStateException("Only teachers can create courses.");
         }
-        Course course = Course.builder().teacher(teacher).title(requestCourseBody.getTitle())
-                .description(requestCourseBody.getDescription()).category(requestCourseBody.getCategory())
-                .imageUrl(requestCourseBody.getImageUrl()).price(requestCourseBody.getPrice())
-                .level(requestCourseBody.getLevel()).status(requestCourseBody.getStatus()).build();
+
+        Course course = Course.builder().teacher(teacher).title("Untitled Course")
+                .description("Course Description").category(CourseCategory.PROGRAMMING)
+                .imageUrl(
+                        "https://flowservedystrybucja.pl/wp-content/themes/u-design/assets/images/placeholders/post-placeholder.jpg")
+                .price(0)
+                .level(Level.BEGINNER).status(CourseStatus.DRAFT).build();
 
         return courseRepository.save(course);
     }

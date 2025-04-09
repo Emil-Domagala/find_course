@@ -8,7 +8,7 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
-import emil.find_course.domains.requestDto.RequestCourseBody;
+
 
 public interface CourseService {
 
@@ -19,7 +19,7 @@ public interface CourseService {
 
     // Teacher
 
-    Course createCourse(RequestCourseBody requestCourseBody, User teacher);
+    Course createCourse(User teacher);
 
     PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category, PaginationRequest request,
             User teacher);

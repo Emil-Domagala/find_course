@@ -90,16 +90,15 @@ public class CourseController {
     // ---------Teacher----------
     // **************************
 
-    // Create course
+    // Create empty course
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping("/teacher/courses")
-    public ResponseEntity<?> postCourse(Principal principal,
-            @Validated @RequestBody RequestCourseBody requestCourseBody) {
+    public ResponseEntity<?> postCourse(Principal principal) {
 
         final User user = userService.findByEmail(principal.getName());
 
         final CourseDto course = courseMapper
-                .toDto(courseService.createCourse(requestCourseBody, user));
+                .toDto(courseService.createCourse(user));
 
         return ResponseEntity.ok(course);
 
