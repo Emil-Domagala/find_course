@@ -30,7 +30,7 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       await loginUser(values).unwrap();
-      router.push('/dashboard');
+      router.push('/user/courses');
       router.refresh();
     } catch (e) {
       const errorFull = e as ApiErrorResponse;

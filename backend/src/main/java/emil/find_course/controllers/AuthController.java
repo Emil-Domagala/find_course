@@ -32,6 +32,7 @@ public class AuthController {
 
         @Value("${cookie.auth.authToken.name}")
         private String authCookieName;
+
         @Value("${jwt.authToken.expiration}")
         private int cookieExpiration;
 
@@ -94,7 +95,7 @@ public class AuthController {
 
         // refresh-cookie
         @PostMapping("/public/refresh-token")
-        public ResponseEntity<String> refreshCookie(
+        public ResponseEntity<Void> refreshCookie(
                         @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
                 System.out.println(refreshToken);
@@ -103,7 +104,7 @@ public class AuthController {
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                                cookie.toString()).body(authToken);
+                                cookie.toString()).build();
         }
 
         // It will be deleted

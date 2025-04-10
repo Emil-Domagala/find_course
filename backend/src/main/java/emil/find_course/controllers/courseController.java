@@ -25,6 +25,7 @@ import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.RequestCourseBody;
+import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
 import emil.find_course.services.CourseService;
 import emil.find_course.services.UserService;
@@ -93,7 +94,7 @@ public class CourseController {
     // Create empty course
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping("/teacher/courses")
-    public ResponseEntity<?> postCourse(Principal principal) {
+    public ResponseEntity<CourseDto> postCourse(Principal principal) {
 
         final User user = userService.findByEmail(principal.getName());
 
@@ -124,6 +125,16 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @GetMapping("/teacher/courses/{courseId}")
+    public ResponseEntity<CourseDto> getTeacherCourse(Principal principal, @PathVariable UUID courseId) {
+        final CourseDto course = courseMapper.toDto(courseService.getPublishedCourse(courseId));
+        if (course.getTeacher().getId() != userService.findByEmail(principal.getName()).getId()) {
+            throw new UnauthorizedException("You are not the teacher of this course");
+        }
+        return ResponseEntity.ok(course);
+    }
+
     // Update course
     // @PutMapping("/courses/{courseId}")
     // public ResponseEntity<CourseDto> putCourse(Principal principal, @PathVariable
@@ -133,9 +144,17 @@ public class CourseController {
     // }
 
     // Delete course
-    @DeleteMapping("/courses/{courseId}")
-    public ResponseEntity<UUID> deleteCourse(Principal principal, @PathVariable UUID courseId) {
+    @DeleteMapping("/teacher/courses/{courseId}")
+    public ResponseEntity<?> deleteCourse(Principal principal, @PathVariable UUID courseId) {
         final User user = userService.findByEmail(principal.getName());
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            // Handle error appropriately, maybe return an error response
+            return ResponseEntity.status(500).body("Request interrupted");
+        }
 
         final UUID deletedCourseId = courseService.deleteCourse(courseId, user.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deletedCourseId);

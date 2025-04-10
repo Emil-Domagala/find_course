@@ -8,8 +8,9 @@ import LogoutButton from './LogoutButton';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
-import { useRefetchTokenMutation } from '@/state/api';
+import { useLogoutMutation, useRefetchTokenMutation } from '@/state/api';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   authToken?: AuthToken;
@@ -18,14 +19,31 @@ type Props = {
 };
 
 const UserButton = ({ authToken, className, classNamePopover }: Props) => {
-  const [refetchToken] = useRefetchTokenMutation();
+  const [refetchToken, { error }] = useRefetchTokenMutation();
+  const [logoutUser] = useLogoutMutation();
+  const router = useRouter();
 
   useEffect(() => {
-    if (!!authToken) {
-      console.log('Refetching token... in UserButton.tsx');
-      refetchToken({});
-    }
-  }, []);
+    let isMounted = true; // Prevent execution on unmount
+
+    const fetchToken = async () => {
+      if (!authToken && isMounted) {
+        console.log('Refetching token... in UserButton.tsx');
+        console.log(new Date());
+        try {
+          await refetchToken({});
+        } catch (err) {
+          logoutUser({});
+        }
+      }
+    };
+
+    fetchToken();
+
+    return () => {
+      isMounted = false; // Cleanup
+    };
+  }, [authToken]);
 
   return (
     <Popover>

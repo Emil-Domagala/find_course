@@ -14,7 +14,7 @@ public class CookieHelper {
     public static ResponseCookie setCookieHelper(String cookieName, String value, int maxAge, String path) {
         return ResponseCookie.from(cookieName, value)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .domain(frontendDomain)
                 .sameSite("Strict")
                 .path(path)

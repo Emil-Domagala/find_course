@@ -1,24 +1,12 @@
 package emil.find_course.domains.requestDto;
 
-import jakarta.validation.constraints.Email;
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserRegisterRequest {
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+@Data
+public class RequestUpdateUser {
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 30, message = "Username must be between {min} and {max} characters")
@@ -28,8 +16,10 @@ public class UserRegisterRequest {
     @Size(min = 2, max = 30, message = "Lastname must be between {min} and {max} characters")
     private String userLastname;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, max = 30, message = "Password must be at least {min} and {max} characters long")
-    private String password;
+    @Nullable
+    private String image;
 
+    @Size(min = 6, max = 30, message = "Password must be at least {min} and {max} characters long")
+    @Nullable
+    private String password;
 }

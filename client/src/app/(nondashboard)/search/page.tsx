@@ -29,8 +29,10 @@ const SearchPage = () => {
     return fetchCourses({ page, size, sortField, direction, keyword, category });
   };
   useEffect(() => {
+    console.log('object');
     handleFetchCourses();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   return (
     <>
@@ -48,12 +50,13 @@ const SearchPage = () => {
             size={size}
             setSize={setSize}
             handleFetchCourses={handleFetchCourses}
+            isLoading={isLoading}
           />
         </div>
       </div>
 
       <div className="container flex-1">
-        <DisplayCourses coursesPage={coursesPage} size={size} />
+        <DisplayCourses coursesPage={coursesPage} isLoading={isLoading} />
       </div>
 
       <Pagination setPage={setPage} page={page} coursesPage={coursesPage} />

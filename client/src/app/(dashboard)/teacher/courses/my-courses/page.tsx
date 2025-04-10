@@ -6,14 +6,14 @@ import Header from '@/components/Dashboard/Header';
 import TeacherCourseCard from '@/components/Dashboard/Teacher/TeacherCourseCard';
 import { Button } from '@/components/ui/button';
 import { useSearchFilters } from '@/hooks/useSearchFilters';
-import { useCreateCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/api';
+import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/api';
 import { Loader } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const MyCourses = () => {
   const router = useRouter();
+  const [isCreating, setIsCreating] = useState(false);
 
   const {
     size,
@@ -31,25 +31,36 @@ const MyCourses = () => {
   } = useSearchFilters();
 
   const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesTeacherQuery();
-  const [createCourse, { data: createdCourse, isLoading: isCreating }] = useCreateCourseMutation();
+  const [createCourse] = useCreateCourseMutation();
+  const [deleteCourse, { data: deletedCourse }] = useDeleteCourseMutation();
 
   const handleFetchCourses = () => {
     return fetchCourses({ page, size, sortField, direction, keyword, category });
   };
 
   useEffect(() => {
+    console.log(`useEffect in MyCourses`);
     handleFetchCourses();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   const handleDelete = (course: CourseDto) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       console.log('course deleted' + course.id);
+      deleteCourse({ courseId: course.id });
     }
   };
 
   const handleCreateCourse = async () => {
-    await createCourse();
-    router.push(`/teacher/courses/edit/${createdCourse?.id}`);
+    try {
+      setIsCreating(true);
+      const createdCourse = await createCourse().unwrap();
+      router.push(`/teacher/courses/edit/${createdCourse?.id}`);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
