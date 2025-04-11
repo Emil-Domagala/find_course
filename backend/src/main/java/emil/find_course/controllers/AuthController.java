@@ -57,7 +57,7 @@ public class AuthController {
                                 "/");
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, refreshToken, refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
+                                "/");
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(auth);
@@ -71,7 +71,7 @@ public class AuthController {
                                 "/");
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
+                                "/");
 
                 System.out.println("refreshCookie:");
                 System.out.println(refreshCookie.toString());
@@ -86,7 +86,7 @@ public class AuthController {
         public ResponseEntity<Void> logout() {
                 ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/");
                 ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
-                                "/api/v1/public/refresh-cookie");
+                                "/");
 
                 return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())

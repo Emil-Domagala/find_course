@@ -57,15 +57,13 @@ const TeacherCourseCard = ({ course, onDelete }: Props) => {
 
         <div className=" xl:flex xl:justify-between space-y-2 xl:space-y-0 gap-2 mt-3">
           <Link href={`/teacher/courses/edit/${course.id}`} className="w-full">
-            <Button className="rounded w-full bg-primary-700 border-none hover:bg-primary-600 hover:text-customgreys-primarybg text-white-100 cursor-pointer">
+            <Button variant="primary" className="rounded w-full text-white-100 ">
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </Button>
           </Link>
 
-          <Button
-            className="!shrink rounded w-full bg-red-600 text-white-100 hover:bg-red-400 hover:text-customgreys-primarybg cursor-pointer"
-            onClick={() => onDelete(course)}>
+          <Button variant="warning" className="!shrink rounded w-full " onClick={() => onDelete(course)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>

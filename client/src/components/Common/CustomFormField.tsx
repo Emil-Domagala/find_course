@@ -17,7 +17,7 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 type FormFieldProps = {
   name: string;
-  label: string;
+  label?: string;
   type?: 'text' | 'email' | 'textarea' | 'number' | 'select' | 'password' | 'file' | 'multi-input';
   placeholder?: string;
   options?: { value: string; label: string }[];
@@ -50,7 +50,10 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
 }) => {
   const { control } = useFormContext();
 
-  const renderFormControl = (field: ControllerRenderProps<FieldValues, string>, isPicture = false) => {
+  const renderFormControl = (
+    field: ControllerRenderProps<FieldValues, string>,
+    isPicture = false,
+  ) => {
     switch (type) {
       case 'textarea':
         return (
@@ -83,12 +86,12 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           </Select>
         );
       case 'file':
-        let ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
+        let ACCEPTED_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
         if (isPicture) {
-          ACCEPTED_VIDEO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+          ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
         }
 
-        const acceptedFileTypes = accept ? [accept] : ACCEPTED_VIDEO_TYPES;
+        const acceptedFileTypes = accept ? [accept] : ACCEPTED_TYPES;
 
         return (
           <FilePond
@@ -101,6 +104,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             acceptedFileTypes={acceptedFileTypes}
             labelIdle={`Drag & Drop your files or <span class="filepond--label-action">Browse</span>`}
             credits={false}
+            allowImagePreview
           />
         );
       case 'number':
@@ -138,13 +142,15 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
       defaultValue={initialValue}
       render={({ field }) => (
         <FormItem className={`rounded-md relative ${className}`}>
-          <div className="flex justify-between items-center">
-            <FormLabel className={`text-customgreys-dirtyGrey text-sm ${labelClassName}`}>{label}</FormLabel>
+          {label && (
+            <div className="flex justify-between items-center">
+              <FormLabel className={`text-customgreys-dirtyGrey text-sm ${labelClassName}`}>{label}</FormLabel>
 
-            {!disabled && isIcon && type !== 'file' && type !== 'multi-input' && (
-              <Edit className="size-4 text-customgreys-dirtyGrey" />
-            )}
-          </div>
+              {!disabled && isIcon && type !== 'file' && type !== 'multi-input' && (
+                <Edit className="size-4 text-customgreys-dirtyGrey" />
+              )}
+            </div>
+          )}
           <FormControl>
             {renderFormControl({
               ...field,

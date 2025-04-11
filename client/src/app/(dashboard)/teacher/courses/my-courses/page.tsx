@@ -41,7 +41,7 @@ const MyCourses = () => {
   useEffect(() => {
     console.log(`useEffect in MyCourses`);
     handleFetchCourses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const handleDelete = (course: CourseDto) => {
@@ -69,7 +69,7 @@ const MyCourses = () => {
         title="Your Courses"
         subtitle="Manage your courses"
         rightElement={
-          <Button onClick={handleCreateCourse} variant="primary" className="p-3 text-white-50 font-medium text-md ">
+          <Button onClick={handleCreateCourse} variant="primary" className="p-3 font-medium text-md ">
             Create Course {isCreating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
           </Button>
         }

@@ -47,7 +47,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['CourseDtos', 'TeachedCourseDtos'],
+  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User'],
   endpoints: (build) => ({
     // *******************
     // -------AUTH--------
@@ -75,6 +75,10 @@ export const api = createApi({
     }),
     // Resend Confirm Email Token
     resendConfirmEmailToken: build.mutation({ query: () => ({ url: `public/confirm-email/resend`, method: 'POST' }) }),
+    // ******************
+    // -------USER-------
+    // ******************
+    getUserInfo: build.query<UserDto, void>({ query: () => ({ url: 'user' }), providesTags: ['User'] }),
 
     // ******************
     // --Public Courses--
@@ -232,4 +236,6 @@ export const {
   useLazyGetCoursesTeacherQuery,
   useCreateCourseMutation,
   useDeleteCourseMutation,
+  // USER
+  useGetUserInfoQuery
 } = api;

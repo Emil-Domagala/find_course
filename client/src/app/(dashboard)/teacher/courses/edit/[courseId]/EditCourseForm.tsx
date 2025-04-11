@@ -41,9 +41,6 @@ const EditCourseForm = ({ course }: { course: CourseDetailsPublicDto }) => {
   }, [methods.formState.errors]);
 
   useEffect(() => {
-    console.log('Use effect');
-    console.log(course);
-    console.log('////');
     if (course) {
       methods.reset({
         title: course.courseDto.title,

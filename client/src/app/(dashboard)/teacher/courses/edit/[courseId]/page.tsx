@@ -1,4 +1,4 @@
-import { getCoursesPublic } from '@/lib/api/api';
+import { getCoursesPublic } from '@/lib/api/apiServerSide';
 import EditCourseForm from './EditCourseForm';
 
 const EditCoursePage = async ({ params }: { params: { courseId: string } }) => {
@@ -7,6 +7,6 @@ const EditCoursePage = async ({ params }: { params: { courseId: string } }) => {
 
   console.log(course);
 
-  // return <EditCourseForm course={course} />;
+  return <EditCourseForm course={course} />;
 };
 export default EditCoursePage;

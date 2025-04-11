@@ -1,13 +1,13 @@
 import Tag from '@/components/NonDashboard/Home/Tag';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { getCoursesPublic } from '@/lib/api/api';
+import { apiServerService } from '@/lib/api/apiServerSide';
 import { FileText } from 'lucide-react';
 import Image from 'next/image';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = await params;
-  const course = await getCoursesPublic(courseId);
+  const course = await apiServerService.getCoursesPublic(courseId);
 
   return (
     <>

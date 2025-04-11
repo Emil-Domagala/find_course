@@ -75,9 +75,10 @@ public class JwtFilter extends OncePerRequestFilter {
             } else {
 
                 System.out.println("ELSE IN JWT FILTER");
-                exceptionResolver.resolveException(request, response, null,
-                        new JwtAuthException("Invalid or expired token."));
-                return;
+                throw new JwtAuthException("Invalid or expired token.");
+                // exceptionResolver.resolveException(request, response, null,
+                // new JwtAuthException("Invalid or expired token."));
+                // return;
             }
         } catch (JwtAuthException e) {
             System.out.println("JwtAuthException EXCEPTION");
