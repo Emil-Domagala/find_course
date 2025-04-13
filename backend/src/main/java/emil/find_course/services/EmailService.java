@@ -1,11 +1,9 @@
 package emil.find_course.services;
 
-import java.util.List;
+import java.util.Map;
 
 public interface EmailService {
 
-    public void sendHtmlMessage(List<String> to, String subject, String htmlBody);
-
-    public void sendSimpleEmail(List<String> to, String subject, String content);
+  public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> templateModel);
 
 }

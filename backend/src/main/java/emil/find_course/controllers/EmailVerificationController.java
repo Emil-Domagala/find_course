@@ -44,7 +44,7 @@ public class EmailVerificationController {
 
         emailVerificationService.validateEmail(user, token.getToken());
         String authToken = jwtUtils.generateToken(user);
-        
+
         ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(authToken);
@@ -52,7 +52,7 @@ public class EmailVerificationController {
 
     @PostMapping("/confirm-email/resend")
     public ResponseEntity<Void> resendConfirmEmail(Principal principal) {
-        emailVerificationService.resendConfirmEmail(userService.findByEmail(principal.getName()));
+        emailVerificationService.sendVerificationEmail(userService.findByEmail(principal.getName()));
 
         return ResponseEntity.noContent().build();
     }

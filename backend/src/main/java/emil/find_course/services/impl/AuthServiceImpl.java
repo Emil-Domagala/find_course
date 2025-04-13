@@ -65,7 +65,9 @@ public class AuthServiceImpl implements AuthService {
                 .username(userRegisterRequest.getUsername().trim())
                 .userLastname(userRegisterRequest.getUserLastname().trim()).build();
 
-        return userRepository.save(user);
+        User newUser = userRepository.save(user);
+        emailVerificationService.sendVerificationEmail(newUser);
+        return newUser;
     }
 
     @Override

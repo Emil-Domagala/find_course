@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import emil.find_course.domains.entities.ConfirmEmailOTT;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.repositories.ConfirmEmailOTTRepository;
 import emil.find_course.repositories.UserRepository;
+import emil.find_course.services.EmailService;
 import emil.find_course.services.EmailVerificationService;
 import emil.find_course.utils.TokenGenerator;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +24,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
     private final UserRepository userRepository;
-    private final EmailServiceImpl emailService;
+    private final EmailService emailService;
 
     @Override
     @Transactional
@@ -45,19 +45,13 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         user.setEmailVerified(true);
         userRepository.save(user);
         confirmEmailOTTRepository.delete(confirmOTT);
-
     }
 
     @Override
     @Transactional
-    public void resendConfirmEmail(User user) {
+    public void sendVerificationEmail(User user) {
         if (user.isEmailVerified()) {
             throw new IllegalArgumentException("Email is already verified");
-        }
-        Optional<ConfirmEmailOTT> oldConfirmEmailOTT = confirmEmailOTTRepository.findByUser(user);
-
-        if (oldConfirmEmailOTT.isPresent()) {
-            confirmEmailOTTRepository.delete(oldConfirmEmailOTT.get());
         }
 
         String confirmEmailToken = generateConfirmEmailToken(user);
@@ -77,18 +71,23 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Override
     @Transactional
     public String generateConfirmEmailToken(User user) {
-        Optional<ConfirmEmailOTT> confirmOTT = confirmEmailOTTRepository.findByUser(user);
-        if (confirmOTT.isPresent()) {
-            confirmEmailOTTRepository.delete(confirmOTT.get());
+        String newConfirmEmailToken = TokenGenerator.generateToken6NumCharToken();
+        Instant newExpiration = Instant.now().plusSeconds(60 * 15);
+
+        Optional<ConfirmEmailOTT> existingOpt = confirmEmailOTTRepository.findByUser(user);
+
+        ConfirmEmailOTT tokenToSave;
+        if (existingOpt.isPresent()) {
+            tokenToSave = existingOpt.get();
+            tokenToSave.setToken(newConfirmEmailToken);
+            tokenToSave.setExpiration(newExpiration);
+        } else {
+            tokenToSave = ConfirmEmailOTT.builder().user(user).token(newConfirmEmailToken).expiration(newExpiration)
+                    .build();
         }
 
-        String confirmEmailToken = TokenGenerator.generateToken6NumCharToken();
-
-        ConfirmEmailOTT confirmEmailOTT = ConfirmEmailOTT.builder().user(user).token(confirmEmailToken)
-                .expiration(Instant.now().plusSeconds(60 * 15)).build();
-
-        confirmEmailOTTRepository.save(confirmEmailOTT);
-        return confirmEmailToken;
+        confirmEmailOTTRepository.save(tokenToSave);
+        return newConfirmEmailToken;
     }
 
 }

@@ -35,7 +35,6 @@ const LoginPage = () => {
     } catch (e) {
       const errorFull = e as ApiErrorResponse;
       const error = errorFull.data;
-      console.log(error);
       if (!error.message) {
         form.setError('root', { message: 'An unexpected error occurred.' });
         return;

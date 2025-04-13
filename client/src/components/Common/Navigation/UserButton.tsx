@@ -49,10 +49,10 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
     <Popover>
       <PopoverTrigger
         className={cn(
-          'pl-4 rounded-full bg-customgreys-secondarybg flex items-center gap-2 hover:bg-customgreys-secondarybg/50 transition-colors duration-300 group',
+          ' sm:pl-4 rounded-full bg-customgreys-secondarybg flex items-center gap-2 hover:bg-customgreys-secondarybg/50 transition-colors duration-300 group',
           classNamePopover,
         )}>
-        <p className="text-white-50 font-semibold">{authToken?.sub || 'User'}</p>
+        <p className="text-white-50 font-semibold hidden sm:block">{authToken?.sub || 'User'}</p>
         <Avatar>
           <AvatarImage
             src={authToken?.picture || '/placeholder.png'}
@@ -63,7 +63,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
-      <PopoverContent className={cn('bg-customgreys-secondarybg min-w-32 rounded-lg overflow-hidden', className)}>
+      <PopoverContent className={cn('bg-customgreys-secondarybg min-w-32 rounded-lg overflow-hidden z-50', className)}>
         <Link
           href={'user/profile'}
           className={cn(

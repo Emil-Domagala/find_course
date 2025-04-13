@@ -14,12 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class CleanUpServiceImpl {
-    
-private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
 
-@Scheduled(cron="0 0 3 * * 7")
-@Transactional
-public void cleanupExpiredVerificationTokens() {
+    private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
+
+    @Scheduled(cron = "0 0 3 * * 7")
+    @Transactional
+    public void cleanupExpiredVerificationTokens() {
         Instant now = Instant.now();
         try {
             int deletedCount = confirmEmailOTTRepository.deleteByExpirationBefore(now);

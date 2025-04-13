@@ -71,10 +71,10 @@ export const api = createApi({
     }),
     // Confirm Email
     confirmEmail: build.mutation({
-      query: (token: string) => ({ url: `public/confirm-email`, method: 'POST', body: { token } }),
+      query: (token: string) => ({ url: `confirm-email`, method: 'POST', body: { token } }),
     }),
     // Resend Confirm Email Token
-    resendConfirmEmailToken: build.mutation({ query: () => ({ url: `public/confirm-email/resend`, method: 'POST' }) }),
+    resendConfirmEmailToken: build.mutation({ query: () => ({ url: `confirm-email/resend`, method: 'POST' }) }),
     // ******************
     // -------USER-------
     // ******************
@@ -237,5 +237,5 @@ export const {
   useCreateCourseMutation,
   useDeleteCourseMutation,
   // USER
-  useGetUserInfoQuery
+  useGetUserInfoQuery,
 } = api;

@@ -86,8 +86,8 @@ const AppSidebar = ({ authToken }: Props) => {
 
       <SidebarContent>
         <SidebarGroupCustom links={navLinks.user} />
-        {decoded.roles.includes('USER') && <SidebarGroupCustom links={navLinks.teacher} label="Teacher" />}
-        {decoded.roles.includes('USER') && <SidebarGroupCustom links={navLinks.admin} label="Admin" />}
+        {decoded.roles.includes('TEACHER') && <SidebarGroupCustom links={navLinks.teacher} label="Teacher" />}
+        {decoded.roles.includes('ADMIN') && <SidebarGroupCustom links={navLinks.admin} label="Admin" />}
       </SidebarContent>
 
       <SidebarFooter className="p-0">

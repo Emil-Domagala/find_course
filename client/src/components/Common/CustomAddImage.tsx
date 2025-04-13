@@ -18,7 +18,6 @@ const CustomAddImage = ({ methods, imageUrl, fallbackText, className, avatarClas
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageSource = previewUrl || imageUrl || '/placeholder.png';
 
-  const displayImageUrl = imageUrl || '/placeholder.png';
   fallbackText.charAt(0).toUpperCase();
 
   useEffect(() => {
@@ -30,8 +29,9 @@ const CustomAddImage = ({ methods, imageUrl, fallbackText, className, avatarClas
     };
   }, [previewUrl]);
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
+  const handleDeleteImg = () => {
+    methods.setValue('image', undefined, { shouldValidate: true, shouldDirty: true });
+    setPreviewUrl('/placeholder.png');
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,9 +51,11 @@ const CustomAddImage = ({ methods, imageUrl, fallbackText, className, avatarClas
 
   return (
     <div className="group flex items-center  relative">
-      <div className=" absolute z-50 bg-customgreys-primarybg p-4 opacity-0 group-hover:opacity-100  group-hover:translate-x-[-70px] hover:bg-customgreys-darkGrey rounded-lg transition-[background-color,transform,opacity] duration-400 cursor-pointer ">
-        <Trash />
-      </div>
+      <button
+        onClick={handleDeleteImg}
+        className=" absolute z-50 bg-customgreys-primarybg p-4 opacity-0 group-hover:opacity-100 delay-200  group-hover:translate-x-[-4.5rem] hover:bg-customgreys-darkGrey rounded-lg transition-[background-color,transform,opacity] duration-500 cursor-pointer ">
+        <Trash className="size-5 text-white" />
+      </button>
       <div className={cn(`flex flex-col items-center space-y-2 overflow-hidden bg-red-300`, className)}>
         <label htmlFor="image-upload" className="relative cursor-pointer  w-full h-full">
           <Avatar className={cn('w-full h-full', avatarClassName)}>

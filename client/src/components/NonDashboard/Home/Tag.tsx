@@ -3,7 +3,7 @@ import { Skeleton } from '../../ui/skeleton';
 import { cva, VariantProps } from 'class-variance-authority';
 
 export const TagSkeleton = () => {
-  return <Skeleton className="w-24 h-6 rounded-full"></Skeleton>;
+  return <Skeleton className="w-24 h-5 rounded-full"></Skeleton>;
 };
 
 const tagVariants = cva('bg-customgreys-secondarybg rounded-full text-sm', {

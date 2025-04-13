@@ -16,7 +16,6 @@ import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Role;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
-import emil.find_course.domains.requestDto.RequestCourseBody;
 import emil.find_course.mapping.CourseMapping;
 import emil.find_course.repositories.CourseRepository;
 import emil.find_course.services.CourseService;

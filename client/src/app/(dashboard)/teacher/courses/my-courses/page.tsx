@@ -32,14 +32,13 @@ const MyCourses = () => {
 
   const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesTeacherQuery();
   const [createCourse] = useCreateCourseMutation();
-  const [deleteCourse, { data: deletedCourse }] = useDeleteCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
 
   const handleFetchCourses = () => {
     return fetchCourses({ page, size, sortField, direction, keyword, category });
   };
 
   useEffect(() => {
-    console.log(`useEffect in MyCourses`);
     handleFetchCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);

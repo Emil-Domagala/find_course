@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { apiServerService } from '@/lib/api/apiServerSide';
 import { FileText } from 'lucide-react';
 import Image from 'next/image';
+import CourseDetailLoading from './loading';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = await params;
@@ -16,7 +17,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
           {/* Info */}
           <div className="flex flex-col basis-1/2 ">
             <h1 className="text-white-50 font-semibold text-2xl mb-4">{course.courseDto.title}</h1>
-            <p className=" text-lg text-gray-400">{course.courseDto.description}</p>
+            <p className=" text-lg text-gray-400 mb-2">{course.courseDto.description}</p>
 
             <p className="text-customgreys-dirtyGrey text-sm">
               Created by: {course.courseDto.teacher.username} {course.courseDto.teacher.userLastname}
@@ -29,10 +30,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
             <span className="text-primary-500 text-xl font-semibold py-4">Only ${course.courseDto.price}</span>
             <div className="flex flex-row gap-2">
               <form action="">
-                <Button variant="primary">Buy Now</Button>
-              </form>
-              <form action="">
-                <Button variant="secondary">Add to Cart</Button>
+                <Button variant="primary">Buy Now!</Button>
               </form>
             </div>
           </div>

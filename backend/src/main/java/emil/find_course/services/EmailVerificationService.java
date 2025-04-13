@@ -6,7 +6,7 @@ public interface EmailVerificationService {
 
     public void validateEmail(User user, String token);
 
-    public void resendConfirmEmail(User user);
+    public void sendVerificationEmail(User user);
 
     public String generateConfirmEmailToken(User user);
 

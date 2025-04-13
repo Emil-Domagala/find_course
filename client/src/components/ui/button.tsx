@@ -14,7 +14,7 @@ const buttonVariants = cva(
         default: 'bg-transparent shadow-xs hover:bg-customgreys-darkerGrey',
         outline: 'border bg-background shadow-xs hover:bg-customgreys-darkerGrey/90',
         secondary: 'bg-customgreys-secondarybg  shadow-xs hover:bg-customgreys-darkerGrey',
-        warning: 'w-full bg-red-600 text-white-100 hover:bg-red-400 hover:text-customgreys-primarybg',
+        warning: 'bg-red-600 text-white-100 hover:bg-red-400 hover:text-customgreys-primarybg',
       },
       size: {
         default: 'h-auto px-4 py-2 has-[>svg]:px-3',

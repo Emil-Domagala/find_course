@@ -44,14 +44,12 @@ public class AuthController {
         private final JwtUtils jwtUtils;
         private final AuthService authService;
         private final UserService userService;
-        private final EmailVerificationService emailVerificationService;
 
         @PostMapping("/public/register")
         public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
                 User user = authService.registerUser(request);
                 String refreshToken = jwtUtils.generateRefreshToken(user);
                 AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), refreshToken);
-                emailVerificationService.generateConfirmEmailToken(user);
 
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
                                 "/");
@@ -72,11 +70,6 @@ public class AuthController {
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
                                 "/");
-
-                System.out.println("refreshCookie:");
-                System.out.println(refreshCookie.toString());
-                System.out.println("AuthCookie:");
-                System.out.println(cookie.toString());
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(auth);

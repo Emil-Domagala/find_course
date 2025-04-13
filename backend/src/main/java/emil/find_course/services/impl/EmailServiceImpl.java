@@ -16,14 +16,13 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-
+import emil.find_course.services.EmailService;
 import io.github.cdimascio.dotenv.Dotenv;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl {
+public class EmailServiceImpl implements EmailService {
 
     Dotenv dotenv = Dotenv.load();
 
@@ -57,23 +56,4 @@ public class EmailServiceImpl {
         }
     }
 
-    // public void sendSimpleEmail(String to, String subject, String content) {
-    // Email from = new Email(MY_EMAIL);
-    // Email toEmail = new Email(to);
-    // Content emailContent = new Content("text/plain", content);
-    // Mail mail = new Mail(from, subject, toEmail, emailContent);
-
-    // Request request = new Request();
-
-    // try {
-    // request.setMethod(Method.POST);
-    // request.setEndpoint("mail/send");
-    // request.setBody(mail.build());
-
-    // Response response = sendGrid.api(request);
-    // } catch (IOException e) {
-    // throw new java.lang.RuntimeException("Exception sending email");
-    // }
-
-    // }
 }
