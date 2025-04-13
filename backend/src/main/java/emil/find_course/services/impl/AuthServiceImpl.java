@@ -19,6 +19,7 @@ import emil.find_course.repositories.UserRepository;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.AuthService;
+import emil.find_course.services.EmailVerificationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
 
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {

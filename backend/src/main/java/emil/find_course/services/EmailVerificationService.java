@@ -9,4 +9,5 @@ public interface EmailVerificationService {
     public void resendConfirmEmail(User user);
 
     public String generateConfirmEmailToken(User user);
+
 }

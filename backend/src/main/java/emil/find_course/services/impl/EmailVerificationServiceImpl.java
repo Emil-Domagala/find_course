@@ -1,9 +1,12 @@
 package emil.find_course.services.impl;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import emil.find_course.domains.entities.ConfirmEmailOTT;
 import emil.find_course.domains.entities.user.User;
@@ -21,6 +24,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
     private final UserRepository userRepository;
+    private final EmailServiceImpl emailService;
 
     @Override
     @Transactional
@@ -57,6 +61,17 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         }
 
         String confirmEmailToken = generateConfirmEmailToken(user);
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("token", confirmEmailToken);
+
+        emailService.sendHtmlEmail(
+                user.getEmail(),
+                "Verify Your Email Address",
+                "welcome-email",
+                templateModel);
+
     }
 
     @Override

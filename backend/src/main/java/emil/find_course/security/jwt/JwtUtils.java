@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.exceptions.JwtAuthException;
 import emil.find_course.exceptions.UnauthorizedException;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,8 +21,10 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+
+    Dotenv dotenv = Dotenv.load();
+
+    private final String jwtSecret = dotenv.get("JWT_SECRET");
 
     @Value("${jwt.authToken.expiration}")
     private int jwtAuthTokenExpirationMs;
@@ -40,6 +43,7 @@ public class JwtUtils {
     }
 
     public String generateToken(UserDetailsImpl user) {
+        System.out.println(jwtSecret);
         String email = user.getUsername();
         String roles = user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
@@ -61,6 +65,7 @@ public class JwtUtils {
     }
 
     public String generateToken(User user) {
+        System.out.println(jwtSecret);
         String email = user.getEmail();
         String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
         boolean isVerified = user.isEmailVerified();

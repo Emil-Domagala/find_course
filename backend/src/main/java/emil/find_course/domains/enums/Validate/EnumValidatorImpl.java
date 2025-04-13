@@ -16,7 +16,6 @@ public class EnumValidatorImpl implements ConstraintValidator<ValidEnum, Object>
         allowNull = constraintAnnotation.allowNull();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         if (value == null) {
