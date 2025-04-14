@@ -1,5 +1,5 @@
 import { SearchDirection, SearchField } from '@/hooks/useSearchFilters';
-import { UserRegisterRequest } from '@/lib/validation/userAuth';
+import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CourseCategory } from '@/types/courses-enum';
 import { createApi, fetchBaseQuery, RootState } from '@reduxjs/toolkit/query/react';
@@ -75,6 +75,19 @@ export const api = createApi({
     }),
     // Resend Confirm Email Token
     resendConfirmEmailToken: build.mutation({ query: () => ({ url: `confirm-email/resend`, method: 'POST' }) }),
+    //send Reset password email
+    sendResetPasswordEmail: build.mutation<string, ForgotPasswordRequest>({
+      query: ({ email }) => ({ url: `public/forgot-password`, method: 'POST', body: { email } }),
+    }),
+    // Reset password
+    resetPassword: build.mutation<void, { token: string; password: string }>({
+      query: ({ token, password }) => ({
+        url: `public/reset-password?token=${token}`,
+        method: 'POST',
+        body: { password },
+      }),
+    }),
+
     // ******************
     // -------USER-------
     // ******************
@@ -225,6 +238,8 @@ export const api = createApi({
 });
 
 export const {
+  useResetPasswordMutation,
+  useSendResetPasswordEmailMutation,
   useRefetchTokenMutation,
   useGetCoursesPublicQuery,
   useLazyGetCoursesPublicQuery,

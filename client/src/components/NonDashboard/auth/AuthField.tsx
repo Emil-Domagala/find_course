@@ -34,7 +34,7 @@ const AuthField = ({ form, showDesc = false, name, description, label, placehold
               type={type}
               {...field}
               placeholder={placeholder}
-              className="bg-customgreys-primarybg text-white-50 !shadow-none border-none font-medium text-md md:text-lg selection:bg-primary-750"
+              className="bg-customgreys-primarybg text-white-50 !shadow-none border-none font-medium text-md md:text-lg "
             />
           </FormControl>
           {description && showDesc && <FormDescription>{description}</FormDescription>}

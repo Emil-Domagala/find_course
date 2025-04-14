@@ -1,8 +1,5 @@
-'use client';
-
 import { TagSkeleton } from '@/components/NonDashboard/Home/Tag';
 import { Skeleton } from '@/components/ui/skeleton';
-
 
 const CourseDetailLoading = () => {
   return (

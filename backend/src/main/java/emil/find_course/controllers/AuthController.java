@@ -19,7 +19,6 @@ import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.services.AuthService;
-import emil.find_course.services.EmailVerificationService;
 import emil.find_course.services.UserService;
 import emil.find_course.utils.CookieHelper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -99,6 +98,7 @@ public class AuthController {
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                                 cookie.toString()).build();
         }
+
 
         // It will be deleted
 

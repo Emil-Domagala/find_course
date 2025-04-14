@@ -30,6 +30,7 @@ const ConfirmEmailPage = () => {
   };
 
   const handleError = (e: unknown) => {
+    console.log(e);
     setIsError(true);
     const errorFull = e as ApiErrorResponse;
     const error = errorFull.data;

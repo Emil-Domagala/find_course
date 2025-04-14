@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import emil.find_course.repositories.ConfirmEmailOTTRepository;
+import emil.find_course.repositories.ResetPasswordOTTRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 public class CleanUpServiceImpl {
 
     private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
+    private final ResetPasswordOTTRepository resetPasswordOTTRepository;
 
     @Scheduled(cron = "0 0 3 * * 7")
     @Transactional
-    public void cleanupExpiredVerificationTokens() {
+    public void weaklyCleanUpFunction() {
         Instant now = Instant.now();
+        deleteExpiredResetPasswordTokens(now);
+        deleteExpiredConfirmEmailTokens(now);
+    }
+
+    private void deleteExpiredConfirmEmailTokens(Instant now) {
         try {
             int deletedCount = confirmEmailOTTRepository.deleteByExpirationBefore(now);
             if (deletedCount > 0) {
@@ -29,7 +36,20 @@ public class CleanUpServiceImpl {
                 log.info("No expired verification tokens found to delete.");
             }
         } catch (Exception e) {
-            log.error("Error during expired verification token cleanup task", e);
+            log.error("Error during deleting expired confirm email tokens cleanup task", e);
+        }
+    }
+
+    private void deleteExpiredResetPasswordTokens(Instant now) {
+        try {
+            int deletedCount = resetPasswordOTTRepository.deleteByExpirationBefore(now);
+            if (deletedCount > 0) {
+                log.info("Successfully deleted {} expired reset password tokens.", deletedCount);
+            } else {
+                log.info("No expired reset password tokens found to delete.");
+            }
+        } catch (Exception e) {
+            log.error("Error during deleting expired password token cleanup task", e);
         }
     }
 

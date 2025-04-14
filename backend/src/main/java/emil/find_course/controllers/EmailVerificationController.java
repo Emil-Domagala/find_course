@@ -37,7 +37,7 @@ public class EmailVerificationController {
     private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/confirm-email")
-    public ResponseEntity<?> confirmEmail(Principal principal,
+    public ResponseEntity<Void> confirmEmail(Principal principal,
             @Validated @RequestBody RequestConfirmEmailOTT token) {
 
         User user = userService.findByEmail(principal.getName());
@@ -47,7 +47,7 @@ public class EmailVerificationController {
 
         ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(authToken);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
     @PostMapping("/confirm-email/resend")

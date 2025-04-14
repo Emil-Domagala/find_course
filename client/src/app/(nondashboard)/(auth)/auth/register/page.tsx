@@ -5,16 +5,15 @@ import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserRegisterRequest, UserRegisterSchema } from '@/lib/validation/userAuth';
 import { Button } from '@/components/ui/button';
-import AuthField from '@/components/NonDashboard/auth/AuthField';
 import { useState } from 'react';
 import { useRegisterMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { Loader } from 'lucide-react';
+import { CustomFormField } from '@/components/Common/CustomFormField';
 
 const RegisterPage = () => {
   const router = useRouter();
-  const [errorInPassword, setErrorInPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [registerUser] = useRegisterMutation();
 
@@ -44,8 +43,6 @@ const RegisterPage = () => {
       error.errors.forEach((err) => {
         if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
           form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
-          if (err.field === 'password') return setErrorInPassword(true);
-
           return;
         }
         form.setError('root', { message: err.message });
@@ -59,18 +56,11 @@ const RegisterPage = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-row gap-6">
-          <AuthField form={form} type="text" name="username" label="First Name" />
-          <AuthField form={form} type="text" name="userLastname" label="Last Name" />
+          <CustomFormField name="username" label="First Name" type="text" className="mb-2 w-full" />
+          <CustomFormField name="userLastname" label="Last Name" type="text" className="mb-2 w-full" />
         </div>
-        <AuthField form={form} type="email" name="email" label="Email adress" />
-        <AuthField
-          form={form}
-          type="password"
-          name="password"
-          label="Password"
-          showDesc={errorInPassword}
-          description="Password must be beetween 6 and 30 characters"
-        />
+        <CustomFormField name="email" label="Email adress" type="email" className="mb-2" />
+        <CustomFormField name="password" label="Password" type="password" className="mb-2" />
         {form.formState.errors.root && (
           <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
         )}

@@ -37,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
 
+
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -94,4 +95,6 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Invalid refresh token", ex);
         }
     }
+
+    
 }

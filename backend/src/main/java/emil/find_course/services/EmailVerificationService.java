@@ -8,6 +8,6 @@ public interface EmailVerificationService {
 
     public void sendVerificationEmail(User user);
 
-    public String generateConfirmEmailToken(User user);
+    String generateConfirmEmailToken(User user);
 
 }

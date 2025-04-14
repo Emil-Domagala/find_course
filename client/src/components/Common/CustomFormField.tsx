@@ -50,10 +50,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
 }) => {
   const { control } = useFormContext();
 
-  const renderFormControl = (
-    field: ControllerRenderProps<FieldValues, string>,
-    isPicture = false,
-  ) => {
+  const renderFormControl = (field: ControllerRenderProps<FieldValues, string>, isPicture = false) => {
     switch (type) {
       case 'textarea':
         return (
@@ -141,7 +138,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
       name={name}
       defaultValue={initialValue}
       render={({ field }) => (
-        <FormItem className={`rounded-md relative ${className}`}>
+        <FormItem className={`rounded-md relative pb-5 ${className}`}>
           {label && (
             <div className="flex justify-between items-center">
               <FormLabel className={`text-customgreys-dirtyGrey text-sm ${labelClassName}`}>{label}</FormLabel>
@@ -157,7 +154,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               value: field.value === undefined ? initialValue : type === 'number' ? +field.value : field.value,
             })}
           </FormControl>
-          <FormMessage className="text-red-400" />
+          <FormMessage className="text-red-500 text-xs absolute bottom-0" />
         </FormItem>
       )}
     />

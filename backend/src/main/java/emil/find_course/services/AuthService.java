@@ -13,5 +13,4 @@ public interface AuthService {
 
     public String refreshAuthToken(String token);
 
-
 }

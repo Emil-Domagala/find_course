@@ -5,13 +5,13 @@ import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserLoginSchema } from '@/lib/validation/userAuth';
 import { Button } from '@/components/ui/button';
-import AuthField from '@/components/NonDashboard/auth/AuthField';
 import { useState } from 'react';
 import { useLoginMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { UserLoginRequest } from '@/types/auth';
 import { Loader } from 'lucide-react';
+import { CustomFormField } from '@/components/Common/CustomFormField';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -49,8 +49,8 @@ const LoginPage = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <AuthField form={form} type="email" name="email" label="Email adress" />
-        <AuthField form={form} type="password" name="password" label="Password" />
+        <CustomFormField type="email" name="email" label="Email adress" className="mb-2" />
+        <CustomFormField type="password" name="password" label="Password" className="mb-2" />
         {form.formState.errors.root && (
           <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
         )}

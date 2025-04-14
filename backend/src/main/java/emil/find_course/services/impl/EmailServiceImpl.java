@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
 
-            Response response = sg.api(request);
+            sg.api(request);
         } catch (IOException e) {
             throw new java.lang.RuntimeException("Exception sending email");
         }
