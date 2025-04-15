@@ -1,7 +1,9 @@
 import { SearchDirection, SearchField } from '@/hooks/useSearchFilters';
+import { ProfileFormSchema } from '@/lib/validation/profile';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CourseCategory } from '@/types/courses-enum';
+import { BecomeTeacherRequest } from '@/types/user';
 import { createApi, fetchBaseQuery, RootState } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
@@ -12,6 +14,7 @@ const baseQuery = fetchBaseQuery({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log('in base qquery');
 
   if (result?.error?.status === 403) {
     console.log('Attempting token refresh due to 403');
@@ -26,7 +29,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
     );
     console.log(refreshResult);
     if (!refreshResult.error) {
-      console.log('Token refresh successful (request succeeded), retrying original request.');
+      console.info('Token refresh successful (request succeeded), retrying original request.');
 
       result = await baseQuery(args, api, extraOptions);
     } else {
@@ -92,6 +95,35 @@ export const api = createApi({
     // -------USER-------
     // ******************
     getUserInfo: build.query<UserDto, void>({ query: () => ({ url: 'user' }), providesTags: ['User'] }),
+    deleteUser: build.mutation<void, void>({
+      query: () => ({ url: 'user', method: 'DELETE' }),
+      invalidatesTags: ['User'],
+    }),
+    // Update User
+    updateUserInfo: build.mutation<UserDto, ProfileFormSchema>({
+      query: (user) => ({ url: 'user', method: 'PATCH', body: user }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data: updatedUser } = await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData('getUserInfo', undefined, (draft: UserDto) => {
+              console.log(draft);
+              return updatedUser;
+            }),
+          );
+        } catch (err) {
+          console.log(err);
+        }
+      },
+    }),
+    // Seend Become teacher request
+    sendBecomeTeacherRequest: build.mutation<void, void>({
+      query: () => ({ url: 'user/become-teacher', method: 'POST' }),
+    }),
+    // Get Become teacher request status
+    getBecomeTeacherRequestStatus: build.query<BecomeTeacherRequest, void>({
+      query: () => ({ url: 'user/become-teacher' }),
+    }),
 
     // ******************
     // --Public Courses--
@@ -220,6 +252,7 @@ export const api = createApi({
         try {
           await queryFulfilled;
         } catch (err) {
+          console.log(err);
           patches.forEach((patch) => patch.undo());
         }
       },
@@ -238,19 +271,26 @@ export const api = createApi({
 });
 
 export const {
+  // Auth
   useResetPasswordMutation,
   useSendResetPasswordEmailMutation,
   useRefetchTokenMutation,
-  useGetCoursesPublicQuery,
-  useLazyGetCoursesPublicQuery,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
   useConfirmEmailMutation,
   useResendConfirmEmailTokenMutation,
+  // USER
+  useGetUserInfoQuery,
+  useDeleteUserMutation,
+  useUpdateUserInfoMutation,
+  useSendBecomeTeacherRequestMutation,
+  useGetBecomeTeacherRequestStatusQuery,
+  // Courses
+  useGetCoursesPublicQuery,
+  useLazyGetCoursesPublicQuery,
+  // Teacher
   useLazyGetCoursesTeacherQuery,
   useCreateCourseMutation,
   useDeleteCourseMutation,
-  // USER
-  useGetUserInfoQuery,
 } = api;

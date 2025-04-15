@@ -37,7 +37,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
 
-
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -78,6 +77,7 @@ public class AuthServiceImpl implements AuthService {
         }
         try {
             if (!jwtUtils.validateRefreshToken(recivedRefreshToken)) {
+                System.out.println("Invalid refresh token");
                 throw new UnauthorizedException("Invalid refresh token");
             }
             String email = jwtUtils.getUserEmailFromJwtToken(recivedRefreshToken);
@@ -96,5 +96,4 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    
 }

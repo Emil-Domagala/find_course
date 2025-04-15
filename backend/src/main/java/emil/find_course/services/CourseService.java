@@ -9,25 +9,25 @@ import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 
-
 public interface CourseService {
 
     // Public
-    Course getPublishedCourse(UUID id);
+    public Course getPublishedCourse(UUID id);
 
-    PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request);
+    public PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request);
 
     // Teacher
 
-    Course createCourse(User teacher);
+    public Course createCourse(User teacher);
 
-    PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category, PaginationRequest request,
+    public PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category,
+            PaginationRequest request,
             User teacher);
 
     // Course updateCourse(RequestCourseBody requestCourseBody, User teacher);
 
-    UUID deleteCourse(UUID id, UUID teacherId);
+    public UUID deleteCourse(UUID id, UUID teacherId);
 
     // Student
-    PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request);
+    public PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request);
 }

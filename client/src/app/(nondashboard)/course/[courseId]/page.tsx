@@ -1,14 +1,16 @@
 import Tag from '@/components/NonDashboard/Home/Tag';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
 import { apiServerService } from '@/lib/api/apiServerSide';
 import { FileText } from 'lucide-react';
 import Image from 'next/image';
-import CourseDetailLoading from './loading';
+import { cookies } from 'next/headers';
+import BuyButton from './BuyButton';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = await params;
   const course = await apiServerService.getCoursesPublic(courseId);
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME as string)?.value;
 
   return (
     <>
@@ -29,9 +31,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
 
             <span className="text-primary-500 text-xl font-semibold py-4">Only ${course.courseDto.price}</span>
             <div className="flex flex-row gap-2">
-              <form action="">
-                <Button variant="primary">Buy Now!</Button>
-              </form>
+              <BuyButton courseId={courseId} authToken={authToken} />
             </div>
           </div>
           {/* Image */}

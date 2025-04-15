@@ -24,8 +24,8 @@ const navLinks = {
   user: [
     { icon: BookOpen, label: 'Courses', href: '/user/courses' },
     { icon: User, label: 'Profile', href: '/user/profile' },
-    { icon: Settings, label: 'Settings', href: '/user/settings' },
-    { icon: BookOpen, label: 'Become Teacher', href: '/user/become-teacher' },
+    { icon: Settings, label: 'Billing', href: '/user/billing' },
+    { icon: Settings, label: 'Cart', href: '/user/cart' },
   ],
   teacher: [
     { icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' },

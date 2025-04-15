@@ -55,7 +55,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
         <p className="text-white-50 font-semibold hidden sm:block">{authToken?.sub || 'User'}</p>
         <Avatar>
           <AvatarImage
-            src={authToken?.picture || '/placeholder.png'}
+            src={authToken?.picture || '/Profile_avatar_placeholder.png'}
             className="group-hover:opacity-50 transition-opacity duration-300"
           />
           <AvatarFallback>
@@ -71,6 +71,14 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
             className,
           )}>
           Profile
+        </Link>
+        <Link
+          href={'user/cart'}
+          className={cn(
+            'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
+            className,
+          )}>
+          Cart
         </Link>
         <LogoutButton className={className} />
       </PopoverContent>

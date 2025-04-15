@@ -8,7 +8,7 @@ const ProfilePage = ({
   return (
     <>
       <Header title="Profile" subtitle="View your profile" />
-      <div className="max-w-[30rem] mt-5 ">{children}</div>
+      <div className="max-w-[30rem] mt-5 mx-auto">{children}</div>
     </>
   );
 };

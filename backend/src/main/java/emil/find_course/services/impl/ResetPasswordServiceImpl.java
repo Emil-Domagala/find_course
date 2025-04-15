@@ -79,7 +79,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
             emailService.sendHtmlEmail(
                     user.getEmail(),
-                    "Verify Your Email Address",
+                    "Reset Password Request",
                     "password-reset",
                     templateModel);
         }

@@ -1,13 +1,16 @@
 package emil.find_course.services.impl;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
+import emil.find_course.repositories.BecomeTeacherRepository;
 import emil.find_course.repositories.UserRepository;
 import emil.find_course.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BecomeTeacherRepository becomeTeacherRepository;
 
     @Override
     public User findByEmail(String email) {
@@ -51,6 +55,29 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
 
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
+
+    @Override
+    public Optional<BecomeTeacher> getBecomeTeacherRequest(User user) {
+        return becomeTeacherRepository.findByUser(user);
+    }
+
+    @Override
+    public BecomeTeacher createBecomeTeacherRequest(User user) {
+        Optional<BecomeTeacher> becomeTeacherOpt = becomeTeacherRepository.findByUser(user);
+        if (becomeTeacherOpt.isPresent()) {
+            new IllegalArgumentException("You already sent become teacher request");
+        }
+
+
+        BecomeTeacher newBecomeTeacher = new BecomeTeacher();
+        newBecomeTeacher.setUser(user);
+        return becomeTeacherRepository.save(newBecomeTeacher);
     }
 
 }

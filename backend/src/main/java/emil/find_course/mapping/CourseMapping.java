@@ -13,7 +13,8 @@ import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { SectionMapping.class,
+        UserMapping.class })
 public interface CourseMapping {
 
     @Mapping(target = "studentsCount", source = "students", qualifiedByName = "calculateEnrolledStudents")

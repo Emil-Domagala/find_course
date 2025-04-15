@@ -1,16 +1,24 @@
 package emil.find_course.services;
 
 import java.security.Principal;
+import java.util.Optional;
 
+import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 
 public interface UserService {
 
-    User findByEmail(String email);
+    public User findByEmail(String email);
 
-    String getRoles(Principal principal);
+    public String getRoles(Principal principal);
 
-    User updateUser(RequestUpdateUser requestUpdateUser, User user);
+    public User updateUser(RequestUpdateUser requestUpdateUser, User user);
+
+    public void deleteUser(User user);
+
+    public Optional<BecomeTeacher> getBecomeTeacherRequest(User user);
+
+    public BecomeTeacher createBecomeTeacherRequest(User user);
 
 }

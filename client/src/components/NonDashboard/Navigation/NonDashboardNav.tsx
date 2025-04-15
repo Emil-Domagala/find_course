@@ -12,7 +12,9 @@ const NonDashboardNav = async () => {
   let decoded;
 
   try {
-    decoded = jwtDecode(authToken!) as AuthToken;
+    if (authToken) {
+      decoded = jwtDecode(authToken) as AuthToken;
+    }
   } catch (err) {
     console.error('JWT Verification Failed:', err);
   }
