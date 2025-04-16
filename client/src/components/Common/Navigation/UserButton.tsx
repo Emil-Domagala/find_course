@@ -65,7 +65,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
       </PopoverTrigger>
       <PopoverContent className={cn('bg-customgreys-secondarybg min-w-32 rounded-lg overflow-hidden z-50', className)}>
         <Link
-          href={'user/profile'}
+          href={'/user/profile'}
           className={cn(
             'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
             className,
@@ -73,7 +73,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           Profile
         </Link>
         <Link
-          href={'user/cart'}
+          href={'/user/cart'}
           className={cn(
             'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
             className,

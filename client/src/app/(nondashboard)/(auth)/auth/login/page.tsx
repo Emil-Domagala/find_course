@@ -8,12 +8,16 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useLoginMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { UserLoginRequest } from '@/types/auth';
 import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 
 const LoginPage = () => {
+  const searchParams = useSearchParams();
+  let redirect = searchParams.get('redirect');
+  if (!redirect) redirect = '/user/courses';
+
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [loginUser] = useLoginMutation();
@@ -30,7 +34,7 @@ const LoginPage = () => {
     try {
       setIsLoading(true);
       await loginUser(values).unwrap();
-      router.push('/user/courses');
+      router.push(redirect);
       router.refresh();
     } catch (e) {
       const errorFull = e as ApiErrorResponse;

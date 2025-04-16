@@ -11,7 +11,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import com.sendgrid.Method;
 import com.sendgrid.Request;
-import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
@@ -30,6 +29,7 @@ public class EmailServiceImpl implements EmailService {
     private final String SENDGRID_API_KEY = dotenv.get("SENDGRID_API_KEY");
     private final String MY_EMAIL = dotenv.get("SPRING_MAIL_USERNAME");
 
+    @Override
     @Async
     public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> templateModel) {
 

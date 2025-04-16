@@ -45,7 +45,7 @@ const BecomeTeacherUser = () => {
           Become a Teacher
         </AccordionTrigger>
         <AccordionContent className=" px-3 py-5">
-          {becomeTeacherRequestStatus?.user ? (
+          {becomeTeacherRequestStatus?.id ? (
             <p>
               Your request was send {new Date(becomeTeacherRequestStatus.createdAt).toLocaleDateString()} and it is{' '}
               <span

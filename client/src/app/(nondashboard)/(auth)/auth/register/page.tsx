@@ -11,6 +11,7 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import Link from 'next/link';
 
 const RegisterPage = () => {
   const router = useRouter();

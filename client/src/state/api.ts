@@ -2,6 +2,7 @@ import { SearchDirection, SearchField } from '@/hooks/useSearchFilters';
 import { ProfileFormSchema } from '@/lib/validation/profile';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
+import { CartDto } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
 import { BecomeTeacherRequest } from '@/types/user';
 import { createApi, fetchBaseQuery, RootState } from '@reduxjs/toolkit/query/react';
@@ -50,7 +51,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User'],
+  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart'],
   endpoints: (build) => ({
     // *******************
     // -------AUTH--------
@@ -266,7 +267,28 @@ export const api = createApi({
             ],
     }),
 
-    //
+    // ****************
+    // ------Cart------
+    // ****************
+    getCart: build.query<CartDto, void>({
+      query: () => ({ url: 'cart' }),
+      keepUnusedDataFor: 0,
+      providesTags: ['Cart'],
+    }),
+    addCourseToCart: build.mutation<CartDto, { courseId: string }>({
+      query: ({ courseId }) => ({ url: `cart/${courseId}`, method: 'POST' }),
+      invalidatesTags: ['Cart'],
+    }),
+    removeCourseFromCart: build.mutation<CartDto, { courseId: string }>({
+      query: ({ courseId }) => ({ url: `cart/${courseId}`, method: 'DELETE' }),
+      invalidatesTags: ['Cart'],
+    }),
+    // ****************
+    // -----Stripe-----
+    // ****************
+    createStripePaymentIntent: build.mutation<{ clientSecret: string; cartId: string }, { amount: number }>({
+      query: ({ amount }) => ({ url: 'transaction/stripe/create-payment-intent', method: 'POST', body: { amount } }),
+    }),
   }),
 });
 
@@ -286,11 +308,17 @@ export const {
   useUpdateUserInfoMutation,
   useSendBecomeTeacherRequestMutation,
   useGetBecomeTeacherRequestStatusQuery,
-  // Courses
-  useGetCoursesPublicQuery,
-  useLazyGetCoursesPublicQuery,
   // Teacher
   useLazyGetCoursesTeacherQuery,
   useCreateCourseMutation,
   useDeleteCourseMutation,
+  // Courses
+  useGetCoursesPublicQuery,
+  useLazyGetCoursesPublicQuery,
+  // Cart
+  useGetCartQuery,
+  useAddCourseToCartMutation,
+  useRemoveCourseFromCartMutation,
+  // Stripe
+  useCreateStripePaymentIntentMutation,
 } = api;

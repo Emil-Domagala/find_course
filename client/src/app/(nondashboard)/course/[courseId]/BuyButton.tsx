@@ -12,7 +12,8 @@ const BuyButton = ({ courseId, authToken }: Props) => {
     console.log(courseId);
 
     if (!authToken) {
-      router.push('/auth/login?redirect=/course/' + courseId);
+      toast.info('Please login to add to cart');
+      return router.push('/auth/login?redirect=/course/' + courseId);
     }
 
     try {

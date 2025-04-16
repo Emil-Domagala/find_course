@@ -2,7 +2,6 @@ package emil.find_course.controllers;
 
 import org.springframework.http.HttpHeaders;
 
-import java.lang.foreign.Linker.Option;
 import java.security.Principal;
 import java.util.Optional;
 

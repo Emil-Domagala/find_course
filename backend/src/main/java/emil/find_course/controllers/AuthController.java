@@ -90,7 +90,7 @@ public class AuthController {
         public ResponseEntity<Void> refreshCookie(
                         @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
-                System.out.println(refreshToken);
+                System.out.println("refreshToken" + refreshToken);
 
                 String authToken = authService.refreshAuthToken(refreshToken);
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
@@ -98,7 +98,6 @@ public class AuthController {
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                                 cookie.toString()).build();
         }
-
 
         // It will be deleted
 
