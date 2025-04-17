@@ -1,41 +1,56 @@
-🧠 Fullstack Course Platform
+ <h1>🧠 Fullstack Course Platform</h1>
 
-A full-featured course platform inspired by Udemy, built with Java (Spring Boot) for the backend and Next.js (React) for the frontend. Users can browse, purchase, and follow video-based courses, with support for teachers and admins to manage content and users.
+  <p>
+    A full-featured course platform inspired by Udemy, built with <strong>Java (Spring Boot)</strong> for the backend and <strong>Next.js (React)</strong> for the frontend. Users can browse, purchase, and follow video-based courses, with support for teachers and admins to manage content and users.
+  </p>
 
-🔧 Tech Stack
+  <h2>🔧 Tech Stack</h2>
 
-Frontend
-Next.js, React, Tailwind CSS
-Redux Toolkit + RTK Query
-shadcn/ui for modern UI components
-Zod for validation
-Stripe for payments
-FilePond for media uploads
-Backend
-Java, Spring Boot, Spring Security, Spring Mail
-PostgreSQL
-JWT (Access + Refresh tokens) with secure cookie-based auth
-MapStruct for mapping
-Lombok for boilerplate reduction
-SendGrid for email verification and password reset
-🔐 Key Features
+  <h3>Frontend</h3>
+  <ul>
+    <li>Next.js, React, Tailwind CSS</li>
+    <li>Redux Toolkit + RTK Query</li>
+    <li>shadcn/ui for modern UI components</li>
+    <li>Zod for validation</li>
+    <li>Stripe for payments</li>
+    <li>FilePond for media uploads</li>
+  </ul>
 
-👤 User, Teacher, and Admin roles with separate dashboards
-📚 Course creation, purchase, and progress tracking
-🧩 Courses structured as Sections & Chapters (video or text)
-🧾 Secure payments via Stripe
-🖼 Image upload (avatars, thumbnails)
-🔍 Filtering, search, and pagination
-✅ Email verification and forgot password flow
-🛒 Cart and checkout
-🔒 Secure authentication (http-only cookies, SameSite=Strict)
-🚀 Getting Started
+  <h3>Backend</h3>
+  <ul>
+    <li>Java, Spring Boot, Spring Security, Spring Mail</li>
+    <li>PostgreSQL</li>
+    <li>JWT (Access + Refresh tokens) with secure cookie-based auth</li>
+    <li>MapStruct for mapping</li>
+    <li>Lombok for boilerplate reduction</li>
+    <li>SendGrid for email verification and password reset</li>
+  </ul>
 
-Clone the project
-Set up environment variables (see .env.example for frontend and application.properties with .env.example for backend):
-Stripe API keys
-SendGrid API key
-PostgreSQL DB connection details
-JWT secrets
-Run backend and frontend (npm run dev)
-Access the app at http://localhost:3000
+  <h2>🔐 Key Features</h2>
+  <ul>
+    <li>👤 User, Teacher, and Admin roles with separate dashboards</li>
+    <li>📚 Course creation, purchase, and progress tracking</li>
+    <li>🧩 Courses structured as Sections & Chapters (video or text)</li>
+    <li>🧾 Secure payments via Stripe</li>
+    <li>🖼 Image upload (avatars, thumbnails)</li>
+    <li>🔍 Filtering, search, and pagination</li>
+    <li>✅ Email verification and forgot password flow</li>
+    <li>🛒 Cart and checkout</li>
+    <li>🔒 Secure authentication (http-only cookies, SameSite=Strict)</li>
+  </ul>
+
+  <h2>🚀 Getting Started</h2>
+  <ol>
+    <li>Clone the project</li>
+    <li>
+      Set up environment variables (see <code>.env.example</code> for frontend and <code>application.properties</code> with <code>.env.example</code> for backend):
+      <ul>
+        <li>Stripe API keys</li>
+        <li>SendGrid API key</li>
+        <li>PostgreSQL DB connection details</li>
+        <li>JWT secrets</li>
+      </ul>
+    </li>
+    <li>Run backend and frontend: <code>npm run dev</code></li>
+    <li>Access the app at <a href="http://localhost:3000">http://localhost:3000</a></li>
+  </ol>
