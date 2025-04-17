@@ -50,6 +50,10 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("You already have this course in your cart");
         }
 
+        if (user.getEnrollmentCourses().contains(course)) {
+            throw new IllegalArgumentException("You already have this course in your enrollment");
+        }
+
         if (cart.getUser() == null) {
             cart.setUser(user);
             cart.setExpiration(Instant.now().plusSeconds(60 * 60 * 24 * 7));
@@ -72,6 +76,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getCartByUser(User user) {
         return cartRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+    }
+
+    @Override
+    public void deleteCart(Cart cart) {
+        cartRepository.delete(cart);
     }
 
 }

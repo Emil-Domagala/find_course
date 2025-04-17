@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Course Purchase Confirmation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+   background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+        .logo {
+        width: 120px;
+        margin-bottom: 20px;
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+      }
+      .header h1 {
+        margin: 0;
+        color: #333;
+      }
+      .content {
+        padding: 20px 0;
+        color: #333;
+      }
+      .course-box {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 20px;
+        background-color: #7878fc;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+      .footer {
+         margin-top: 40px;
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <img
+        src="https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_640.png"
+        alt="Find Course Logo"
+        class="logo" />
+      <div class="header">
+        <h1>🎉 Thank You for Your Purchase!</h1>
+      </div>
+      <div class="content">
+        <p th:text="'Hi ' + ${user.username}"></p>
+        <p>Your purchase was successful! Here are the courses you now have access to:</p>
+
+        <div th:each="course : ${cart.courses.title}" class="course-box">
+          <p><strong>Course Name:</strong> <span th:text="${course.name}">Course Title</span></p>
+        </div>
+        <p><strong>Order ID:</strong> <span th:text="${transaction.id}"></span></p>
+        <p><strong>Purchase Date:</strong> <span th:text="${transaction.createdAt}"></span></p>
+        <a th:href="${link}" class="button">Go to your Courses</a>
+
+        <p>You can access all your purchased courses from your dashboard anytime.</p>
+      </div>
+
+      <div class="footer">&copy; 2025 Find Course. All rights reserved.</div>
+    </div>
+  </body>
+</html>

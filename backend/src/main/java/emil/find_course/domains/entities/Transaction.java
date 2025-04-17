@@ -37,10 +37,10 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID transactionId;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String paymentIntendId;
+    private String paymentIntentId;
 
     @Column(nullable = false)
     private int amount;

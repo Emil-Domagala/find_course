@@ -1,7 +1,5 @@
 package emil.find_course.services;
 
-
-
 import java.util.Optional;
 
 import emil.find_course.domains.entities.Cart;
@@ -15,6 +13,9 @@ public interface CartService {
     public Cart addCourseToCart(User user, Course course);
 
     public Optional<Cart> getCart(User user);
+
     public Cart getCartByUser(User user);
+
+    public void deleteCart(Cart cart);
 
 }

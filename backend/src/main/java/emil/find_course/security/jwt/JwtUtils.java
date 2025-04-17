@@ -97,7 +97,6 @@ public class JwtUtils {
 
     public boolean validateToken(String authToken) {
         try {
-            System.out.println("validate auth token");
             Jwts.parser().verifyWith((SecretKey) key())
                     .build().parseSignedClaims(authToken);
             return true;
@@ -112,17 +111,12 @@ public class JwtUtils {
 
     public boolean validateRefreshToken(String refreshToken) {
         try {
-            System.out.println("validate refresh token");
-            System.out.println(refreshToken);
-            System.out.println("?//////////////////");
             Jwts.parser().verifyWith((SecretKey) key())
                     .build().parseSignedClaims(refreshToken);
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("Refresh token expired" + e);
             throw new UnauthorizedException("Refresh token expired");
         } catch (Exception e) {
-            System.out.println("Invalid refresh token" + e);
             throw new UnauthorizedException("Invalid refresh token", e);
         }
     }

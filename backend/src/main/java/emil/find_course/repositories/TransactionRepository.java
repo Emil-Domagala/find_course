@@ -9,5 +9,5 @@ import emil.find_course.domains.entities.Transaction;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
-
+    boolean existsByPaymentIntentId(String paymentIntentId);
 }

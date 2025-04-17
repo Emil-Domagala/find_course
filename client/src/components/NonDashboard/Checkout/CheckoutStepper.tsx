@@ -34,7 +34,7 @@ const CheckoutStepper = () => {
                   'text-white-100': currentStep >= step,
                   'text-customgreys-dirtyGrey': currentStep < step,
                 })}>
-                {step === 1 && 'Cart'}
+                {step === 1 && 'Payment'}
                 {step === 2 && 'Completion'}
               </p>
             </div>

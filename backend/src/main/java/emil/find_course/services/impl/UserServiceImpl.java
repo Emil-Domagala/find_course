@@ -2,12 +2,14 @@ package emil.find_course.services.impl;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import emil.find_course.domains.entities.BecomeTeacher;
+import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.repositories.BecomeTeacherRepository;
@@ -73,11 +75,15 @@ public class UserServiceImpl implements UserService {
         if (becomeTeacherOpt.isPresent()) {
             new IllegalArgumentException("You already sent become teacher request");
         }
-
-
         BecomeTeacher newBecomeTeacher = new BecomeTeacher();
         newBecomeTeacher.setUser(user);
         return becomeTeacherRepository.save(newBecomeTeacher);
+    }
+
+    @Override
+    public void grantAccessToCourse(User user, Set<Course> courses) {
+        user.getEnrollmentCourses().addAll(courses);
+        userRepository.save(user);
     }
 
 }

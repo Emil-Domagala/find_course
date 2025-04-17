@@ -1,13 +1,11 @@
 package emil.find_course.services.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +18,14 @@ import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import emil.find_course.domains.dto.CustomPaymentIntent;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.Transaction;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.exceptions.CustomStripeException;
 import emil.find_course.repositories.TransactionRepository;
 import emil.find_course.services.CartService;
+import emil.find_course.services.EmailService;
 import emil.find_course.services.StripeService;
 import emil.find_course.services.UserService;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -41,6 +41,10 @@ public class StripeServiceImpl implements StripeService {
 
     private final String webhookSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
 
+    @Value("${frontend.domain}")
+    private String frontendDomain;
+
+    private final EmailService emailService;
     private final UserService userService;
     private final CartService cartService;
     private final TransactionRepository transactionRepository;
@@ -136,9 +140,8 @@ public class StripeServiceImpl implements StripeService {
 
         try {
             User user = userService.findByEmail(paymentIntent.getReceiptEmail());
-            String paymentIntendId = paymentIntent.getId();
 
-            if (transactionRepository.existsByPaymentProviderReference(paymentIntent.getId())) {
+            if (transactionRepository.existsByPaymentIntentId(paymentIntent.getId())) {
                 log.warn("Webhook warning: PaymentIntent {} already processed.", paymentIntent.getId());
                 return;
             }
@@ -155,20 +158,16 @@ public class StripeServiceImpl implements StripeService {
                 return;
             }
 
-            // TODO: Grant Access / Fulfill Order Grant acces to courses, send email
-            log.info("Granting access to courses for user {} for PaymentIntent {}", user.getId(),
-                    paymentIntent.getId());
-
+            userService.grantAccessToCourse(user, cart.getCourses());
             Transaction transaction = Transaction.builder()
                     .user(user)
-                    .amount((int) (paymentIntent.getAmount() / 1)) 
-                    .paymentIntendId(paymentIntent.getId()) 
-                    .courses(Set.copyOf(cart.getCourses())) 
+                    .amount((int) (paymentIntent.getAmount() / 1))
+                    .paymentIntentId(paymentIntent.getId())
+                    .courses(Set.copyOf(cart.getCourses()))
                     .build();
-            transactionRepository.save(transaction);
-
-            // 6. Clear the User's Cart
-            cartService.clearCart(user); 
+            Transaction savedTransaction = transactionRepository.save(transaction);
+            sendPurchasedEmail(user, cart, savedTransaction);
+            cartService.deleteCart(cart);
 
         } catch (EntityNotFoundException e) {
             log.error("Webhook error: User not found for ID {} from PaymentIntent metadata. ID: {}", userIdStr,
@@ -183,4 +182,41 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    private void sendPurchasedEmail(User user, Cart cart, Transaction transaction) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("user", user);
+        templateModel.put("link", frontendDomain + "/login?redirect=/user/courses");
+        templateModel.put("cart", cart);
+        templateModel.put("transaction", transaction);
+
+        emailService.sendHtmlEmail(
+                user.getEmail(),
+                "Reset Password Request",
+                "password-reset",
+                templateModel);
+    }
+
+    // TODO: JUST FOR DEV ENVIOREMENT DELETE IN PROD
+
+    @Transactional
+    public void handleTarnsaction(User user, CustomPaymentIntent paymentIntent) {
+
+        System.out.println(paymentIntent.toString());
+
+        Cart cart = cartService.getCartByUser(user);
+        if (transactionRepository.existsByPaymentIntentId(paymentIntent.getId())) {
+            log.warn("Webhook warning: PaymentIntent {} already processed.", paymentIntent.getId());
+            return;
+        }
+        userService.grantAccessToCourse(user, cart.getCourses());
+        Transaction transaction = Transaction.builder()
+                .user(user)
+                .amount((int) (paymentIntent.getAmount() / 1))
+                .paymentIntentId(paymentIntent.getId())
+                .courses(Set.copyOf(cart.getCourses()))
+                .build();
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        sendPurchasedEmail(user, cart, savedTransaction);
+        cartService.deleteCart(cart);
+    }
 }

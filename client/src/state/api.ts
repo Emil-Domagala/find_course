@@ -7,6 +7,7 @@ import { CourseCategory } from '@/types/courses-enum';
 import { Transaction } from '@/types/payments';
 import { BecomeTeacherRequest } from '@/types/user';
 import { createApi, fetchBaseQuery, RootState } from '@reduxjs/toolkit/query/react';
+import { PaymentIntent } from '@stripe/stripe-js';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -307,6 +308,15 @@ export const api = createApi({
     createStripePaymentIntent: build.mutation<{ clientSecret: string }, void>({
       query: () => ({ url: 'transaction/stripe/create-payment-intent', method: 'POST' }),
     }),
+    // !!!!!!!!!!!!!!!!!!!
+    // ONLY IN DEV ENV
+    // !!!!!!!!!!!!!!!!!!!
+    finalizePaymentInDev: build.mutation<void, { paymentIntent: { id: string; amount: number } }>({
+      query: (data) => ({ url: 'transaction/stripe/finalize-payment', method: 'POST', body: data.paymentIntent }),
+    }),
+    // !!!!!!!!!!!!!!!!!!!
+    // DELETE ABOVE
+    // !!!!!!!!!!!!!!!!!!!
   }),
 });
 
@@ -339,4 +349,6 @@ export const {
   useRemoveCourseFromCartMutation,
   // Stripe
   useCreateStripePaymentIntentMutation,
+  useFinalizePaymentInDevMutation,
+  // !!!!!!!!! ABOVE ONLY IN DEV
 } = api;
