@@ -12,8 +12,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.stripe.exception.StripeException;
 
 import emil.find_course.domains.dto.ApiErrorResponse;
+import emil.find_course.exceptions.CustomStripeException;
 import emil.find_course.exceptions.EmailConfirmException;
 import emil.find_course.exceptions.FieldValidationException;
 import emil.find_course.exceptions.JwtAuthException;
@@ -127,6 +131,24 @@ public class ErrorController {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        // 404
+        @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(
+                        HttpMessageNotReadableException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.NOT_FOUND.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        // Payment
+        @ExceptionHandler(CustomStripeException.class)
+        public ResponseEntity<ApiErrorResponse> handleCustomStripeException(
+                        HttpMessageNotReadableException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 }

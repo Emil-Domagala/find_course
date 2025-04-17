@@ -8,8 +8,8 @@ import React from 'react';
 const CheckoutStepper = () => {
   const pathname = usePathname();
   let currentStep: number = 1;
-  if (pathname === '/user/cart') currentStep = 1;
-  if (pathname === '/user/cart/completion') currentStep = 2;
+  if (pathname === '/user/checkout') currentStep = 1;
+  if (pathname === '/user/checkout/success') currentStep = 2;
 
   return (
     <div className="w-1/2 md:w-1/3 mb-4 flex flex-col items-center">

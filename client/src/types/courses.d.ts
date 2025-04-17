@@ -2,7 +2,7 @@ import { CourseCategory, CourseStatus, Level } from './courses-enum';
 
 export type CartDto = {
   id: string;
-  courses?: CourseDto[];
+  courses: CourseDto[];
   totalPrice: number;
 };
 

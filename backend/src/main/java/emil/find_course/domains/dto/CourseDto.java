@@ -24,7 +24,7 @@ public class CourseDto {
     private String description;
     private CourseCategory category;
     private String imageUrl;
-    private double price;
+    private int price;
     private Level level;
     private CourseStatus status;
     private long studentsCount;

@@ -4,6 +4,7 @@ import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/use
 import { UserLoginRequest } from '@/types/auth';
 import { CartDto } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
+import { Transaction } from '@/types/payments';
 import { BecomeTeacherRequest } from '@/types/user';
 import { createApi, fetchBaseQuery, RootState } from '@reduxjs/toolkit/query/react';
 
@@ -15,10 +16,7 @@ const baseQuery = fetchBaseQuery({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log('in base qquery');
-
   if (result?.error?.status === 403) {
-    console.log('Attempting token refresh due to 403');
     const refreshResult = await baseQuery(
       {
         url: '/public/refresh-token',
@@ -28,13 +26,9 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
       api,
       extraOptions,
     );
-    console.log(refreshResult);
     if (!refreshResult.error) {
-      console.info('Token refresh successful (request succeeded), retrying original request.');
-
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.error('Token refresh failed:', refreshResult.error);
       await baseQuery(
         {
           url: 'public/logout',
@@ -281,13 +275,37 @@ export const api = createApi({
     }),
     removeCourseFromCart: build.mutation<CartDto, { courseId: string }>({
       query: ({ courseId }) => ({ url: `cart/${courseId}`, method: 'DELETE' }),
+      async onQueryStarted({ courseId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          api.util.updateQueryData('getCart', undefined, (draft: CartDto) => {
+            if (!draft || !draft.courses || !Array.isArray(draft.courses)) {
+              console.warn('Draft cart data is not in the expected format for optimistic update.');
+              return;
+            }
+            const courseIndex = draft.courses.findIndex((course) => course.id === courseId);
+            if (courseIndex !== -1) {
+              const courseToRemove = draft.courses[courseIndex];
+              if (typeof courseToRemove.price === 'number') {
+                draft.totalPrice -= courseToRemove.price;
+              }
+              draft.courses.splice(courseIndex, 1);
+            }
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+          console.error('Error removing course from cart, reverting optimistic update:', err);
+        }
+      },
       invalidatesTags: ['Cart'],
     }),
     // ****************
     // -----Stripe-----
     // ****************
-    createStripePaymentIntent: build.mutation<{ clientSecret: string; cartId: string }, { amount: number }>({
-      query: ({ amount }) => ({ url: 'transaction/stripe/create-payment-intent', method: 'POST', body: { amount } }),
+    createStripePaymentIntent: build.mutation<{ clientSecret: string }, void>({
+      query: () => ({ url: 'transaction/stripe/create-payment-intent', method: 'POST' }),
     }),
   }),
 });

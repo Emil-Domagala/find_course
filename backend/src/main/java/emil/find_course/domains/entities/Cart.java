@@ -2,6 +2,7 @@ package emil.find_course.domains.entities;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import emil.find_course.domains.entities.course.Course;
@@ -39,14 +40,20 @@ public class Cart {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "cart_course", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn)
+    @JoinTable(name = "cart_course", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
     @Builder.Default
-    private HashSet<Course> courses = new HashSet<>();
+    private Set<Course> courses = new HashSet<>();
 
     @Column(nullable = false)
-    private double totalPrice;
+    private int totalPrice;
 
     @Column(nullable = false)
     private Instant expiration;
+
+    @Override
+    public String toString() {
+        return "Cart [id=" + id + ", user=" + user + ", courses=" + courses + ", totalPrice=" + totalPrice
+                + ", expiration=" + expiration + "]";
+    }
 
 }

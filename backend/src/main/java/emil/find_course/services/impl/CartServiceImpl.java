@@ -11,6 +11,7 @@ import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.repositories.CartRepository;
 import emil.find_course.services.CartService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,7 +56,9 @@ public class CartServiceImpl implements CartService {
         }
 
         cart.getCourses().add(course);
+
         cart.setTotalPrice(cart.getTotalPrice() + course.getPrice());
+        System.out.println(cart.toString());
 
         return cartRepository.save(cart);
 
@@ -64,6 +67,11 @@ public class CartServiceImpl implements CartService {
     @Override
     public Optional<Cart> getCart(User user) {
         return cartRepository.findByUser(user);
+    }
+
+    @Override
+    public Cart getCartByUser(User user) {
+        return cartRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
 }

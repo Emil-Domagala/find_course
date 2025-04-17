@@ -2,6 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
 import Tag from './Home/Tag';
+import { centsToDollars } from '@/lib/utils';
 
 export const CourseCardSearchSkeleton = () => {
   return <Skeleton className="h-[300px] rounded-lg"></Skeleton>;
@@ -22,19 +23,24 @@ const CourseCardSearch = ({ course }: { course: CourseDto }) => {
           />
         </div>
         <div className="p-4 flex flex-col justify-between flex-grow">
-          <Tag className="bg-customgreys-dirtyGrey/20 w-fit mb-2" size="small">
-            {course.category}
-          </Tag>
+          <div className="flex justify-between">
+            <Tag className="bg-customgreys-dirtyGrey/20 w-fit mb-2" size="small">
+              {course.category}
+            </Tag>
+            <Tag className="bg-primary-700 w-fit mb-2" size="small">
+              {course.level}
+            </Tag>
+          </div>
           <div>
             <h2 className="font-semibold line-clamp-1">{course.title}</h2>
-            <p className="text-sm mt-1 line-clamp-2">{course.description}</p>
+            <p className="text-sm mt-1 line-clamp-2 max-h-[5rem] overflow-hidden">{course.description}</p>
           </div>
           <div className="mt-2">
             <p className="text-customgreys-dirtyGrey text-sm">
               By {course.teacher.username} {course.teacher.userLastname}
             </p>
             <div className="flex justify-between items-center mt-1">
-              <span className="text-primary-500 font-semibold">${course.price}</span>
+              <span className="text-primary-500 font-semibold">${centsToDollars(course.price)}</span>
               <span className="text-customgreys-dirtyGrey text-sm">{course.studentsCount} Enrolled</span>
             </div>
           </div>

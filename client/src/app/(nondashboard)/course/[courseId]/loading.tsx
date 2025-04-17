@@ -22,7 +22,7 @@ const CourseDetailLoading = () => {
           </div>
 
           {/* Image Skeleton */}
-          <div className="relative h-64 w-full md:h-full md:basis-1/2 overflow-hidden rounded-lg">
+          <div className="relative h-64 w-full md:h-full aspect-video overflow-hidden rounded-lg">
             <Skeleton className="h-full w-full" />
           </div>
         </div>

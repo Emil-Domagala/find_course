@@ -39,11 +39,11 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID transactionId;
 
-    @Column(nullable = false)
-    private String paymentProvider;
+    @Column(nullable = false, unique = true)
+    private String paymentIntendId;
 
     @Column(nullable = false)
-    private double amount;
+    private int amount;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

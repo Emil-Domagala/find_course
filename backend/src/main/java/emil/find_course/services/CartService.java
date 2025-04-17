@@ -15,5 +15,6 @@ public interface CartService {
     public Cart addCourseToCart(User user, Course course);
 
     public Optional<Cart> getCart(User user);
+    public Cart getCartByUser(User user);
 
 }

@@ -5,6 +5,7 @@ import { FileText } from 'lucide-react';
 import Image from 'next/image';
 import { cookies } from 'next/headers';
 import BuyButton from './BuyButton';
+import { centsToDollars } from '@/lib/utils';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = await params;
@@ -29,14 +30,16 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
 
             {/* BUY */}
 
-            <span className="text-primary-500 text-xl font-semibold py-4">Only ${course.courseDto.price}</span>
+            <span className="text-primary-500 text-xl font-semibold py-4">
+              Only ${centsToDollars(course.courseDto.price)}
+            </span>
             <div className="flex flex-row gap-2">
               <BuyButton courseId={courseId} authToken={authToken} />
             </div>
           </div>
           {/* Image */}
 
-          <div className="relative h-full basis-1/2 overflow-hidden rounded-lg ">
+          <div className="relative h-full aspect-video overflow-hidden rounded-lg ">
             <Image
               src={course.courseDto.imageUrl || '/placeholder.png'}
               alt={course.courseDto.title}

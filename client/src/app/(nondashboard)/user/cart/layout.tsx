@@ -1,14 +1,14 @@
-import CheckoutStepper from '@/components/NonDashboard/Cart/CheckoutStepper';
-
-export default function CartLayout({
+const CartLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
-    <div className="w-full px-4 h-full flex flex-col items-center py-12">
-      <CheckoutStepper />
-      <div className="w-full max-w-screen-lg flex flex-col items-center mt-10">{children}</div>
-    </div>
+    <main className={'container'}>
+      <h1 className="text-3xl font-bold text-white-50 my-7">Your Cart</h1>
+      {children}
+    </main>
   );
-}
+};
+
+export default CartLayout;

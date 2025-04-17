@@ -17,6 +17,6 @@ public class CartDto {
     private UUID id;
     @Builder.Default
     private HashSet<CourseDto> courses = new HashSet<>();
-    private double totalPrice;
+    private int totalPrice;
 
 }

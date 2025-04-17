@@ -1,5 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import { useAddCourseToCartMutation } from '@/state/api';
+import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -7,6 +9,7 @@ type Props = { courseId: string; authToken?: string };
 
 const BuyButton = ({ courseId, authToken }: Props) => {
   const router = useRouter();
+  const [addCourseToCart] = useAddCourseToCartMutation();
 
   const handleAddToCart = async () => {
     console.log(courseId);
@@ -17,16 +20,22 @@ const BuyButton = ({ courseId, authToken }: Props) => {
     }
 
     try {
+      await addCourseToCart({ courseId }).unwrap();
       toast.success('Added to cart');
     } catch (e) {
-      console.log(e);
-      toast.error('Something went wrong');
+      const errorFull = e as ApiErrorResponse;
+      const error = errorFull.data;
+      let message = 'Something went wrong';
+      if (error.message) {
+        message = error.message;
+      }
+      toast.error(message);
     }
   };
 
   return (
     <Button variant="primary" onClick={handleAddToCart}>
-      Buy Now!
+      Add to Cart!
     </Button>
   );
 };

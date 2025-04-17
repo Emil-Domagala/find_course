@@ -32,7 +32,7 @@ public class RequestCourseBody {
     private String imageUrl;
 
     @Positive(message = "Price must be a positive value")
-    private double price;
+    private int price;
 
     @NotNull(message = "Level is required")
     @ValidEnum(enumClass = Level.class, message = "Invalid level value")
