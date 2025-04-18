@@ -29,7 +29,6 @@ const SearchPage = () => {
     return fetchCourses({ page, size, sortField, direction, keyword, category });
   };
   useEffect(() => {
-    console.log('object');
     handleFetchCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
@@ -59,7 +58,7 @@ const SearchPage = () => {
         <DisplayCourses coursesPage={coursesPage} isLoading={isLoading} />
       </div>
 
-      <Pagination setPage={setPage} page={page} coursesPage={coursesPage} />
+      <Pagination setPage={setPage} currentPage={page} totalPages={coursesPage?.totalPages} />
     </>
   );
 };

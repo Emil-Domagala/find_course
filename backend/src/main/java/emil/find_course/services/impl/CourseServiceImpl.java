@@ -42,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public PagingResult<CourseDto> searchCourses(String keyword, CourseCategory category, PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
-        System.out.println(category);
+
         final Page<Course> courses = courseRepository.searchCourses(keyword, CourseStatus.PUBLISHED, category,
                 pageable);
         final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();

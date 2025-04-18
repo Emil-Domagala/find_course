@@ -93,7 +93,7 @@ const MyCourses = () => {
           <TeacherCourseCard key={course.id} course={course} onDelete={handleDelete} />
         ))}
       </div>
-      <Pagination setPage={setPage} page={page} coursesPage={coursesPage} />
+      <Pagination setPage={setPage} currentPage={page} totalPages={coursesPage?.totalPages} />
     </div>
   );
 };

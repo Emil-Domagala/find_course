@@ -18,15 +18,14 @@ import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 
-import emil.find_course.domains.dto.CustomPaymentIntent;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.Transaction;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.exceptions.CustomStripeException;
-import emil.find_course.repositories.TransactionRepository;
 import emil.find_course.services.CartService;
 import emil.find_course.services.EmailService;
 import emil.find_course.services.StripeService;
+import emil.find_course.services.TransactionService;
 import emil.find_course.services.UserService;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,7 +46,7 @@ public class StripeServiceImpl implements StripeService {
     private final EmailService emailService;
     private final UserService userService;
     private final CartService cartService;
-    private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
 
     @Override
     public PaymentIntent createPaymentIntent(Cart cart, User user) {
@@ -75,9 +74,9 @@ public class StripeServiceImpl implements StripeService {
             PaymentIntent intent = PaymentIntent.create(params);
             return intent;
         } catch (StripeException e) {
-            throw new CustomStripeException("Error creating PaymentIntent", e);
+            throw new CustomStripeException("Error creating PaymentIntent");
         } catch (Exception e) {
-            throw new RuntimeException("Error creating PaymentIntent", e);
+            throw new RuntimeException("Error creating PaymentIntent");
         }
     }
 
@@ -85,16 +84,15 @@ public class StripeServiceImpl implements StripeService {
     @Transactional
     public void handleWebhookEvent(String payload, String sigHeader) {
         Event event;
-        System.out.println("Stripe webhook " + payload);
 
         try {
             // Verify the event signature using your webhook signing secret
             event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
         } catch (SignatureVerificationException e) {
-            log.error("Webhook error: Invalid signature.", e);
+            log.error("Webhook error: Invalid signature.");
             throw new CustomStripeException("Invalid Stripe signature");
         } catch (Exception e) {
-            log.error("Webhook error: Could not construct event.", e);
+            log.error("Webhook error: Could not construct event.");
             throw new CustomStripeException("Invalid payload");
         }
 
@@ -127,7 +125,6 @@ public class StripeServiceImpl implements StripeService {
     }
 
     private void handlePaymentSuccess(PaymentIntent paymentIntent) {
-
         String userIdStr = paymentIntent.getMetadata().get("userId");
         String cartIdStr = paymentIntent.getMetadata().get("cartId");
         String courseIdsStr = paymentIntent.getMetadata().get("courseIds");
@@ -141,7 +138,7 @@ public class StripeServiceImpl implements StripeService {
         try {
             User user = userService.findByEmail(paymentIntent.getReceiptEmail());
 
-            if (transactionRepository.existsByPaymentIntentId(paymentIntent.getId())) {
+            if (transactionService.existsByPaymentIntentId(paymentIntent.getId())) {
                 log.warn("Webhook warning: PaymentIntent {} already processed.", paymentIntent.getId());
                 return;
             }
@@ -158,16 +155,12 @@ public class StripeServiceImpl implements StripeService {
                 return;
             }
 
+            // !!!!!!!!!!!
             userService.grantAccessToCourse(user, cart.getCourses());
-            Transaction transaction = Transaction.builder()
-                    .user(user)
-                    .amount((int) (paymentIntent.getAmount() / 1))
-                    .paymentIntentId(paymentIntent.getId())
-                    .courses(Set.copyOf(cart.getCourses()))
-                    .build();
-            Transaction savedTransaction = transactionRepository.save(transaction);
+            Transaction savedTransaction = transactionService.createTransaction(user, paymentIntent, cart);
             sendPurchasedEmail(user, cart, savedTransaction);
             cartService.deleteCart(cart);
+            // !!!!!!!!!!!!
 
         } catch (EntityNotFoundException e) {
             log.error("Webhook error: User not found for ID {} from PaymentIntent metadata. ID: {}", userIdStr,
@@ -191,32 +184,9 @@ public class StripeServiceImpl implements StripeService {
 
         emailService.sendHtmlEmail(
                 user.getEmail(),
-                "Reset Password Request",
-                "password-reset",
+                "Payment Successful",
+                "course-purchased",
                 templateModel);
     }
 
-    // TODO: JUST FOR DEV ENVIOREMENT DELETE IN PROD
-
-    @Transactional
-    public void handleTarnsaction(User user, CustomPaymentIntent paymentIntent) {
-
-        System.out.println(paymentIntent.toString());
-
-        Cart cart = cartService.getCartByUser(user);
-        if (transactionRepository.existsByPaymentIntentId(paymentIntent.getId())) {
-            log.warn("Webhook warning: PaymentIntent {} already processed.", paymentIntent.getId());
-            return;
-        }
-        userService.grantAccessToCourse(user, cart.getCourses());
-        Transaction transaction = Transaction.builder()
-                .user(user)
-                .amount((int) (paymentIntent.getAmount() / 1))
-                .paymentIntentId(paymentIntent.getId())
-                .courses(Set.copyOf(cart.getCourses()))
-                .build();
-        Transaction savedTransaction = transactionRepository.save(transaction);
-        sendPurchasedEmail(user, cart, savedTransaction);
-        cartService.deleteCart(cart);
-    }
 }

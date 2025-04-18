@@ -17,6 +17,8 @@ import emil.find_course.domains.enums.CourseStatus;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
+// :TODO:Optimize Course lookup. Do not look for course id you later gonna change it to CourseDto. Uneffective. Count enrollments on db querry
+
         Page<Course> findAllByStatus(CourseStatus status, Pageable pageable);
 
         Page<Course> findAllByStudents(User students, Pageable pageable);

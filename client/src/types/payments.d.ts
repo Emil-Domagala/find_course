@@ -1,10 +1,7 @@
-export type Transaction = {
-  userId: string;
-  transactionId: string;
-  dateTime: string;
-  courseId: string;
-  paymentProvider: 'stripe';
-  paymentMethodId?: string;
-  amount: number; // Stored in cents
-  savePaymentMethod?: boolean;
+export type TransactionDto = {
+  id: string;
+  paymentIntentId: string;
+  amount: number;
+  createdAt: string;
+  courses: CourseDto[];
 };

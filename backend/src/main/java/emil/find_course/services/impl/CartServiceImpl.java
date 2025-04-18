@@ -46,6 +46,9 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("You cannot add your own course to cart");
         }
 
+        // TODO: Optimize this. Do not load whole enrolled courses write smth like
+        // boolean isUserEnrolled(@Param("userId") UUID userId, @Param("courseId") UUID
+        // courseId);
         if (cart.getCourses().contains(course)) {
             throw new IllegalArgumentException("You already have this course in your cart");
         }

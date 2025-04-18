@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.stripe.exception.StripeException;
-
 import emil.find_course.domains.dto.ApiErrorResponse;
 import emil.find_course.exceptions.CustomStripeException;
 import emil.find_course.exceptions.EmailConfirmException;
@@ -90,13 +88,6 @@ public class ErrorController {
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
-        @ExceptionHandler(IllegalArgumentException.class)
-        public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-                                .message(ex.getMessage()).build();
-                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-        }
-
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
                         MethodArgumentNotValidException ex) {
@@ -136,7 +127,7 @@ public class ErrorController {
         // 404
         @ExceptionHandler(NoResourceFoundException.class)
         public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(
-                        HttpMessageNotReadableException ex) {
+                        NoResourceFoundException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.NOT_FOUND.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -145,7 +136,7 @@ public class ErrorController {
         // Payment
         @ExceptionHandler(CustomStripeException.class)
         public ResponseEntity<ApiErrorResponse> handleCustomStripeException(
-                        HttpMessageNotReadableException ex) {
+                        CustomStripeException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

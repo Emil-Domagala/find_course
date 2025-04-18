@@ -13,6 +13,7 @@ public class StripeConfig {
     Dotenv dotenv = Dotenv.load();
 
     private final String secretKey = dotenv.get("STRIPE_SECRET_KEY");
+    // private final String webhookSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
 
     @PostConstruct
     public void initStripe() {

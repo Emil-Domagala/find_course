@@ -16,7 +16,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
   return (
     <>
       <div className="md:bg-customgreys-secondarybg">
-        <div className="container max-w-[1200px] flex flex-col-reverse md:flex-row gap-8 h-[500px] py-6">
+        <div className="container flex flex-col-reverse md:flex-row gap-8 h-[500px] py-6">
           {/* Info */}
           <div className="flex flex-col basis-1/2 ">
             <h1 className="text-white-50 font-semibold text-2xl mb-4">{course.courseDto.title}</h1>
@@ -39,12 +39,13 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
           </div>
           {/* Image */}
 
-          <div className="relative h-full aspect-video overflow-hidden rounded-lg ">
+          <div className="relative w-full aspect-video overflow-hidden rounded-lg basis-1/2 ">
             <Image
               src={course.courseDto.imageUrl || '/placeholder.png'}
               alt={course.courseDto.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width:1200) 50vw, 33vw"
+              className="object-contain"
             />
           </div>
         </div>

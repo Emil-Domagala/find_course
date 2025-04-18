@@ -5,13 +5,11 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { toast } from 'sonner';
 import StripeProvider from './StripeProvider';
 import { useRouter } from 'next/navigation';
-import { useFinalizePaymentInDevMutation } from '@/state/api';
 
 const PaymentFormContent = () => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
-  const [createTransaction] = useFinalizePaymentInDevMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,24 +29,8 @@ const PaymentFormContent = () => {
       redirect: 'if_required',
     });
 
-    console.log(`${baseUrl}/checkout/success`);
-
     if (result.paymentIntent?.status === 'succeeded') {
-      // TODO: Create mock function that will pretend to be stripe webhook and tell backend to add courses and transaction
-
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Running in dev');
-
-        const paymentIntent = {
-          id: result.paymentIntent?.id,
-          amount: result.paymentIntent?.amount,
-        };
-
-        console.log(paymentIntent);
-        createTransaction( {paymentIntent} );
-      }
-
-      // router.push('/user/checkout/success');
+      router.replace('/user/checkout/success');
     }
   };
 
