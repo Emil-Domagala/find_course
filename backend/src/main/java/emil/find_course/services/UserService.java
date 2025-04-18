@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
@@ -15,7 +17,7 @@ public interface UserService {
 
     public String getRoles(Principal principal);
 
-    public User updateUser(RequestUpdateUser requestUpdateUser, User user);
+    public User updateUser(User user, RequestUpdateUser requestUpdateUser, MultipartFile imageFile);
 
     public void deleteUser(User user);
 

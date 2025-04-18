@@ -42,6 +42,7 @@ public class SecurityConfig {
         http.addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/api/v1/public/**").permitAll()
+                .requestMatchers("/uploads/images/**").permitAll()
                 .anyRequest().authenticated());
         http.authenticationProvider(authProvider());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

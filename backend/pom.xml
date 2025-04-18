@@ -7,7 +7,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
 	<groupId>emil</groupId>
 	<artifactId>find-course</artifactId>
@@ -33,6 +33,14 @@
 		<lombok.version>1.18.36</lombok.version>
 	</properties>
 	<dependencies>
+
+		<!-- Images processing -->
+
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+			<version>0.4.20</version> 
+		</dependency>
 
 		<!-- stripe -->
 

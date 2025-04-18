@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import java.security.Principal;
 import java.util.Optional;
 
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.dto.BecomeTeacherDto;
 import emil.find_course.domains.dto.UserDto;
@@ -50,15 +53,15 @@ public class UserController {
 
     }
 
-    @PatchMapping
+    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UserDto> updateUserInfo(Principal principal,
-            @Validated @RequestBody RequestUpdateUser requestUpdateUser) {
+             @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser, @RequestPart(required = false) MultipartFile image) {
 
-        User user = userService.findByEmail(principal.getName());
+        User currUser = userService.findByEmail(principal.getName());
 
-        UserDto newUser = userMapping.toDto(userService.updateUser(requestUpdateUser, user));
+        UserDto updatedUser = userMapping.toDto(userService.updateUser(currUser,requestUpdateUser, image));
 
-        return ResponseEntity.ok(newUser);
+        return ResponseEntity.ok(updatedUser);
 
     }
 

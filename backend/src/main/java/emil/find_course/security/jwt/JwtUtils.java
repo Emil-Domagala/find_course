@@ -41,15 +41,18 @@ public class JwtUtils {
                 .signWith(key())
                 .compact();
     }
-
+// TODO:DONT FORGET CLEANING THOSE IMAGE PATHS AFTER MOVING FROM LOCAL 
     public String generateToken(UserDetailsImpl user) {
         System.out.println(jwtSecret);
         String email = user.getUsername();
         String roles = user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.joining(","));
-        String imageUrl = user.getUser().getImageUrl();
         boolean isVerified = user.isEmailVerified();
+        String imageUrl = user.getUser().getImageUrl();
+        if (user.getUser().getImageUrl() != null) {
+            imageUrl = "http://localhost:8080/uploads/images/" + user.getUser().getImageUrl();
+        }
 
         return Jwts.builder()
                 .subject(email)
@@ -70,6 +73,10 @@ public class JwtUtils {
         String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
         boolean isVerified = user.isEmailVerified();
         String imageUrl = user.getImageUrl();
+
+        if (user.getImageUrl() != null) {
+            imageUrl = "http://localhost:8080/uploads/images/" + user.getImageUrl();
+        }
 
         return Jwts.builder()
                 .subject(email)

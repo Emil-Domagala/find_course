@@ -3,7 +3,7 @@ import { CustomFormField } from '@/components/Common/CustomFormField';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { profileFormSchema, ProfileFormSchema } from '@/lib/validation/profile';
-import { useDeleteUserMutation, useGetUserInfoQuery } from '@/state/api';
+import { useDeleteUserMutation, useGetUserInfoQuery, useUpdateUserInfoMutation } from '@/state/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,6 +17,7 @@ const EditUserForm = () => {
   const router = useRouter();
   const { data: profileData, isLoading } = useGetUserInfoQuery();
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUserInfo] = useUpdateUserInfoMutation();
 
   const methods = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
@@ -46,16 +47,28 @@ const EditUserForm = () => {
     console.log(data);
 
     const formData = new FormData();
-    formData.append('username', data.username);
-    formData.append('userLastname', data.userLastname);
+    const userData: { username: string; userLastname: string; password?: string; deleteImage?: boolean } = {
+      username: data.username,
+      userLastname: data.userLastname,
+      deleteImage: false,
+    };
     if (data.password) {
-      formData.append('password', data.password);
+      userData.password = data.password;
     }
+
     if (data.image instanceof File) {
-      formData.append('image', data.image);
-    } else if (data.image === null) {
-      formData.append('removeImage', 'true');
+      formData.append('image', data.image, data.image.name);
+    } else if (data.image === undefined) {
+      userData.deleteImage = true;
     }
+    formData.append(
+      'userData',
+      new Blob([JSON.stringify(userData)], {
+        type: 'application/json',
+      }),
+    );
+
+    updateUserInfo(formData);
   };
 
   const handleDeleteAccount = async () => {

@@ -28,7 +28,8 @@ public class EmailVerificationFilter extends OncePerRequestFilter {
         // Skip public and verify email
         try {
             String requestURI = request.getRequestURI();
-            if (requestURI.startsWith("/api/v1/public/") || requestURI.contains("confirm-email")) {
+            if (requestURI.startsWith("/api/v1/public/") || requestURI.contains("confirm-email")
+                    || requestURI.contains("/uploads/images/")) {
                 filterChain.doFilter(request, response);
                 return;
             }

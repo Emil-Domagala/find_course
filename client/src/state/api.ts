@@ -95,7 +95,7 @@ export const api = createApi({
       invalidatesTags: ['User'],
     }),
     // Update User
-    updateUserInfo: build.mutation<UserDto, ProfileFormSchema>({
+    updateUserInfo: build.mutation<UserDto, FormData>({
       query: (user) => ({ url: 'user', method: 'PATCH', body: user }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {

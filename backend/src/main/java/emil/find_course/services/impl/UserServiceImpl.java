@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.course.Course;
@@ -14,6 +15,7 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.repositories.BecomeTeacherRepository;
 import emil.find_course.repositories.UserRepository;
+import emil.find_course.services.FileStorageService;
 import emil.find_course.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BecomeTeacherRepository becomeTeacherRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     public User findByEmail(String email) {
@@ -40,10 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(RequestUpdateUser requestUpdateUser, User user) {
+    public User updateUser(User user, RequestUpdateUser requestUpdateUser, MultipartFile imageFile) {
 
         user.setUsername(requestUpdateUser.getUsername());
         user.setUserLastname(requestUpdateUser.getUserLastname());
+
         if (requestUpdateUser.getPassword() != null
                 && !requestUpdateUser.getPassword().isEmpty()
                 && requestUpdateUser.getPassword().length() > 6
@@ -51,8 +55,19 @@ public class UserServiceImpl implements UserService {
 
             user.setPassword(passwordEncoder.encode(requestUpdateUser.getPassword()));
         }
-        if (requestUpdateUser.getImage() != null) {
-            user.setImageUrl(requestUpdateUser.getImage());
+
+        if (requestUpdateUser.isDeleteImage() == true) {
+            fileStorageService.deleteImage(user.getImageUrl());
+
+        }
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String oldImgUrl = user.getImageUrl();
+            String imgUrl = fileStorageService.saveImage(imageFile, user.getId().toString());
+            user.setImageUrl(imgUrl);
+            if (oldImgUrl != null) {
+                fileStorageService.deleteImage(oldImgUrl);
+            }
+
         }
 
         return userRepository.save(user);
