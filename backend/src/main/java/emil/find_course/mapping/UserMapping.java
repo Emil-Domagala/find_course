@@ -5,7 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
-
 import emil.find_course.domains.dto.UserDto;
 import emil.find_course.domains.entities.user.User;
 
@@ -18,11 +17,9 @@ public abstract class UserMapping {
     @AfterMapping
     protected void addFullImageUrl(@MappingTarget UserDto dto, User user) {
         String relativePath = user.getImageUrl();
-        if (!relativePath.isBlank()) {
+        if (relativePath != null) {
             String fullUrl = "http://localhost:8080/uploads/images/" + relativePath;
             dto.setImageUrl(fullUrl);
-        } else {
-            dto.setImageUrl(null);
         }
     }
 }

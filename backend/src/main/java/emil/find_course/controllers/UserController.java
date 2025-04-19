@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import emil.find_course.domains.dto.AuthResponse;
 import emil.find_course.domains.dto.BecomeTeacherDto;
 import emil.find_course.domains.dto.UserDto;
 import emil.find_course.domains.entities.BecomeTeacher;
@@ -27,6 +28,8 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.mapping.BecomeTeacherMapping;
 import emil.find_course.mapping.UserMapping;
+import emil.find_course.security.jwt.JwtUtils;
+import emil.find_course.services.AuthService;
 import emil.find_course.services.UserService;
 import emil.find_course.utils.CookieHelper;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +41,14 @@ public class UserController {
 
     @Value("${cookie.auth.authToken.name}")
     private String authCookieName;
+    @Value("${jwt.authToken.expiration}")
+    private int cookieExpiration;
     @Value("${cookie.auth.refreshToken.name}")
     private String refreshCookieName;
+    @Value("${jwt.refreshToken.expiration}")
+    private int refreshCookieExpiration;
 
+    private final JwtUtils jwtUtils;
     private final UserService userService;
     private final UserMapping userMapping;
     private final BecomeTeacherMapping becomeTeacherMapping;
@@ -53,15 +61,26 @@ public class UserController {
 
     }
 
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<UserDto> updateUserInfo(Principal principal,
-             @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser, @RequestPart(required = false) MultipartFile image) {
+            @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser,
+            @RequestPart(required = false) MultipartFile image) {
 
         User currUser = userService.findByEmail(principal.getName());
 
-        UserDto updatedUser = userMapping.toDto(userService.updateUser(currUser,requestUpdateUser, image));
+        User updatedUser = userService.updateUser(currUser, requestUpdateUser, image);
+        UserDto userDto = userMapping.toDto(updatedUser);
 
-        return ResponseEntity.ok(updatedUser);
+        String refreshToken = jwtUtils.generateRefreshToken(updatedUser);
+        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser), refreshToken);
+        ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
+                "/");
+        ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
+                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
+                "/");
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
+                .body(userDto);
 
     }
 

@@ -1,5 +1,6 @@
 package emil.find_course.services.impl;
 
+import java.io.InputStream;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
@@ -50,19 +51,22 @@ public class UserServiceImpl implements UserService {
 
         if (requestUpdateUser.getPassword() != null
                 && !requestUpdateUser.getPassword().isEmpty()
-                && requestUpdateUser.getPassword().length() > 6
-                && requestUpdateUser.getPassword().length() < 30) {
+                && requestUpdateUser.getPassword().length() >= 6
+                && requestUpdateUser.getPassword().length() <= 30) {
 
             user.setPassword(passwordEncoder.encode(requestUpdateUser.getPassword()));
         }
 
         if (requestUpdateUser.isDeleteImage() == true) {
             fileStorageService.deleteImage(user.getImageUrl());
+            user.setImageUrl(null);
 
         }
         if (imageFile != null && !imageFile.isEmpty()) {
             String oldImgUrl = user.getImageUrl();
-            String imgUrl = fileStorageService.saveImage(imageFile, user.getId().toString());
+            String oryginalName = imageFile.getOriginalFilename();
+            InputStream resizedImage = fileStorageService.resizeImage(imageFile, 150, 1, 1, 1_000_000);
+            String imgUrl = fileStorageService.saveProcessedImage(resizedImage, user.getId().toString(), oryginalName);
             user.setImageUrl(imgUrl);
             if (oldImgUrl != null) {
                 fileStorageService.deleteImage(oldImgUrl);
