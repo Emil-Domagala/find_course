@@ -37,3 +37,4 @@ export function dollarsToCents(dollars: string | number): number {
 export function centsToDollars(cents: number | undefined): string {
   return ((cents || 0) / 100).toFixed(2).toString();
 }
+

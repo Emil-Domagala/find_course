@@ -12,6 +12,8 @@ import { toast } from 'sonner';
 import { ApiError } from 'next/dist/server/api-utils';
 import EditUserFormLoading from './EditUserFormLoading';
 import { useRouter } from 'next/navigation';
+import CustomAddImgV2 from '@/components/Common/CustomAddImg';
+import CustomAddImg from '@/components/Common/CustomAddImg';
 
 const EditUserForm = () => {
   const router = useRouter();
@@ -27,6 +29,7 @@ const EditUserForm = () => {
       userLastname: '',
       password: '',
       image: undefined,
+      deleteImage: false,
     },
   });
 
@@ -67,8 +70,8 @@ const EditUserForm = () => {
         type: 'application/json',
       }),
     );
-
-    updateUserInfo(formData);
+    console.log(data.image);
+    // updateUserInfo(formData);
   };
 
   const handleDeleteAccount = async () => {
@@ -101,12 +104,19 @@ const EditUserForm = () => {
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="flex flex-col items-center mb-4 ">
-            <CustomAddImage
+            {/* <CustomAddImage
               fallbackText={profileData?.username || ''}
               imageUrl={displayImageUrl}
               methods={methods}
               avatarClassName="h-24 w-24 rounded-full"
               className="h-24 w-24 rounded-full"
+            /> */}
+            <CustomAddImg
+              imageUrl={displayImageUrl}
+              className="h-24 w-24 rounded-full"
+              name="image"
+              cropShape="round"
+              aspect={1}
             />
           </div>
 

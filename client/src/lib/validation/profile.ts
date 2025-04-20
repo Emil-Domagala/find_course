@@ -12,7 +12,8 @@ export const profileFormSchema = z.object({
     .min(2, { message: 'At least 2 characters long' })
     .max(30, { message: 'At most 30 characters long' }),
   password: z.string().max(30, { message: 'At most 30 characters long' }).optional(),
-  image: z.union([z.string(), z.instanceof(File)]).optional(),
+  image: z.union([z.string(), z.instanceof(Blob)]).optional(),
+  deleteImage: z.boolean().optional(),
 });
 
 export type ProfileFormSchema = z.infer<typeof profileFormSchema>;

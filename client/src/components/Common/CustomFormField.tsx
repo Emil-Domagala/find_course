@@ -6,31 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Edit, X, Plus } from 'lucide-react';
-import { registerPlugin } from 'filepond';
-import { FilePond } from 'react-filepond';
-import 'filepond/dist/filepond.min.css';
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-
-registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 type FormFieldProps = {
   name: string;
   label?: string;
-  type?: 'text' | 'email' | 'textarea' | 'number' | 'select' | 'password' | 'file' | 'multi-input';
+  type?: 'text' | 'email' | 'textarea' | 'number' | 'select' | 'password' | 'multi-input';
   placeholder?: string;
   options?: { value: string; label: string }[];
-  accept?: string;
   className?: string;
   labelClassName?: string;
   inputClassName?: string;
   value?: string;
   disabled?: boolean;
-  multiple?: boolean;
   isIcon?: boolean;
   initialValue?: string | number | boolean | string[];
-  isPicture?: boolean;
 };
 
 export const CustomFormField: React.FC<FormFieldProps> = ({
@@ -39,18 +28,16 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
   type = 'text',
   placeholder,
   options,
-  accept,
   className,
   inputClassName,
   labelClassName,
   disabled = false,
-  multiple = false,
   isIcon = false,
   initialValue,
 }) => {
   const { control } = useFormContext();
 
-  const renderFormControl = (field: ControllerRenderProps<FieldValues, string>, isPicture = false) => {
+  const renderFormControl = (field: ControllerRenderProps<FieldValues, string>) => {
     switch (type) {
       case 'textarea':
         return (
@@ -81,28 +68,6 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               ))}
             </SelectContent>
           </Select>
-        );
-      case 'file':
-        let ACCEPTED_TYPES = ['video/mp4', 'video/webm', 'video/ogg'];
-        if (isPicture) {
-          ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-        }
-
-        const acceptedFileTypes = accept ? [accept] : ACCEPTED_TYPES;
-
-        return (
-          <FilePond
-            className={`${inputClassName}`}
-            files={field.value ? [field.value] : []}
-            allowMultiple={multiple}
-            onupdatefiles={(fileItems) => {
-              field.onChange(multiple ? fileItems.map((fileItem) => fileItem.file) : fileItems[0]?.file);
-            }}
-            acceptedFileTypes={acceptedFileTypes}
-            labelIdle={`Drag & Drop your files or <span class="filepond--label-action">Browse</span>`}
-            credits={false}
-            allowImagePreview
-          />
         );
       case 'number':
         return (
@@ -143,9 +108,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             <div className="flex justify-between items-center">
               <FormLabel className={`text-customgreys-dirtyGrey text-sm ${labelClassName}`}>{label}</FormLabel>
 
-              {!disabled && isIcon && type !== 'file' && type !== 'multi-input' && (
-                <Edit className="size-4 text-customgreys-dirtyGrey" />
-              )}
+              {!disabled && isIcon && type !== 'multi-input' && <Edit className="size-4 text-customgreys-dirtyGrey" />}
             </div>
           )}
           <FormControl>
