@@ -1,9 +1,9 @@
-import { SearchDirection, SearchField } from '@/hooks/useSearchFilters';
-import { ProfileFormSchema } from '@/lib/validation/profile';
+
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CartDto } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
+import { BecomeTeacherRequestStatus, SearchDirection, SearchField } from '@/types/enums';
 import { TransactionDto } from '@/types/payments';
 import { BecomeTeacherRequest } from '@/types/user';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
@@ -147,10 +147,7 @@ export const api = createApi({
 
       providesTags: (result, error, arg) =>
         result
-          ? [
-              ...result?.content.map((course) => ({ type: 'CourseDtos' as const, id: course.id })),
-              { type: 'CourseDtos' as const, id: `LIST-${arg.page}` },
-            ]
+          ? [...result?.content.map((course) => ({ type: 'CourseDtos' as const, id: course.id })), { type: 'CourseDtos' as const, id: `LIST-${arg.page}` }]
           : [{ type: 'CourseDtos' as const, id: `LIST-${arg.page}` }],
     }),
     // *******************
@@ -200,10 +197,7 @@ export const api = createApi({
 
       providesTags: (result, error, arg) =>
         result
-          ? [
-              ...result?.content.map((course) => ({ type: 'TeachedCourseDtos' as const, id: course.id })),
-              { type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` },
-            ]
+          ? [...result?.content.map((course) => ({ type: 'TeachedCourseDtos' as const, id: course.id })), { type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` }]
           : [{ type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` }],
     }),
 
@@ -226,13 +220,7 @@ export const api = createApi({
 
         if (!subscriptions || !queries) return;
         for (const key in queries) {
-          if (
-            !key.startsWith('getCoursesTeacher-{') ||
-            queries[key]?.status !== 'fulfilled' ||
-            !subscriptions[key] ||
-            Object.keys(subscriptions[key]).length === 0
-          )
-            return;
+          if (!key.startsWith('getCoursesTeacher-{') || queries[key]?.status !== 'fulfilled' || !subscriptions[key] || Object.keys(subscriptions[key]).length === 0) return;
 
           const cacheEntry = queries[key];
           const queryArgs = cacheEntry.originalArgs;
@@ -254,10 +242,7 @@ export const api = createApi({
             );
             patches.push(patchResult);
           } catch (error) {
-            console.error(
-              `Error dispatching updateQueryData for key ${key} with args ${JSON.stringify(queryArgs)}:`,
-              error,
-            );
+            console.error(`Error dispatching updateQueryData for key ${key} with args ${JSON.stringify(queryArgs)}:`, error);
           }
         }
 
@@ -346,11 +331,14 @@ export const api = createApi({
       query: () => ({ url: 'admin/notifications/teacher-requests', method: 'GET' }),
       providesTags: ['AdminNotyfication'],
     }),
-    getAdminBecomeUserRequests: build.query({
-      query: ({ page, size, sortField, direction, seenByAdmin }) => ({
+    getAdminBecomeUserRequests: build.query<
+      Page<BecomeTeacherRequest>,
+      { page?: number; size?: number; direction?: SearchDirection; seenByAdmin?: 'true' | 'false'; status?: BecomeTeacherRequestStatus }
+    >({
+      query: ({ page, size, direction, seenByAdmin, status }) => ({
         url: 'admin/teacher-requests',
         method: 'GET',
-        params: { page, size, sortField, direction, seenByAdmin },
+        params: { page, size, direction, seenByAdmin, status },
       }),
       keepUnusedDataFor: 0,
     }),

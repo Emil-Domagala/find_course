@@ -10,10 +10,7 @@ type UseSelectFilterProps<T = string | number> = {
 
 type UseSelectFilterReturn<T> = [T | undefined, React.Dispatch<SetStateAction<T | undefined>>];
 
-export const useSelectFilter = <T extends string | number = string>({
-  valueName,
-  initialValue,
-}: UseSelectFilterProps<T>): UseSelectFilterReturn<T> => {
+export const useSelectFilter = <T extends string | number = string>({ valueName, initialValue }: UseSelectFilterProps<T>): UseSelectFilterReturn<T> => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -31,8 +28,6 @@ export const useSelectFilter = <T extends string | number = string>({
   }, [searchParams, valueName, initialValue]);
 
   const [filterValue, setFilterValue] = useState<T | undefined>(getInitialState);
-
-  console.log(valueName + ': ' + filterValue);
 
   useEffect(() => {
     setFilterValue(getInitialState());

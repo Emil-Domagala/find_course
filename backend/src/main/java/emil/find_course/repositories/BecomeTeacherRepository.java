@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.user.User;
+import emil.find_course.domains.enums.BecomeTeacherStatus;
 
 @Repository
 public interface BecomeTeacherRepository extends JpaRepository<BecomeTeacher, UUID> {
@@ -20,7 +21,9 @@ public interface BecomeTeacherRepository extends JpaRepository<BecomeTeacher, UU
 
     Integer countAllBySeenByAdmin(boolean seenByAdmin);
 
-    @Query("SELECT b FROM BecomeTeacher b WHERE (COALESCE (:seenByAdmin, NULL) IS NULL OR b.seenByAdmin = :seenByAdmin )")
-    Page<BecomeTeacher> searchBecomeTeacherRequest(boolean seenByAdmin, Pageable pageable);
+    @Query("SELECT b FROM BecomeTeacher b WHERE"
+            + " (COALESCE (:seenByAdmin, NULL) IS NULL OR b.seenByAdmin = :seenByAdmin )"
+            + " AND (COALESCE (:status, NULL) IS NULL OR b.status = :status) ")
+    Page<BecomeTeacher> searchBecomeTeacherRequest(BecomeTeacherStatus status, boolean seenByAdmin, Pageable pageable);
 
 }

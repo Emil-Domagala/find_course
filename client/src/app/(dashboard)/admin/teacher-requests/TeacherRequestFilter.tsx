@@ -22,7 +22,7 @@ type Props = {
 
 const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, setRequestsStatus, direction, setDirection, seenByAdmin, setSeenByAdmin, size, setSize }: Props) => {
   return (
-    <div className="flex flex-col md:flex-row  gap-5 justify-center items-end w-full">
+    <div className="flex flex-col md:flex-row gap-5 justify-center items-end w-full max-w-4xl mx-auto">
       <div className={`flex flex-row gap-2 justify-between items-end w-full md:gap-5 md:justify-center md:w-fit`}>
         <CustomSelect
           label="Request Status"
@@ -32,7 +32,7 @@ const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, se
           placeholder="Status"
           transformFn={transformToFrontendFormat}
           clearable={true}
-          selectTriggerClasses={'md:w-52 w-full'}
+          selectTriggerClasses={'md:min-w-32 w-full'}
           selectContentClasses={'max-h-60'}
         />
         <CustomSelect
@@ -43,7 +43,7 @@ const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, se
           placeholder="Status"
           transformFn={(e) => e}
           clearable={true}
-          selectTriggerClasses={'md:w-52 w-full'}
+          selectTriggerClasses={'md:min-w-32 w-full'}
           selectContentClasses={'max-h-60'}
         />
 
@@ -57,7 +57,7 @@ const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, se
             if (e == 'ASC') return 'Newest first';
             if (e == 'DESC') return 'Oldest first';
           }}
-          selectTriggerClasses={'w-26'}
+          selectTriggerClasses={'md:min-w-32 w-full'}
           selectContentClasses={'max-h-60'}
         />
 
@@ -70,12 +70,16 @@ const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, se
           transformFn={(e) => e}
           selectTriggerClasses={'w-14'}
           selectContentClasses={'max-h-60'}
+          selectWrapperClasses={'w-fit'}
         />
       </div>
       {/* Apply */}
-      <Button variant="primary" className="h-12 text-md" onClick={handleFetchCourses}>
-        Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-      </Button>
+
+      <div className="max-w-[15rem] md:m-0 mx-auto w-full">
+        <Button variant="primary" className="h-12 text-md w-full " onClick={handleFetchCourses}>
+          Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
+        </Button>
+      </div>
     </div>
   );
 };

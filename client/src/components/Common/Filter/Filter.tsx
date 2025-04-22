@@ -24,24 +24,11 @@ type Props = {
   isLoading?: boolean;
 };
 
-const Filter = ({
-  category,
-  setCategory,
-  keyword,
-  setKeyword,
-  sortField,
-  setSortField,
-  direction,
-  setDirection,
-  size,
-  setSize,
-  handleFetchCourses,
-  isLoading,
-}: Props) => {
+const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSortField, direction, setDirection, size, setSize, handleFetchCourses, isLoading }: Props) => {
   return (
-    <div className="flex flex-col md:flex-row  gap-5 justify-center items-end w-full">
+    <div className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
       {/* category */}
-      <div className={`w-full md:w-fit`}>
+      <div className={`w-full lg:w-fit`}>
         <CustomSelect
           label="Category"
           value={category}
@@ -50,7 +37,7 @@ const Filter = ({
           placeholder="Select Category"
           transformFn={transformToFrontendFormat}
           clearable={true}
-          selectTriggerClasses={'md:w-52 w-full'}
+          selectTriggerClasses={'lg:w-52 w-full'}
           selectContentClasses={'max-h-60'}
         />
       </div>
@@ -61,11 +48,11 @@ const Filter = ({
         <Input
           value={keyword || ''}
           onChange={(e) => setKeyword(e.target.value)}
-          className="bg-customgreys-primarybg h-12 text-white-50 !shadow-none border-none font-medium text-md md:text-lg selection:bg-primary-750"
+          className="bg-customgreys-primarybg h-12 text-white-50 !shadow-none border-none font-medium text-lg lg:text-lg selection:bg-primary-750"
         />
       </div>
 
-      <div className={`flex flex-row gap-2 justify-between items-end w-full md:gap-5 md:justify-center md:w-fit`}>
+      <div className={`flex flex-row gap-2 justify-between items-end w-full lg:gap-5 lg:justify-center lg:w-fit`}>
         <CustomSelect
           label="Order by"
           value={sortField}
@@ -73,7 +60,7 @@ const Filter = ({
           options={Object.values(SearchField)}
           placeholder="Select Category"
           transformFn={transformKey}
-          selectTriggerClasses={'md:w-52 w-full'}
+          selectTriggerClasses={'lg:w-52 w-full'}
           selectContentClasses={'max-h-60'}
         />
 
@@ -86,6 +73,7 @@ const Filter = ({
           transformFn={(e) => e}
           selectTriggerClasses={'w-16'}
           selectContentClasses={'max-h-60'}
+          selectWrapperClasses={'w-fit'}
         />
 
         <CustomSelect
@@ -97,11 +85,14 @@ const Filter = ({
           transformFn={(e) => e}
           selectTriggerClasses={'w-14'}
           selectContentClasses={'max-h-60'}
+          selectWrapperClasses={'w-fit'}
         />
 
-        <Button variant="primary" className="h-12 text-md" onClick={handleFetchCourses}>
-          Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        <div className="max-w-[15rem] md:m-0 mx-auto w-full">
+          <Button variant="primary" className="h-12 text-md w-full" onClick={handleFetchCourses}>
+            Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.domains.dto.BecomeTeacherDto;
 import emil.find_course.domains.dto.CourseDto;
+import emil.find_course.domains.enums.BecomeTeacherStatus;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.BecomeTeacherUpdateRequest;
@@ -37,6 +38,7 @@ public class AdminController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
+            @RequestParam(required = false) BecomeTeacherStatus status,
             @RequestParam(required = false) Boolean seenByAdmin) {
 
         System.out.println(seenByAdmin);
@@ -50,7 +52,8 @@ public class AdminController {
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 
-        final PagingResult<BecomeTeacherDto> becomeTeacher = adminService.searchBecomeTeacherDto(seenByAdmin, request);
+        final PagingResult<BecomeTeacherDto> becomeTeacher = adminService.searchBecomeTeacherDto(
+                status,seenByAdmin, request);
 
         return ResponseEntity.ok(becomeTeacher);
     }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import emil.find_course.domains.dto.BecomeTeacherDto;
 import emil.find_course.domains.entities.BecomeTeacher;
+import emil.find_course.domains.enums.BecomeTeacherStatus;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.BecomeTeacherUpdateRequest;
@@ -36,9 +37,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public PagingResult<BecomeTeacherDto> searchBecomeTeacherDto(Boolean seenByAdmin, PaginationRequest request) {
+    public PagingResult<BecomeTeacherDto> searchBecomeTeacherDto(BecomeTeacherStatus status, Boolean seenByAdmin, PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
-        Page<BecomeTeacher> becomeTeacher = becomeTeacherRepository.searchBecomeTeacherRequest(seenByAdmin, pageable);
+        Page<BecomeTeacher> becomeTeacher = becomeTeacherRepository.searchBecomeTeacherRequest(
+                status,seenByAdmin, pageable);
 
         final List<BecomeTeacherDto> becomeTeacherDto = becomeTeacher.stream().map(becomeTeacherMapping::toDto)
                 .toList();
