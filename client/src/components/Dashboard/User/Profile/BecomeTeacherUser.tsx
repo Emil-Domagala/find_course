@@ -12,9 +12,6 @@ const BecomeTeacherUser = () => {
   const [sendBecomeTeacherRequest] = useSendBecomeTeacherRequestMutation();
   const { data: becomeTeacherRequestStatus, isLoading } = useGetBecomeTeacherRequestStatusQuery();
 
-  console.log(becomeTeacherRequestStatus);
-
-  //   Send become teacher request states
   const [showSendRequest, setShowSendRequest] = useState(true);
   const [message, setMessage] = useState('Request Sent');
   const [isError, setIsError] = useState(false);

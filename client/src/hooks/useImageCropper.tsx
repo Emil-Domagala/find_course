@@ -3,14 +3,15 @@ import type { Area } from 'react-easy-crop';
 import imageCompression from 'browser-image-compression';
 import { getCroppedImg } from '@/lib/imageUtils';
 
-export function useImageCropper({
-  maxImgDimetion,
-  maxImageSizeMB,
-}: {
+type UseImageCropperType = {
   maxImgDimetion: number;
   maxImageSizeMB: number;
-}) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  imgOnDelete: string;
+  initialImg: string;
+};
+
+export function useImageCropper({ maxImgDimetion, maxImageSizeMB, imgOnDelete, initialImg }: UseImageCropperType) {
+  const [previewUrl, setPreviewUrl] = useState<string>(initialImg);
   const [rawFile, setRawFile] = useState<File | null>(null);
   const [cropping, setCropping] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -48,11 +49,16 @@ export function useImageCropper({
     setPreviewUrl(finalUrl);
     setCropping(false);
 
-    return { file: compressedFile, url: finalUrl };
+    const compressedImg = new File([compressedFile], rawFile.name, {
+      type: compressedFile.type || 'image/jpeg',
+      lastModified: rawFile.lastModified,
+    });
+
+    return { file: compressedImg, url: finalUrl };
   };
 
   const reset = () => {
-    setPreviewUrl(null);
+    setPreviewUrl(imgOnDelete);
     setRawFile(null);
     setCropping(false);
     setCrop({ x: 0, y: 0 });

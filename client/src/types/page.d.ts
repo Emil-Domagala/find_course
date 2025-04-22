@@ -1,3 +1,5 @@
+
+
 declare global {
 type Page<T> = {
   content: T[];

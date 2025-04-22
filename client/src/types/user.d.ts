@@ -1,7 +1,9 @@
+import { BecomeTeacherRequestStatus } from './enums';
+
 export type BecomeTeacherRequest = {
   id: string;
   user?: UserDto;
-  status: 'PENDING' | 'ACCEPTED' | 'DENIED';
+  status: BecomeTeacherRequestStatus;
   createdAt: string;
   seenByAdmin?: boolean;
 };

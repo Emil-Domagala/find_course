@@ -110,6 +110,7 @@ public class CourseController {
             @RequestParam(required = false) Sort.Direction direction,
             @RequestParam(required = false) CourseCategory category,
             @RequestParam(required = false) String keyword) {
+                
         if (sortField == null) {
             sortField = "createdAt";
         }
@@ -143,15 +144,6 @@ public class CourseController {
     @DeleteMapping("/teacher/courses/{courseId}")
     public ResponseEntity<?> deleteCourse(Principal principal, @PathVariable UUID courseId) {
         final User user = userService.findByEmail(principal.getName());
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            // Handle error appropriately, maybe return an error response
-            return ResponseEntity.status(500).body("Request interrupted");
-        }
-
         final UUID deletedCourseId = courseService.deleteCourse(courseId, user.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deletedCourseId);
     }
@@ -163,16 +155,16 @@ public class CourseController {
     // Show enrolled courses
     @GetMapping("/user/courses")
     public ResponseEntity<PagingResult<CourseDto>> getUserEnrolledCourses(Principal principal,
-            @PathVariable UUID userId,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction) {
+        if (sortField == null) {
+            sortField = "createdAt";
+        }
+
         final User user = userService.findByEmail(principal.getName());
 
-        if (userId != user.getId()) {
-            throw new IllegalArgumentException("Tried to access another user's courses");
-        }
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 
         final PagingResult<CourseDto> courses = courseService.getUserEnrolledCourses(user,

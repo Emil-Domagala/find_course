@@ -11,7 +11,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { BookOpen, LogOut, NotebookPen, PanelLeft, Settings, User, UserRoundPlus } from 'lucide-react';
+import {
+  BookOpen,
+  Library,
+  LogOut,
+  NotebookPen,
+  PanelLeft,
+  Receipt,
+  ShoppingCart,
+  User,
+  UserCheck,
+} from 'lucide-react';
 import Image from 'next/image';
 import SidebarGroupCustom from './SidebarGroupCustom';
 import { jwtDecode } from 'jwt-decode';
@@ -24,14 +34,14 @@ const navLinks = {
   user: [
     { icon: BookOpen, label: 'Courses', href: '/user/courses' },
     { icon: User, label: 'Profile', href: '/user/profile' },
-    { icon: Settings, label: 'Billing', href: '/user/billing' },
-    { icon: Settings, label: 'Cart', href: '/user/cart' },
+    { icon: Receipt, label: 'Billing', href: '/user/billing' },
+    { icon: ShoppingCart, label: 'Cart', href: '/user/cart' },
   ],
   teacher: [
-    { icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' },
-    { icon: NotebookPen, label: 'Create courses', href: '/teacher/courses/create' },
+    { icon: Library, label: 'My courses', href: '/teacher/courses/my-courses' },
+    { icon: NotebookPen, label: 'Create course', href: '/teacher/courses/create' },
   ],
-  admin: [{ icon: UserRoundPlus, label: 'New Teachers', href: '/admin/teacher-requests' }],
+  admin: [{ icon: UserCheck, label: 'New Teachers', href: '/admin/teacher-requests', notification: true }],
 };
 
 const AppSidebar = ({ authToken }: Props) => {
@@ -86,8 +96,8 @@ const AppSidebar = ({ authToken }: Props) => {
 
       <SidebarContent>
         <SidebarGroupCustom links={navLinks.user} />
-        {decoded.roles.includes('TEACHER') && <SidebarGroupCustom links={navLinks.teacher} label="Teacher" />}
-        {decoded.roles.includes('ADMIN') && <SidebarGroupCustom links={navLinks.admin} label="Admin" />}
+        {decoded.roles.includes('TEACHER') && <SidebarGroupCustom links={navLinks.teacher} groupName="Teacher" />}
+        {decoded.roles.includes('ADMIN') && <SidebarGroupCustom links={navLinks.admin} groupName="Admin" />}
       </SidebarContent>
 
       <SidebarFooter className="p-0">

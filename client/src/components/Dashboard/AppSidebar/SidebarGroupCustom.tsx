@@ -7,25 +7,39 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useGetAdminNotyficationQuery } from '@/state/api';
 import { LucideIcon } from 'lucide-react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 type Props = {
-  links: { icon: LucideIcon; label: string; href: string }[];
-  label?: string;
+  links: { icon: LucideIcon; label: string; href: string; notification?: boolean }[];
+  groupName?: string;
 };
 
-const SidebarGroupCustom = ({ links, label }: Props) => {
+const SidebarGroupCustom = ({ links, groupName }: Props) => {
   const pathname = usePathname();
+
+  const shouldFetchNotifications = groupName === 'Admin' && links.some((link) => link.notification);
+
+  const {
+    data: notificationData,
+    isLoading,
+    isError,
+  } = useGetAdminNotyficationQuery(undefined, {
+    skip: !shouldFetchNotifications,
+    refetchOnReconnect: true,
+  });
+
+  const notificationCount = notificationData?.newRequests ?? 0;
 
   return (
     <SidebarGroup className="p-0">
-      {label && (
+      {groupName && (
         <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
           <p className="font-semibold !w-full !text-md text-white-50  pl-5 group-data-[collapsible=icon]:hidden">
-            {label}
+            {groupName}
           </p>
         </SidebarGroupLabel>
       )}
@@ -33,6 +47,7 @@ const SidebarGroupCustom = ({ links, label }: Props) => {
         <SidebarMenu className=" gap-0">
           {links.map((link) => {
             const isActive = pathname.startsWith(link.href);
+            const showNotification = link.notification && notificationCount > 0 && !isLoading && !isError;
             return (
               <SidebarMenuItem
                 key={link.label}
@@ -55,6 +70,14 @@ const SidebarGroupCustom = ({ links, label }: Props) => {
                     </span>
                   </Link>
                 </SidebarMenuButton>
+                {showNotification && (
+                  <div className="absolute right-0 top-0 mr-4 h-full flex items-center justify-center ">
+                    <p className="flex items-center justify-center px-1 min-w-7 min-h-7 rounded-full bg-primary-750 group-data-[collapsible=icon]:hidden text-white-50 ">
+                      {notificationCount}
+                    </p>
+                  </div>
+                )}
+
                 {isActive && <div className="absolute right-0 top-0 h-full w-[4px] bg-primary-750" />}
               </SidebarMenuItem>
             );

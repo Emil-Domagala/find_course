@@ -41,9 +41,9 @@ public class JwtUtils {
                 .signWith(key())
                 .compact();
     }
-// TODO:DONT FORGET CLEANING THOSE IMAGE PATHS AFTER MOVING FROM LOCAL 
+
+    // TODO:DONT FORGET CLEANING THOSE IMAGE PATHS AFTER MOVING FROM LOCAL
     public String generateToken(UserDetailsImpl user) {
-        System.out.println(jwtSecret);
         String email = user.getUsername();
         String roles = user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
@@ -68,7 +68,6 @@ public class JwtUtils {
     }
 
     public String generateToken(User user) {
-        System.out.println(jwtSecret);
         String email = user.getEmail();
         String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
         boolean isVerified = user.isEmailVerified();

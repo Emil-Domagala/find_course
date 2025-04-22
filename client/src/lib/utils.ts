@@ -5,14 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function transformToFrontendFormat(enumValue: string): string {
+export function transformToFrontendFormat(enumValue: string | undefined): string {
+  if (!enumValue) return '';
   return enumValue
     .replace(/_/g, ' ')
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-export const transformKey = (key: string): string => {
+export const transformKey = (key: string | undefined): string => {
+  if (!key) return '';
   return key
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(' ') // Split into words
@@ -37,4 +39,3 @@ export function dollarsToCents(dollars: string | number): number {
 export function centsToDollars(cents: number | undefined): string {
   return ((cents || 0) / 100).toFixed(2).toString();
 }
-

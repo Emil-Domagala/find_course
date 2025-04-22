@@ -33,17 +33,15 @@ public class FileStorageImpl implements FileStorageService {
     public void init() {
         try {
             rootLocation = Paths.get(storageLocation).toAbsolutePath().normalize();
-            log.info("Initializing storage at: {}", rootLocation);
             Files.createDirectories(rootLocation);
-            log.info("Storage directory ensured: {}", rootLocation);
         } catch (IOException e) {
-            log.error("Could not initialize storage location: {}", storageLocation, e);
             throw new RuntimeException("Could not initialize storage location: " + storageLocation, e);
         }
     }
 
     @Override
     public String saveProcessedImage(InputStream inputStream, String identifier, String originalFilenameBase) {
+        System.out.println("saveProcessedImg");
         final DateTimeFormatter FILENAME_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
         Objects.requireNonNull(inputStream, "InputStream cannot be null.");
         Objects.requireNonNull(identifier, "Identifier cannot be null or blank.");
@@ -71,26 +69,15 @@ public class FileStorageImpl implements FileStorageService {
             Path destinationFile = userDirectory.resolve(filename).normalize().toAbsolutePath();
 
             if (!destinationFile.getParent().equals(userDirectory.toAbsolutePath())) {
-                log.error(
-                        "Security risk: Cannot store processed file outside target directory structure. Identifier: {}, Filename: {}",
-                        identifier, filename);
                 throw new RuntimeException("Cannot store file outside target directory structure.");
             }
-
-            log.debug("Target destination file for processed image: {}", destinationFile);
-
             Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-
             String relativePath = sanitizedIdentifier + "/" + filename;
-            log.info("Processed image saved successfully. Relative path: {}", relativePath);
             return relativePath;
 
         } catch (IOException e) {
-            log.error("Failed to save processed image stream for identifier {}: {}", identifier, e.getMessage(), e);
             throw new RuntimeException("Failed to save processed image stream", e);
         } catch (Exception e) {
-            log.error("Unexpected error saving processed image stream for identifier {}: {}", identifier,
-                    e.getMessage(), e);
             throw new RuntimeException("Unexpected error saving processed image stream", e);
         }
     }
@@ -98,18 +85,14 @@ public class FileStorageImpl implements FileStorageService {
     @Override
     public void deleteImage(String relativePath) {
         if (relativePath == null || relativePath.isBlank()) {
-            log.warn("Attempted to delete image with empty relative path.");
             return;
         }
 
         try {
             Path filePath = this.rootLocation.resolve(relativePath).normalize();
-
             if (!filePath.startsWith(this.rootLocation)) {
-                log.error("Attempt to delete file outside storage root: {}", relativePath);
                 throw new SecurityException("Cannot delete file outside storage root.");
             }
-
             Files.deleteIfExists(filePath);
 
         } catch (IOException e) {

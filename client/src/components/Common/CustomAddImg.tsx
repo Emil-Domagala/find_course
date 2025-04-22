@@ -14,9 +14,21 @@ type Props = {
   className: string;
   cropShape: 'round' | 'rect';
   aspect: number;
+  maxImgDimetion: number;
+  maxImageSizeMB: number;
+  imgOnDelete: string;
 };
 
-const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, aspect }) => {
+const CustomAddImg: React.FC<Props> = ({
+  name,
+  imageUrl,
+  className,
+  cropShape,
+  aspect,
+  maxImgDimetion,
+  maxImageSizeMB,
+  imgOnDelete,
+}) => {
   const { control, setValue } = useFormContext();
   const {
     previewUrl,
@@ -29,7 +41,12 @@ const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, a
     handleFileSelect,
     handleCropConfirm,
     reset,
-  } = useImageCropper({ maxImgDimetion: 200, maxImageSizeMB: 0.2 });
+  } = useImageCropper({
+    maxImgDimetion,
+    maxImageSizeMB,
+    imgOnDelete,
+    initialImg: imageUrl,
+  });
 
   const handleDeleteImg = () => {
     setValue(name, undefined, { shouldValidate: true, shouldDirty: true });
@@ -45,10 +62,9 @@ const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, a
   const onCropConfirm = async () => {
     const result = await handleCropConfirm();
     if (!result) return;
+
     setValue(name, result.file, { shouldValidate: true, shouldDirty: true });
   };
-
-  const imageSource = previewUrl || imageUrl;
 
   return (
     <>
@@ -57,15 +73,17 @@ const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, a
         name={name}
         render={({ field: { ref, name: fieldName, onBlur } }) => (
           <FormItem className="group relative flex items-center">
-            <button
-              type="button"
-              onClick={handleDeleteImg}
-              className="absolute z-50 bg-customgreys-primarybg p-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-[-4.5rem] hover:bg-customgreys-darkGrey rounded-lg transition-all duration-500 cursor-pointer">
-              <Trash className="size-5 text-white" />
-            </button>
+            {previewUrl !== imgOnDelete && (
+              <button
+                type="button"
+                onClick={handleDeleteImg}
+                className="absolute z-50 bg-customgreys-primarybg p-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-[-4.5rem] hover:bg-customgreys-darkGrey rounded-lg transition-all duration-500 cursor-pointer">
+                <Trash className="size-5 text-white" />
+              </button>
+            )}
             <div className={cn(`flex flex-col items-center space-y-2 overflow-hidden`, className)}>
               <FormLabel className="relative cursor-pointer w-full h-full">
-                <img src={imageSource} alt="Preview" className="absolute w-full h-full object-cover" />
+                <img src={previewUrl} alt="Preview" className="absolute w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-opacity duration-200">
                   <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </div>

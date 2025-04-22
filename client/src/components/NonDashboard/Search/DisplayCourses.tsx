@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import CourseCardSearch, { CourseCardSearchSkeleton } from '../CourseCardSearch';
+import CourseCard, { CourseCardSkeleton } from '../../Common/CourseCard';
 
 type Props = { coursesPage?: Page<CourseDto>; isLoading: boolean };
 
@@ -7,7 +7,7 @@ export const DisplayCoursesSkeleton = ({ size }: { size: number }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {[...Array(+size)].map((_, index) => (
-        <CourseCardSearchSkeleton key={index} />
+        <CourseCardSkeleton key={index} />
       ))}
     </div>
   );
@@ -38,7 +38,7 @@ const DisplayCourses = ({ coursesPage, isLoading }: Props) => {
           {courses && courses.length > 0 ? (
             courses.map((course) => (
               <div key={course.id}>
-                <CourseCardSearch course={course} />
+                <CourseCard course={course} isSearch link={`course/${course.id}`} />
               </div>
             ))
           ) : (

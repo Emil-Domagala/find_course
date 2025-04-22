@@ -45,7 +45,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart'],
+  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'AdminNotyfication'],
   endpoints: (build) => ({
     // *******************
     // -------AUTH--------
@@ -156,6 +156,23 @@ export const api = createApi({
     // *******************
     // --Private Courses--
     // *******************
+
+    getEnrolledCourses: build.query<
+      Page<CourseDto>,
+      {
+        page?: number;
+        size?: number;
+        sortField?: SearchField | '';
+        direction?: SearchDirection;
+        keyword?: string;
+        category?: CourseCategory | '';
+      }
+    >({
+      query: ({ page, size, sortField, direction, keyword = '', category }) => ({
+        url: 'user/courses',
+        params: { page, size, sortField, direction, keyword, category },
+      }),
+    }),
 
     // *****************
     // -----Teacher-----
@@ -322,6 +339,21 @@ export const api = createApi({
         method: 'GET',
       }),
     }),
+    // ****************
+    // -----ADMIN-----
+    // ****************
+    getAdminNotyfication: build.query<{ newRequests: number }, void>({
+      query: () => ({ url: 'admin/notifications/teacher-requests', method: 'GET' }),
+      providesTags: ['AdminNotyfication'],
+    }),
+    getAdminBecomeUserRequests: build.query({
+      query: ({ page, size, sortField, direction, seenByAdmin }) => ({
+        url: 'admin/teacher-requests',
+        method: 'GET',
+        params: { page, size, sortField, direction, seenByAdmin },
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
@@ -345,6 +377,8 @@ export const {
   useLazyGetCoursesTeacherQuery,
   useCreateCourseMutation,
   useDeleteCourseMutation,
+  // Student
+  useLazyGetEnrolledCoursesQuery,
   // Courses
   useGetCoursesPublicQuery,
   useLazyGetCoursesPublicQuery,
@@ -355,4 +389,7 @@ export const {
   // TRANSACTIONS
   useCreateStripePaymentIntentMutation,
   useLazyGetTransactionsQuery,
+  // ADMIN
+  useGetAdminNotyficationQuery,
+  useLazyGetAdminBecomeUserRequestsQuery,
 } = api;

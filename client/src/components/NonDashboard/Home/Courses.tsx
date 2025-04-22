@@ -1,13 +1,14 @@
 'use client';
-import CourseCardSearch, { CourseCardSearchSkeleton } from '../CourseCardSearch';
+
 import { motion } from 'framer-motion';
 import { useGetCoursesPublicQuery } from '@/state/api';
+import CourseCard, { CourseCardSkeleton } from '../../Common/CourseCard';
 
 export const CoursesSkeleton = ({ size }: { size: number }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {[...Array(+size)].map((_, index) => (
-        <CourseCardSearchSkeleton key={index} />
+        <CourseCardSkeleton key={index} />
       ))}
     </div>
   );
@@ -32,7 +33,7 @@ const Courses = () => {
             transition={{ duration: 0.3, delay: index * 0.2 }}
             viewport={{ amount: 0.1, once: true }}
             key={course.id}>
-            <CourseCardSearch course={course} />
+            <CourseCard link={`/course/${course.id}`} course={course} />
           </motion.div>
         ))
       ) : (

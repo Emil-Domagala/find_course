@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Pencil, Trash2 } from 'lucide-react';
 import { CourseStatus } from '@/types/courses-enum';
 import Link from 'next/link';
+import Tag from '@/components/NonDashboard/Home/Tag';
 
 type Props = {
   course: CourseDto;
@@ -14,29 +15,29 @@ type Props = {
 
 const TeacherCourseCard = ({ course, onDelete }: Props) => {
   return (
-    <Card className="w-full h-[400px] p-0 bg-background border-none text-foreground bg-customgreys-primarybg overflow-hidden hover:bg-white-100/10 transition duration-200 flex flex-col group">
-      <CardHeader className="p-0 h-[400px] overflow-hidden">
+    <div className="w-full min-h-[300px] rounded-lg p-0 bg-background border-none text-foreground bg-customgreys-primarybg overflow-hidden hover:bg-white-100/10 transition duration-200 flex flex-col group">
+      <div className="relative w-full">
         <Image
           src={course.imageUrl || '/placeholder.png'}
           alt={course.title}
-          width={370}
-          height={150}
-          className="rounded-t-lg w-[100%] h-[100%] object-cover transition-transform"
-          priority
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="w-full h-auto"
         />
-      </CardHeader>
+      </div>
 
-      <CardContent className="w-full pb-6 pt-4 flex-grow flex flex-col justify-between text-gray-400">
+      <div className="w-full p-4 pb-6 flex-grow flex flex-col justify-between text-gray-400">
         <div className="flex flex-col">
-          <CardTitle className="text-primary-50 text-md md:text-lg line-clamp-2 overflow-hidden">
+          <h2 className="font-semibold text-primary-50 text-md md:text-lg line-clamp-2 overflow-hidden">
             {course.title}
-          </CardTitle>
+          </h2>
 
-          <CardDescription className="bg-customgreys-dirtyGrey/50 px-2 py-1 mt-3 mb-3 rounded-xl w-fit text-sm">
-            {transformToFrontendFormat(course.category)}
-          </CardDescription>
+          <Tag className="bg-customgreys-dirtyGrey/20 w-fit my-2" size="small">
+            {course.category}
+          </Tag>
 
-          <p className="text-sm mb-2">
+          <p className="text-sm my-2">
             Status:{' '}
             <span
               className={cn(
@@ -68,8 +69,8 @@ const TeacherCourseCard = ({ course, onDelete }: Props) => {
             Delete
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

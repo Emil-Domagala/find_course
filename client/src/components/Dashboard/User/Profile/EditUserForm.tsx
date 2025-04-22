@@ -7,12 +7,10 @@ import { useDeleteUserMutation, useGetUserInfoQuery, useUpdateUserInfoMutation }
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import CustomAddImage from '@/components/Common/CustomAddImage';
 import { toast } from 'sonner';
 import { ApiError } from 'next/dist/server/api-utils';
 import EditUserFormLoading from './EditUserFormLoading';
 import { useRouter } from 'next/navigation';
-import CustomAddImgV2 from '@/components/Common/CustomAddImg';
 import CustomAddImg from '@/components/Common/CustomAddImg';
 
 const EditUserForm = () => {
@@ -23,7 +21,6 @@ const EditUserForm = () => {
 
   const methods = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
-
     defaultValues: {
       username: '',
       userLastname: '',
@@ -40,15 +37,13 @@ const EditUserForm = () => {
         userLastname: profileData.userLastname || '',
         password: '',
         image: undefined,
+        deleteImage: false,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileData, methods.reset]);
 
   const onSubmit = async (data: ProfileFormSchema) => {
-    console.log('Submitting Profile Data:');
-    console.log(data);
-
     const formData = new FormData();
     const userData: { username: string; userLastname: string; password?: string; deleteImage?: boolean } = {
       username: data.username,
@@ -70,8 +65,7 @@ const EditUserForm = () => {
         type: 'application/json',
       }),
     );
-    console.log(data.image);
-    // updateUserInfo(formData);
+    updateUserInfo(formData);
   };
 
   const handleDeleteAccount = async () => {
@@ -104,19 +98,15 @@ const EditUserForm = () => {
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="flex flex-col items-center mb-4 ">
-            {/* <CustomAddImage
-              fallbackText={profileData?.username || ''}
-              imageUrl={displayImageUrl}
-              methods={methods}
-              avatarClassName="h-24 w-24 rounded-full"
-              className="h-24 w-24 rounded-full"
-            /> */}
             <CustomAddImg
               imageUrl={displayImageUrl}
               className="h-24 w-24 rounded-full"
               name="image"
               cropShape="round"
               aspect={1}
+              maxImgDimetion={150}
+              maxImageSizeMB={0.2}
+              imgOnDelete={'/Profile_avatar_placeholder.png'}
             />
           </div>
 
