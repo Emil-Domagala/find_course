@@ -5,17 +5,17 @@ import CartItem from './CartItem';
 import { Button } from '@/components/ui/button';
 import { centsToDollars } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { Loader } from 'lucide-react';
+import LoadingSpinner from '@/components/Common/LoadingSpinner';
 
 const CartPage = () => {
   const router = useRouter();
   const { data: cart, isLoading } = useGetCartQuery();
 
-  if (isLoading) return <Loader size={40} className="animate-[spin_2s_linear_infinite] m-auto " />;
-
   return (
     <>
-      {!cart || cart?.courses?.length === 0 ? (
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : !cart || cart?.courses?.length === 0 ? (
         <p className="text-center text-lg">Your cart is empty.</p>
       ) : (
         <>

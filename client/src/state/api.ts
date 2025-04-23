@@ -1,4 +1,4 @@
-
+import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
 import { CartDto } from '@/types/courses';
@@ -342,6 +342,28 @@ export const api = createApi({
       }),
       keepUnusedDataFor: 0,
     }),
+    adminUpdateTeacherRequests: build.mutation<void, UpdateTeacherRequest[]>({
+      query: (requests) => ({
+        url: 'admin/teacher-requests',
+        method: 'PATCH',
+        body: requests,
+      }),
+      async onQueryStarted(requests, { dispatch, queryFulfilled }) {
+        const patchItemsNumber = requests.length;
+        const patchResult = dispatch(
+          api.util.updateQueryData('getAdminNotyfication', undefined, (draft: { newRequests: number }) => {
+            draft.newRequests -= patchItemsNumber;
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+          console.error('Error removing notyfications, reverting optimistic update:', err);
+        }
+      },
+      invalidatesTags: ['AdminNotyfication'],
+    }),
   }),
 });
 
@@ -380,4 +402,5 @@ export const {
   // ADMIN
   useGetAdminNotyficationQuery,
   useLazyGetAdminBecomeUserRequestsQuery,
+  useAdminUpdateTeacherRequestsMutation,
 } = api;

@@ -4,10 +4,29 @@ import { BecomeTeacherRequestStatus } from '@/types/enums';
 import { BecomeTeacherRequest } from '@/types/user';
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
+import { UpdateTeacherRequest } from '../../../app/(dashboard)/admin/teacher-requests/page';
 
-const BecomeTeacherItem = ({ becomeTeacherRequest }: { becomeTeacherRequest: BecomeTeacherRequest }) => {
+const BecomeTeacherItem = ({
+  becomeTeacherRequest,
+  handleAddDataToSend,
+}: {
+  becomeTeacherRequest: BecomeTeacherRequest;
+  handleAddDataToSend: (itemId: string, change: Partial<UpdateTeacherRequest>) => void;
+}) => {
   const { user, status, seenByAdmin, createdAt, id } = becomeTeacherRequest;
   const [statusChanged, setStatusChanged] = useState<BecomeTeacherRequestStatus>(status);
+  const [seenByAdminChanged, setSeenByAdminChanged] = useState<boolean>(seenByAdmin || false);
+
+  const handleChangeStatus = (newStatus: BecomeTeacherRequestStatus) => {
+    const newSeen = newStatus !== BecomeTeacherRequestStatus.PENDING;
+    setStatusChanged(newStatus);
+    handleAddDataToSend(id, { status: newStatus, seenByAdmin: newSeen });
+    setSeenByAdminChanged(newSeen);
+  };
+  const handleChangeSeenByAdmin = (newSeen: boolean) => {
+    setSeenByAdminChanged(newSeen);
+    handleAddDataToSend(id, { seenByAdmin: newSeen });
+  };
 
   return (
     <li className="flex flex-row items-center justify-between  w-full py-2 px-2 border-b-customgreys-primarybg border-b-[1px] ">
@@ -20,7 +39,7 @@ const BecomeTeacherItem = ({ becomeTeacherRequest }: { becomeTeacherRequest: Bec
         <p>{new Date(createdAt).toLocaleDateString()} </p>
       </div>
       <div className="w-1/4">
-        <Select disabled={status !== 'PENDING'} value={String(statusChanged)} onValueChange={(newVal) => setStatusChanged(newVal as BecomeTeacherRequestStatus)}>
+        <Select disabled={status !== 'PENDING'} value={String(statusChanged)} onValueChange={(newVal) => handleChangeStatus(newVal as BecomeTeacherRequestStatus)}>
           <SelectTrigger className="border-none bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 !h-8 w-32 m-auto">
             <SelectValue>
               <p className={`${statusChanged === 'DENIED' ? 'text-red-500' : statusChanged === 'PENDING' ? 'text-yellow-500' : 'text-green-500'}`}>
@@ -44,7 +63,14 @@ const BecomeTeacherItem = ({ becomeTeacherRequest }: { becomeTeacherRequest: Bec
       </div>
 
       <div className="w-1/4 flex justify-end">
-        <input type="checkbox" name="seenByAdmin" id="seenByAdmin" disabled={seenByAdmin} />
+        <input
+          checked={seenByAdminChanged}
+          type="checkbox"
+          name="seenByAdmin"
+          id="seenByAdmin"
+          disabled={seenByAdmin}
+          onChange={(e) => handleChangeSeenByAdmin(e.target.checked)}
+        />
       </div>
     </li>
   );

@@ -53,7 +53,7 @@ public class AdminController {
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 
         final PagingResult<BecomeTeacherDto> becomeTeacher = adminService.searchBecomeTeacherDto(
-                status,seenByAdmin, request);
+                status, seenByAdmin, request);
 
         return ResponseEntity.ok(becomeTeacher);
     }
@@ -71,6 +71,7 @@ public class AdminController {
     public ResponseEntity<Void> patchTeacherRequests(@RequestBody List<BecomeTeacherUpdateRequest> requests) {
 
         adminService.patchTeacherRequests(requests);
+        // System.out.println(requests.toString());
 
         return ResponseEntity.noContent().build();
     }

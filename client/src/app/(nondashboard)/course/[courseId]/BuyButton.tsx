@@ -12,7 +12,6 @@ const BuyButton = ({ courseId, authToken }: Props) => {
   const [addCourseToCart] = useAddCourseToCartMutation();
 
   const handleAddToCart = async () => {
-    console.log(courseId);
 
     if (!authToken) {
       toast.info('Please login to add to cart');
