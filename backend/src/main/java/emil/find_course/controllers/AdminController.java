@@ -41,7 +41,7 @@ public class AdminController {
             @RequestParam(required = false) BecomeTeacherStatus status,
             @RequestParam(required = false) Boolean seenByAdmin) {
 
-        System.out.println(seenByAdmin);
+if(size>100){size=100;}
 
         if (seenByAdmin == null) {
             seenByAdmin = false;
@@ -71,7 +71,6 @@ public class AdminController {
     public ResponseEntity<Void> patchTeacherRequests(@RequestBody List<BecomeTeacherUpdateRequest> requests) {
 
         adminService.patchTeacherRequests(requests);
-        // System.out.println(requests.toString());
 
         return ResponseEntity.noContent().build();
     }

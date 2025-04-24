@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,9 @@ public class Section {
     private UUID id;
 
     @Column(nullable = false)
+    private int position;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
@@ -44,8 +48,15 @@ public class Section {
     @JoinColumn(nullable = false)
     private Course course;
 
+    @OrderBy("position ASC")
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Chapter> chapters = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Section [id=" + id + ", position=" + position + ", title=" + title + ", description=" + description +
+                "]";
+    }
 
 }

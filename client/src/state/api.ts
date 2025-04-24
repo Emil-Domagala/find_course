@@ -263,6 +263,8 @@ export const api = createApi({
             ],
     }),
 
+    getTeacherCourseById: build.query<CourseDetailsPublicDto, string>({ query: (courseId) => ({ url: `teacher/courses/${courseId}` }) }),
+
     // ****************
     // ------Cart------
     // ****************
@@ -387,6 +389,7 @@ export const {
   useLazyGetCoursesTeacherQuery,
   useCreateCourseMutation,
   useDeleteCourseMutation,
+  useGetTeacherCourseByIdQuery,
   // Student
   useLazyGetEnrolledCoursesQuery,
   // Courses

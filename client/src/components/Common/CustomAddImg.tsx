@@ -7,6 +7,7 @@ import { Camera, Trash } from 'lucide-react';
 import { Button } from '../ui/button';
 import Cropper from 'react-easy-crop';
 import { useImageCropper } from '@/hooks/useImageCropper';
+import Image from 'next/image';
 
 type Props = {
   name: string;
@@ -19,29 +20,9 @@ type Props = {
   imgOnDelete: string;
 };
 
-const CustomAddImg: React.FC<Props> = ({
-  name,
-  imageUrl,
-  className,
-  cropShape,
-  aspect,
-  maxImgDimetion,
-  maxImageSizeMB,
-  imgOnDelete,
-}) => {
+const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, aspect, maxImgDimetion, maxImageSizeMB, imgOnDelete }) => {
   const { control, setValue } = useFormContext();
-  const {
-    previewUrl,
-    cropping,
-    crop,
-    zoom,
-    setCrop,
-    setZoom,
-    onCropComplete,
-    handleFileSelect,
-    handleCropConfirm,
-    reset,
-  } = useImageCropper({
+  const { previewUrl, cropping, crop, zoom, setCrop, setZoom, onCropComplete, handleFileSelect, handleCropConfirm, reset } = useImageCropper({
     maxImgDimetion,
     maxImageSizeMB,
     imgOnDelete,
@@ -72,7 +53,7 @@ const CustomAddImg: React.FC<Props> = ({
         control={control}
         name={name}
         render={({ field: { ref, name: fieldName, onBlur } }) => (
-          <FormItem className="group relative flex items-center">
+          <FormItem className="group relative flex items-center w-full">
             {previewUrl !== imgOnDelete && (
               <button
                 type="button"
@@ -83,22 +64,14 @@ const CustomAddImg: React.FC<Props> = ({
             )}
             <div className={cn(`flex flex-col items-center space-y-2 overflow-hidden`, className)}>
               <FormLabel className="relative cursor-pointer w-full h-full">
-                <img src={previewUrl} alt="Preview" className="absolute w-full h-full object-cover" />
+                <Image src={previewUrl} alt="Preview" width={0} height={0} sizes="100vw" className="w-full h-auto rounded-lg" />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 flex items-center justify-center transition-opacity duration-200">
                   <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </div>
               </FormLabel>
             </div>
             <FormControl>
-              <input
-                ref={ref}
-                name={fieldName}
-                type="file"
-                onBlur={onBlur}
-                onChange={onFileChange}
-                className="hidden"
-                accept="image/png, image/jpeg, image/*"
-              />
+              <input ref={ref} name={fieldName} type="file" onBlur={onBlur} onChange={onFileChange} className="hidden" accept="image/png, image/jpeg, image/*" />
             </FormControl>
             <FormMessage className="text-red-500 text-xs absolute bottom-0" />
           </FormItem>

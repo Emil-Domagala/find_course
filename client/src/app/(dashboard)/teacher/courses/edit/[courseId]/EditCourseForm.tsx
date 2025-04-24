@@ -8,15 +8,21 @@ import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { useEffect } from 'react';
 import { openSectionModal, setSections } from '@/state';
 import { transformToFrontendFormat } from '@/lib/utils';
+import CustomAddImg from '@/components/Common/CustomAddImg';
+import { useGetTeacherCourseByIdQuery } from '@/state/api';
 
-const EditCourseForm = ({ course }: { course: CourseDetailsPublicDto }) => {
+const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const router = useRouter();
+
+  console.log('courseId: ' + courseId);
+
+  const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string);
 
   console.log(course);
 
@@ -60,6 +66,8 @@ const EditCourseForm = ({ course }: { course: CourseDetailsPublicDto }) => {
   };
 
   // const course = await getCoursesPublic(courseId);
+
+  const displayImageUrl = course?.courseDto?.imageUrl || '/placeholder.png';
   return (
     <>
       <div className="flex items-center gap-5 mb-5">
@@ -85,7 +93,7 @@ const EditCourseForm = ({ course }: { course: CourseDetailsPublicDto }) => {
                   label=""
                   name="status"
                   type="select"
-                  className="flex items-center space-x-2"
+                  className="flex items-center pb-0"
                   initialValue={course?.courseDto.status}
                 />
                 <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
@@ -139,25 +147,23 @@ const EditCourseForm = ({ course }: { course: CourseDetailsPublicDto }) => {
                   initialValue={course?.courseDto.level}
                 />
 
-                <CustomFormField
-                  name="price"
-                  label="Course Price"
-                  type="number"
-                  placeholder="0"
-                  initialValue={course?.courseDto.price}
-                />
+                <CustomFormField name="price" label="Course Price" type="number" placeholder="0" initialValue={course?.courseDto.price} />
               </div>
             </div>
 
             <div className="basis-1/2">
-              <CustomFormField
-                name="image"
-                label="Course Image"
-                type="file"
-                accept="image/*"
-                isPicture
-                initialValue={course?.courseDto.imageUrl}
-              />
+              <div className="flex items-center mb-4 w-full ">
+                <CustomAddImg
+                  className="w-full h-full max-w-[600px] mx-auto"
+                  aspect={16 / 9}
+                  cropShape="rect"
+                  name="image"
+                  maxImgDimetion={600}
+                  maxImageSizeMB={5}
+                  imageUrl={displayImageUrl}
+                  imgOnDelete="/placeholder.png"
+                />
+              </div>
               <div className="bg-customgreys-darkGrey mt-4 md:mt-0 p-4 rounded-lg">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-2xl font-semibold text-secondary-foreground">Sections</h2>

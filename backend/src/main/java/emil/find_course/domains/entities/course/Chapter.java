@@ -40,6 +40,9 @@ public class Chapter {
     private UUID id;
 
     @Column(nullable = false)
+    private int position;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ChapterType type = null;

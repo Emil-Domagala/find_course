@@ -4,20 +4,16 @@ import java.util.List;
 
 import emil.find_course.domains.dto.SectionDto;
 import lombok.AllArgsConstructor;
-
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SectionProtectedDto {
+public class SectionProtectedDto extends SectionDto {
 
-    SectionDto sectionDto;
     List<ChapterProtectedDto> chapters;
 
 }

@@ -68,6 +68,9 @@ public class TransactionController {
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
             Principal principal) {
+        if (size > 100) {
+            size = 100;
+        }
         User user = userService.findByEmail(principal.getName());
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);

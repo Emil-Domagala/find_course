@@ -5,18 +5,15 @@ import java.util.List;
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.entities.course.Section;
 import lombok.AllArgsConstructor;
-
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseDetailsProtectedDto {
-    private CourseDto courseDto;
-    private List<Section> sections;
+public class CourseDetailsProtectedDto extends CourseDto {
+
+    private List<SectionProtectedDto> sections;
 }

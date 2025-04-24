@@ -97,7 +97,7 @@ const EditUserForm = () => {
     <>
       <Form {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <div className="flex flex-col items-center mb-4 ">
+          <div className=" mb-4 m-auto w-fit">
             <CustomAddImg
               imageUrl={displayImageUrl}
               className="h-24 w-24 rounded-full"

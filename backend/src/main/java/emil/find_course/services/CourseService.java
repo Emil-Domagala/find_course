@@ -2,12 +2,15 @@ package emil.find_course.services;
 
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
+import emil.find_course.domains.requestDto.course.CourseRequest;
 
 public interface CourseService {
 
@@ -24,9 +27,11 @@ public interface CourseService {
             PaginationRequest request,
             User teacher);
 
-    // Course updateCourse(RequestCourseBody requestCourseBody, User teacher);
-
     public UUID deleteCourse(UUID id, UUID teacherId);
+
+    public Course getById(UUID id);
+
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image,User user);
 
     // Student
     public PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request);

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.entities.course.Course;
@@ -16,10 +17,14 @@ import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Role;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
+import emil.find_course.domains.requestDto.course.CourseRequest;
+import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
 import emil.find_course.repositories.CourseRepository;
 import emil.find_course.services.CourseService;
+import emil.find_course.services.SectionService;
 import emil.find_course.utils.PaginationUtils;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -29,10 +34,16 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseMapping courseMapping;
+    private final SectionService sectionService;
 
     // **************************
     // ----------Public----------
     // **************************
+
+    @Override
+    public Course getById(UUID id) {
+        return courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course not found"));
+    }
 
     @Override
     public Course getPublishedCourse(UUID id) {
@@ -76,6 +87,47 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user) {
+        Course course = getById(courseId);
+        if (course.getTeacher().getId() != user.getId()) {
+            throw new UnauthorizedException("You are not the teacher of this course");
+        }
+
+        if (courseRequest.getTitle() != null) {
+            course.setTitle(courseRequest.getTitle());
+        }
+        if (courseRequest.getDescription() != null) {
+            course.setDescription(courseRequest.getDescription());
+        }
+        if (courseRequest.getCategory() != null) {
+            course.setCategory(courseRequest.getCategory());
+        }
+        if (courseRequest.getPrice() != null) {
+            course.setPrice(courseRequest.getPrice());
+        }
+        if (courseRequest.getLevel() != null) {
+            course.setLevel(courseRequest.getLevel());
+        }
+        if (courseRequest.getStatus() != null) {
+            course.setStatus(courseRequest.getStatus());
+        }
+
+        if (image != null) {
+            // Saving img logic
+        }
+
+        if (courseRequest.getSections() != null) {
+            sectionService.syncSections(course, courseRequest.getSections());
+
+        }
+
+        course.getSections().toString();
+        // courseRepository.save(course);
+
+    }
+
+    @Override
     public PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category,
             PaginationRequest request, User teacher) {
         final Pageable pageable = PaginationUtils.getPageable(request);
@@ -92,15 +144,6 @@ public class CourseServiceImpl implements CourseService {
                 courses.getNumber(),
                 courses.isEmpty());
     }
-
-    // @Override
-    // public Course updateCourse(RequestCourseBody requestCourseBody, User teacher)
-    // {
-    // if (!teacher.getRoles().contains(Role.TEACHER)) {
-    // throw new IllegalStateException("Only teachers can create courses.");
-    // }
-
-    // }
 
     @Transactional
     @Override

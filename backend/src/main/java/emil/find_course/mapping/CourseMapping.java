@@ -20,11 +20,9 @@ public interface CourseMapping {
     @Mapping(target = "studentsCount", source = "students", qualifiedByName = "calculateEnrolledStudents")
     CourseDto toDto(Course course);
 
-    @Mapping(target = "courseDto", source = ".")
     @Mapping(target = "sections", source = "sections")
     CourseDetailsPublicDto toPublicDto(Course course);
 
-    @Mapping(target = "courseDto", source = ".")
     @Mapping(target = "sections", source = "sections")
     CourseDetailsProtectedDto toProtectedDto(Course course);
 

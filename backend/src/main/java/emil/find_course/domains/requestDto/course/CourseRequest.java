@@ -1,44 +1,53 @@
-package emil.find_course.domains.requestDto;
+package emil.find_course.domains.requestDto.course;
+
+import java.util.List;
+import java.util.UUID;
 
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Validate.ValidEnum;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RequestCourseBody {
+public class CourseRequest {
 
-    @NotBlank(message = "Title is required")
+    private UUID id;
+
+    @Nullable
     @Size(min = 3, max = 100, message = "Title must be between {min} and {max} characters")
     private String title;
 
-    @NotBlank(message = "Description is required")
+    @Nullable
     @Size(min = 3, max = 1000, message = "Description must be between {min} and {max} characters")
     private String description;
 
-    @NotNull
+    @Nullable
     @ValidEnum(enumClass = CourseCategory.class, message = "Invalid course category value")
     private CourseCategory category;
 
-    @NotBlank(message = "Image URL is required")
+    @Nullable
     @Size(min = 3, max = 255, message = "Image URL must be between {min} and {max} characters")
     @Pattern(regexp = "^(https?|ftp)://[^\s/$.?#].[^\s]*$", message = "Image URL must be a valid URL")
     private String imageUrl;
 
+    @Nullable
     @Positive(message = "Price must be a positive value")
-    private int price;
+    private Integer price;
 
-    @NotNull(message = "Level is required")
+    @Nullable
     @ValidEnum(enumClass = Level.class, message = "Invalid level value")
     private Level level;
 
-    @NotNull(message = "Course Status is required")
+    @Nullable
     @ValidEnum(enumClass = CourseStatus.class, message = "Invalid course status value")
     private CourseStatus status;
+
+    @Nullable
+    private List<SectionRequest> sections;
+
 }

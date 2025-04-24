@@ -1,7 +1,5 @@
 package emil.find_course.controllers;
 
-import java.security.Principal;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -19,7 +17,6 @@ import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
 import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.services.AuthService;
-import emil.find_course.services.UserService;
 import emil.find_course.utils.CookieHelper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +39,6 @@ public class AuthController {
 
         private final JwtUtils jwtUtils;
         private final AuthService authService;
-        private final UserService userService;
 
         @PostMapping("/public/register")
         public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
@@ -90,7 +86,6 @@ public class AuthController {
         public ResponseEntity<Void> refreshCookie(
                         @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
-
                 String authToken = authService.refreshAuthToken(refreshToken);
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
 
@@ -98,17 +93,4 @@ public class AuthController {
                                 cookie.toString()).build();
         }
 
-        // It will be deleted
-
-        @PostMapping("/get-roles")
-        public ResponseEntity<String> getRoles(Principal principal) {
-
-                if (principal == null) {
-                        System.out.println("no principal");
-                        return ResponseEntity.ok("");
-                }
-                System.out.println("get-roles");
-                String roles = userService.getRoles(principal);
-                return ResponseEntity.ok(roles);
-        }
 }
