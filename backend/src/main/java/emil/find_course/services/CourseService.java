@@ -1,5 +1,6 @@
 package emil.find_course.services;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +32,7 @@ public interface CourseService {
 
     public Course getById(UUID id);
 
-    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image,User user);
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image,User user, Map<String,MultipartFile> videos);
 
     // Student
     public PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request);

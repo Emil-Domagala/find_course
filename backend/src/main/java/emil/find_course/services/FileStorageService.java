@@ -10,6 +10,6 @@ public interface FileStorageService {
 
     void deleteImage(String imageUrl);
 
-    InputStream resizeImage(MultipartFile file, int targetWidth, int aspectRatioLeft, int aspectRatioRight,
-            long maxSize);
+    InputStream resizeImage(MultipartFile file, int targetWidth, int aspectRatioWidth, int aspectRatioHeight,
+            long maxSizeBytes);
 }

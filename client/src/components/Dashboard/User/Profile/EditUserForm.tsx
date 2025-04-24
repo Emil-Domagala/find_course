@@ -105,7 +105,7 @@ const EditUserForm = () => {
               cropShape="round"
               aspect={1}
               maxImgDimetion={150}
-              maxImageSizeMB={0.2}
+              maxImageSizeMB={0.05}
               imgOnDelete={'/Profile_avatar_placeholder.png'}
             />
           </div>

@@ -3,7 +3,6 @@ package emil.find_course.controllers;
 import java.security.Principal;
 import java.util.Map;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.model.PaymentIntent;
 
-import emil.find_course.domains.dto.CustomPaymentIntent;
 import emil.find_course.domains.dto.TransactionDto;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.user.User;

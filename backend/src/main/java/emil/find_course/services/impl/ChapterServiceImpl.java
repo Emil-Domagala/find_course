@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.entities.course.Chapter;
 import emil.find_course.domains.entities.course.Section;
@@ -18,7 +19,7 @@ import emil.find_course.services.ChapterService;
 public class ChapterServiceImpl implements ChapterService {
 
     @Override
-    public void syncChapter(Section section, List<ChapterRequest> chapterRequests) {
+    public void syncChapter(Section section, List<ChapterRequest> chapterRequests, Map<String, MultipartFile> videos) {
         List<Chapter> oldChapters = section.getChapters();
         Map<UUID, Chapter> oldChaptersMap = oldChapters.stream()
                 .collect(Collectors.toMap(Chapter::getId, Function.identity()));
@@ -33,12 +34,14 @@ public class ChapterServiceImpl implements ChapterService {
                 if (chapterToProcess == null) {
                     throw new IllegalArgumentException("Chapter not found");
                 }
-                updateChapter(chapterRequest, chapterToProcess, section);
+                MultipartFile video = videos.get("video_" + chapterRequest.getId().toString());
+                updateChapter(chapterRequest, chapterToProcess, section, video);
                 finalChapters.add(chapterToProcess);
 
             } else {
+                MultipartFile video = videos.get("video_" + chapterRequest.getTempId().toString());
                 chapterToProcess = new Chapter();
-                manageNewChapter(chapterRequest, chapterToProcess, section);
+                manageNewChapter(chapterRequest, chapterToProcess, section, video);
                 finalChapters.add(chapterToProcess);
             }
         }
@@ -46,7 +49,8 @@ public class ChapterServiceImpl implements ChapterService {
         section.getChapters().addAll(finalChapters);
     }
 
-    private void manageNewChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section) {
+    private void manageNewChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section,
+            MultipartFile video) {
         chapterToProcess.setPosition(chapterRequest.getPosition() == null ? 0 : chapterRequest.getPosition());
         chapterToProcess.setTitle(chapterRequest.getTitle() == null ? "Default Title" : chapterRequest.getTitle());
         chapterToProcess.setContent(
@@ -54,7 +58,8 @@ public class ChapterServiceImpl implements ChapterService {
         chapterToProcess.setSection(section);
     }
 
-    private void updateChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section) {
+    private void updateChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section,
+            MultipartFile video) {
         if (chapterRequest.getPosition() != null) {
             chapterToProcess.setPosition(chapterRequest.getPosition());
         }

@@ -1,6 +1,8 @@
 package emil.find_course.services.impl;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
 import emil.find_course.repositories.CourseRepository;
 import emil.find_course.services.CourseService;
+import emil.find_course.services.FileStorageService;
 import emil.find_course.services.SectionService;
 import emil.find_course.utils.PaginationUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +38,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapping courseMapping;
     private final SectionService sectionService;
+    private final FileStorageService fileStorageService;
 
     // **************************
     // ----------Public----------
@@ -88,7 +92,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user) {
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user,
+            Map<String, MultipartFile> videos) {
         Course course = getById(courseId);
         if (course.getTeacher().getId() != user.getId()) {
             throw new UnauthorizedException("You are not the teacher of this course");
@@ -113,12 +118,18 @@ public class CourseServiceImpl implements CourseService {
             course.setStatus(courseRequest.getStatus());
         }
 
+        String oldImageUrl = course.getImageUrl();
         if (image != null) {
-            // Saving img logic
+            InputStream resizedImage = fileStorageService.resizeImage(image, 800, 16, 9, 512_000);
+            String imgUrl = fileStorageService.saveProcessedImage(resizedImage, "Course", image.getOriginalFilename());
+            course.setImageUrl(imgUrl);
+            if (oldImageUrl != null) {
+                fileStorageService.deleteImage(oldImageUrl);
+            }
         }
 
         if (courseRequest.getSections() != null) {
-            sectionService.syncSections(course, courseRequest.getSections());
+            sectionService.syncSections(course, courseRequest.getSections(),videos);
 
         }
 

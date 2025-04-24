@@ -3,7 +3,6 @@ package emil.find_course.domains.dto.detailsProt;
 import java.util.List;
 
 import emil.find_course.domains.dto.CourseDto;
-import emil.find_course.domains.entities.course.Section;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

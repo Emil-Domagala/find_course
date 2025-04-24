@@ -2,13 +2,13 @@
 import Pagination from '@/components/Common/Filter/Pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SearchDirection } from '@/hooks/useSearchFilters';
+import { SearchDirection } from '@/types/enums';
 import { centsToDollars } from '@/lib/utils';
 import { useLazyGetTransactionsQuery } from '@/state/api';
 import { useCallback, useEffect, useState } from 'react';
 
 const BillingPage = ({}) => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number | undefined>(0);
   const [size, setSize] = useState(10);
   const [sortField, setSortField] = useState<string>('createdAt');
   const [direction, setDirection] = useState(SearchDirection.DESC);
@@ -54,14 +54,10 @@ const BillingPage = ({}) => {
               <TableHeader className="bg-customgreys-darkGrey">
                 <TableRow className="border-none text-white-50">
                   <TableHead className="border-none p-4">Transaction Number</TableHead>
-                  <TableHead
-                    className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer"
-                    onClick={() => handleChangeSortField('createdAt')}>
+                  <TableHead className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer" onClick={() => handleChangeSortField('createdAt')}>
                     Date
                   </TableHead>
-                  <TableHead
-                    className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer"
-                    onClick={() => handleChangeSortField('amount')}>
+                  <TableHead className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer" onClick={() => handleChangeSortField('amount')}>
                     Amount
                   </TableHead>
                   <TableHead className="border-none p-4">Courses</TableHead>
@@ -72,15 +68,9 @@ const BillingPage = ({}) => {
                   transactions?.content?.map((transaction) => (
                     <TableRow key={transaction.id} className="border-none">
                       <TableCell className="border-none p-4">{transaction.paymentIntentId}</TableCell>
-                      <TableCell className="border-none p-4">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="border-none p-4 font-medium">
-                        ${centsToDollars(transaction.amount)}
-                      </TableCell>
-                      <TableCell className="border-none p-4">
-                        {transaction.courses?.map((course) => course.title).join(', ')}
-                      </TableCell>
+                      <TableCell className="border-none p-4">{new Date(transaction.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell className="border-none p-4 font-medium">${centsToDollars(transaction.amount)}</TableCell>
+                      <TableCell className="border-none p-4">{transaction.courses?.map((course) => course.title).join(', ')}</TableCell>
                     </TableRow>
                   ))
                 ) : (
@@ -92,12 +82,7 @@ const BillingPage = ({}) => {
                 )}
               </TableBody>
               <TableCell colSpan={4} className=" bg-customgreys-primarybg p-0 m-0">
-                <Pagination
-                  className="p-0"
-                  setPage={setPage}
-                  currentPage={page}
-                  totalPages={transactions?.totalPages}
-                />
+                <Pagination className="p-0" setPage={setPage} currentPage={page || 0} totalPages={transactions?.totalPages} />
               </TableCell>
             </Table>
           )}

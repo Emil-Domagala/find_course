@@ -1,7 +1,7 @@
 import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
-import { CartDto } from '@/types/courses';
+import { CartDto, CourseDetailsPublicDto } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
 import { BecomeTeacherRequestStatus, SearchDirection, SearchField } from '@/types/enums';
 import { TransactionDto } from '@/types/payments';

@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             System.out.println("Got img");
             String oldImgUrl = user.getImageUrl();
             String oryginalName = imageFile.getOriginalFilename();
-            InputStream resizedImage = fileStorageService.resizeImage(imageFile, 150, 1, 1, 1_000_000);
+            InputStream resizedImage = fileStorageService.resizeImage(imageFile, 150, 1, 1, 51_200);
             String imgUrl = fileStorageService.saveProcessedImage(resizedImage, "Avatar", oryginalName);
             user.setImageUrl(imgUrl);
             if (oldImgUrl != null) {

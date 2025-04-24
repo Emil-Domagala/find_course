@@ -102,8 +102,8 @@ public class FileStorageImpl implements FileStorageService {
     }
 
     @Override
-    public InputStream resizeImage(MultipartFile file, int targetWidth, int aspectRatioLeft, int aspectRatioRight,
-            long maxSize) {
+    public InputStream resizeImage(MultipartFile file, int targetWidth, int aspectRatioWidth, int aspectRatioHeight,
+            long maxSizeBytes) {
         final double ASPECT_RATIO_TOLERANCE = 0.05;
         final double MIN_QUALITY = 0.1;
 
@@ -128,7 +128,7 @@ public class FileStorageImpl implements FileStorageService {
             int originalWidth = image.getWidth();
             int originalHeight = image.getHeight();
             double originalAspectRatio = (double) originalWidth / originalHeight;
-            double targetAspectRatio = (double) aspectRatioLeft / aspectRatioRight;
+            double targetAspectRatio = (double) aspectRatioWidth / aspectRatioHeight;
 
             log.debug("Original Dims: {}x{}, Aspect Ratio: {}", originalWidth, originalHeight,
                     String.format("%.3f", originalAspectRatio));
@@ -152,7 +152,7 @@ public class FileStorageImpl implements FileStorageService {
 
             if (needsProcessing) {
                 processingWidth = targetWidth;
-                processingHeight = (int) Math.round((double) processingWidth * aspectRatioRight / aspectRatioLeft);
+                processingHeight = (int) Math.round((double) processingWidth * aspectRatioHeight / aspectRatioWidth);
                 if (processingHeight <= 0) {
                     throw new IllegalArgumentException("Calculated processing height is invalid.");
                 }
@@ -175,10 +175,10 @@ public class FileStorageImpl implements FileStorageService {
             long currentSize = currentBytes.length;
             log.debug("Image size after first pass: {} bytes", currentSize);
 
-            if (currentSize > maxSize) {
-                log.warn("Image size ({}) exceeds limit ({} bytes). Reducing quality.", currentSize, maxSize);
+            if (currentSize > maxSizeBytes) {
+                log.warn("Image size ({}) exceeds limit ({} bytes). Reducing quality.", currentSize, maxSizeBytes);
 
-                double qualityFactor = (double) maxSize / currentSize;
+                double qualityFactor = (double) maxSizeBytes / currentSize;
                 qualityFactor = Math.sqrt(qualityFactor);
                 qualityFactor = Math.max(MIN_QUALITY, Math.min(qualityFactor, 0.95));
 
@@ -202,12 +202,12 @@ public class FileStorageImpl implements FileStorageService {
                 long finalSize = currentBytes.length;
                 log.debug("Image size after quality reduction: {} bytes", finalSize);
 
-                if (finalSize > maxSize) {
+                if (finalSize > maxSizeBytes) {
                     log.error(
                             "Image size ({}) still exceeds limit ({}) even after reducing quality to {}. Cannot process further.",
-                            finalSize, maxSize, String.format("%.3f", qualityFactor));
+                            finalSize, maxSizeBytes, String.format("%.3f", qualityFactor));
                     throw new RuntimeException(
-                            "Image could not be reduced to the required size limit (" + (maxSize / 1024) + " KB).");
+                            "Image could not be reduced to the required size limit (" + (maxSizeBytes / 1024) + " KB).");
                 }
             } else {
                 log.info("Image size is within limit. No quality reduction needed.");

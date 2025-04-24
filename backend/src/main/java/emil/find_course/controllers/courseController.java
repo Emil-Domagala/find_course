@@ -27,9 +27,7 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
-import emil.find_course.domains.requestDto.course.ChapterRequest;
 import emil.find_course.domains.requestDto.course.CourseRequest;
-import emil.find_course.domains.requestDto.course.SectionRequest;
 import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
 import emil.find_course.services.CourseService;
@@ -156,15 +154,10 @@ public class CourseController {
             Principal principal, @PathVariable UUID courseId,
             @RequestPart("courseData") @Validated CourseRequest courseRequest,
             @RequestPart(required = false) MultipartFile image,
-            @RequestPart(required = false) Map<String, MultipartFile> video) {
-        System.out.println("PATCH DO EXIST!!!!!!");
-        // for (SectionRequest section : courseRequest.getSections()) {
-        // for (ChapterRequest chapter : section.getChapters()) {
-        // chapter.setVideo(video.get("video_" + chapter.getId()));
-        // }
-        // }
+            @RequestPart(required = false) Map<String, MultipartFile> videos) {
+
         final User user = userService.findByEmail(principal.getName());
-        courseService.updateCourse(courseId, courseRequest, image, user);
+        courseService.updateCourse(courseId, courseRequest, image, user, videos);
 
         return ResponseEntity.noContent().build();
     }

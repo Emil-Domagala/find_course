@@ -1,8 +1,9 @@
+import { ChapterDetailsProtectedDto, SectionDetailsProtectedDto } from '@/types/courses';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialStateTypes = {
   courseEditor: {
-    sections: [];
+    sections: SectionDetailsProtectedDto[];
     isChapterModalOpen: boolean;
     isSectionModalOpen: boolean;
     selectedSectionIndex: number | null;
@@ -25,7 +26,7 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     // Set sections
-    setSections: (state, action: PayloadAction<[]>) => {
+    setSections: (state, action: PayloadAction<SectionDetailsProtectedDto[]>) => {
       state.courseEditor.sections = action.payload;
     },
 
@@ -67,12 +68,14 @@ export const globalSlice = createSlice({
     //***************
 
     // add section ADD SECTION TYPE
-    addSection: (state, action: PayloadAction<any>) => {
-      state.courseEditor.sections.push(action.payload);
+    addSection: (state, action: PayloadAction<SectionDetailsProtectedDto>) => {
+      const sectionToAdd = { ...action.payload, chapters: action.payload.chapters ?? [] };
+      state.courseEditor.sections.push(sectionToAdd);
     },
     // edit section ADD SECTION TYPE
-    editSection: (state, action: PayloadAction<{ index: number; section: any }>) => {
-      state.courseEditor.sections[action.payload.index] = action.payload.section;
+    editSection: (state, action: PayloadAction<{ index: number; section: SectionDetailsProtectedDto }>) => {
+      const sectionToEdit = { ...action.payload.section, chapters: action.payload.section.chapters ?? [] };
+      state.courseEditor.sections[action.payload.index] = sectionToEdit;
     },
     // Delete Section
     deleteSection: (state, action: PayloadAction<number>) => {
@@ -84,8 +87,14 @@ export const globalSlice = createSlice({
     //***************
 
     // Add chapter
-    addChapter: (state, action: PayloadAction<{ sectionIndex: number; chapter: any }>) => {
-      state.courseEditor.sections[action.payload.sectionIndex].chapters.push(action.payload.chapter);
+    addChapter: (state, action: PayloadAction<{ sectionIndex: number; chapter: ChapterDetailsProtectedDto }>) => {
+      const section = state.courseEditor.sections[action.payload.sectionIndex];
+      if (section) {
+        if (!section.chapters) {
+          section.chapters = [];
+        }
+        section.chapters.push(action.payload.chapter);
+      }
     },
     // Edit chaoter
     editChapter: (
@@ -93,15 +102,20 @@ export const globalSlice = createSlice({
       action: PayloadAction<{
         sectionIndex: number;
         chapterIndex: number;
-        chapter: any;
+        chapter: ChapterDetailsProtectedDto;
       }>,
     ) => {
-      state.courseEditor.sections[action.payload.sectionIndex].chapters[action.payload.chapterIndex] =
-        action.payload.chapter;
+      const section = state.courseEditor.sections[action.payload.sectionIndex];
+      if (section?.chapters?.[action.payload.chapterIndex]) {
+        section.chapters[action.payload.chapterIndex] = action.payload.chapter;
+      }
     },
     // Delete chapter
     deleteChapter: (state, action: PayloadAction<{ sectionIndex: number; chapterIndex: number }>) => {
-      state.courseEditor.sections[action.payload.sectionIndex].chapters.splice(action.payload.chapterIndex, 1);
+      const section = state.courseEditor.sections[action.payload.sectionIndex];
+      if (section?.chapters) {
+        section.chapters.splice(action.payload.chapterIndex, 1);
+      }
     },
   },
 });

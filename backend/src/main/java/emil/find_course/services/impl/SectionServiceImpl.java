@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.course.Section;
@@ -23,7 +24,7 @@ public class SectionServiceImpl implements SectionService {
     private final ChapterService chapterService;
 
     @Override
-    public void syncSections(Course course, List<SectionRequest> sectionRequests) {
+    public void syncSections(Course course, List<SectionRequest> sectionRequests, Map<String, MultipartFile> videos) {
         List<Section> oldSections = course.getSections();
         Map<UUID, Section> oldSectionsMap = oldSections.stream()
                 .collect(Collectors.toMap(Section::getId, Function.identity()));
@@ -36,15 +37,17 @@ public class SectionServiceImpl implements SectionService {
                 if (sectionToProcess == null) {
                     throw new IllegalArgumentException("Section not found");
                 }
+
                 updateSection(sectionRequest, sectionToProcess, course);
                 finalSections.add(sectionToProcess);
             } else {
                 sectionToProcess = new Section();
+
                 manageNewSection(sectionRequest, sectionToProcess, course);
                 finalSections.add(sectionToProcess);
 
             }
-            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters());
+            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters(),videos);
         }
         course.getSections().clear();
         course.getSections().addAll(finalSections);

@@ -1,4 +1,5 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
+import { ChapterType } from './enums';
 
 export type CartDto = {
   id: string;
@@ -9,13 +10,33 @@ export type CartDto = {
 export type ChapterDto = {
   id: string;
   title: string;
+  type: ChapterType;
 };
 
 export type SectionDto = {
   id: string;
   title: string;
   description: string;
-  chapter?: ChapterDto[];
+};
+
+export type CourseDetailsPublicDto = CourseDto & {
+  sections?: SectionDto[];
+};
+export type SectionDetailsPublicDto = SectionDto & {
+  chapters?: ChapterDto[];
+};
+
+export type CourseDetailsProtectedDto = CourseDto & {
+  sections?: SectionDetailsProtectedDto[];
+};
+
+export type SectionDetailsProtectedDto = SectionDto & {
+  chapters?: ChapterDetailsProtectedDto[];
+};
+
+export type ChapterDetailsProtectedDto = ChapterDto & {
+  content: string;
+  videoUrl?: string;
 };
 
 declare global {
@@ -32,11 +53,6 @@ declare global {
     studentsCount: number;
     createdAt: string;
     updatedAt: string;
-  };
-
-  type CourseDetailsPublicDto = {
-    courseDto: CourseDto;
-    sections?: SectionDto[];
   };
 }
 

@@ -16,4 +16,9 @@ export enum BecomeTeacherRequestStatus {
   DENIED = 'DENIED',
 }
 
+export enum ChapterType {
+  VIDEO = 'VIDEO',
+  TEXT = 'TEXT',
+}
+
 export {};
