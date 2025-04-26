@@ -16,15 +16,17 @@ import { openSectionModal, setSections } from '@/state';
 import { transformToFrontendFormat } from '@/lib/utils';
 import CustomAddImg from '@/components/Common/CustomAddImg';
 import { useGetTeacherCourseByIdQuery } from '@/state/api';
+import SectionModal from './SectionModal';
+import DroppableComponent from './DroppableComponent';
 
 const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const router = useRouter();
 
-  console.log('courseId: ' + courseId);
+  // console.log('courseId: ' + courseId);
 
   const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string);
 
-  console.log(course);
+  // console.log(course);
 
   const dispatch = useAppDispatch();
   const { sections } = useAppSelector((state) => state.global.courseEditor);
@@ -49,12 +51,12 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
   useEffect(() => {
     if (course) {
       methods.reset({
-        title: course.courseDto.title,
-        description: course.courseDto.description,
-        category: course.courseDto.category,
-        price: course.courseDto.price,
-        status: course.courseDto.status,
-        level: course.courseDto.level,
+        title: course.title,
+        description: course.description,
+        category: course.category,
+        price: course.price,
+        status: course.status,
+        level: course.level,
       });
       dispatch(setSections(course.sections || []));
     }
@@ -67,7 +69,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
 
   // const course = await getCoursesPublic(courseId);
 
-  const displayImageUrl = course?.courseDto?.imageUrl || '/placeholder.png';
+  const displayImageUrl = course?.imageUrl || '/placeholder.png';
   return (
     <>
       <div className="flex items-center gap-5 mb-5">
@@ -94,7 +96,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                   name="status"
                   type="select"
                   className="flex items-center pb-0"
-                  initialValue={course?.courseDto.status}
+                  initialValue={course?.status}
                 />
                 <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
                   {methods.watch('status') === CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
@@ -106,14 +108,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
           <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-dm-sans">
             <div className="basis-1/2">
               <div className="space-y-4 max-h-64 ">
-                <CustomFormField
-                  name="title"
-                  label="Course Title"
-                  type="text"
-                  placeholder="Write course title here"
-                  className="border-none"
-                  initialValue={course?.courseDto.title}
-                />
+                <CustomFormField name="title" label="Course Title" type="text" placeholder="Write course title here" className="border-none" initialValue={course?.title} />
 
                 <CustomFormField
                   name="description"
@@ -121,7 +116,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                   type="textarea"
                   placeholder="Write course description here"
                   inputClassName="max-h-[50vh]"
-                  initialValue={course?.courseDto.description}
+                  initialValue={course?.description}
                 />
 
                 <CustomFormField
@@ -133,7 +128,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                     value: category,
                     label: transformToFrontendFormat(category),
                   }))}
-                  initialValue={course?.courseDto.category}
+                  initialValue={course?.category}
                 />
                 <CustomFormField
                   name="level"
@@ -144,10 +139,10 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                     value: level,
                     label: transformToFrontendFormat(level),
                   }))}
-                  initialValue={course?.courseDto.level}
+                  initialValue={course?.level}
                 />
 
-                <CustomFormField name="price" label="Course Price" type="number" placeholder="0" initialValue={course?.courseDto.price} />
+                <CustomFormField name="price" label="Course Price" type="number" placeholder="0" initialValue={course?.price} />
               </div>
             </div>
 
@@ -178,19 +173,14 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                     <span className="text-primary-700 group-hover:white-100">Add Section</span>
                   </Button>
                 </div>
-                {/* 
-              {isLoading ? (
-                <p>Loading course content...</p>
-              ) : sections.length > 0 ? (
-                <DroppableComponent />
-              ) : (
-                <p>No sections available</p>
-              )} */}
+
+                {isLoading ? <p>Loading course content...</p> : sections.length > 0 ? <DroppableComponent /> : <p>No sections available</p>}
               </div>
             </div>
           </div>
         </form>
       </Form>
+      <SectionModal />
     </>
   );
 };
