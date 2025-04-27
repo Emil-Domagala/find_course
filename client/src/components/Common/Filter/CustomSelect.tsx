@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 import { ReactNode, SetStateAction } from 'react';
 
-type SelectOptionValue = string | number;
+type SelectOptionValue = string | number | undefined;
 
 type CustomSelectProps<T extends SelectOptionValue> = {
   label?: string;
@@ -34,6 +34,7 @@ const CustomSelect = <T extends SelectOptionValue>({
 }: CustomSelectProps<T>) => {
   const handleValueChange = (selectedValue: string) => {
     if (clearable && selectedValue === '__clear__') {
+      console.log('habdle val change clear');
       onChange(undefined);
     } else {
       const originalOption = options.find((opt) => String(opt) === selectedValue);

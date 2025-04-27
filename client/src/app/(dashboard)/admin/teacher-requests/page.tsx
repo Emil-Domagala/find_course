@@ -21,9 +21,13 @@ const BecomeTeacherRequestsPage = ({}) => {
   const [dataToSend, setDataToSend] = useState<UpdateTeacherRequest[]>([]);
 
   // Filter states
-  const [requetsStatus, setRequestsStatus] = useSelectFilter<BecomeTeacherRequestStatus>({ valueName: 'status', initialValue: BecomeTeacherRequestStatus.PENDING });
+  const [requetsStatus, setRequestsStatus] = useSelectFilter<BecomeTeacherRequestStatus>({
+    valueName: 'status',
+    initialValue: BecomeTeacherRequestStatus.PENDING,
+    clearable: true,
+  });
   const [direction, setDirection] = useSelectFilter<SearchDirection>({ valueName: 'direction', initialValue: SearchDirection.ASC });
-  const [seenByAdmin, setSeenByAdmin] = useSelectFilter<'true' | 'false'>({ valueName: 'seenByAdmin', initialValue: 'false' });
+  const [seenByAdmin, setSeenByAdmin] = useSelectFilter<'true' | 'false'>({ valueName: 'seenByAdmin', initialValue: 'false', clearable: true });
   const [size, setSize] = useSelectFilter<number>({ valueName: 'size', initialValue: 12 });
   const [page, setPage] = useSelectFilter<number>({ valueName: 'page', initialValue: 0 });
 

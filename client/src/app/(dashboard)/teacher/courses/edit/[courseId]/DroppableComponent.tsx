@@ -102,7 +102,7 @@ const SectionHeader = ({ section, sectionIndex, dragHandleProps }: { section: Se
 
   return (
     <div className="flex justify-between items-center mb-2 bg-black/30 p-1 rounded" {...dragHandleProps}>
-      <div className="w-full flex flex-col gap-1r">
+      <div className="w-full flex flex-col gap-1">
         <div className="w-full flex items-center justify-between">
           <div className="flex items-center">
             <GripVertical className="h-6 w-6 mb-1" />

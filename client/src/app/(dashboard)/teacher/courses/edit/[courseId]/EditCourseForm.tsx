@@ -18,6 +18,7 @@ import CustomAddImg from '@/components/Common/CustomAddImg';
 import { useGetTeacherCourseByIdQuery } from '@/state/api';
 import SectionModal from './SectionModal';
 import DroppableComponent from './DroppableComponent';
+import ChapterModal from './ChapterModal';
 
 const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const router = useRouter();
@@ -181,6 +182,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
         </form>
       </Form>
       <SectionModal />
+      <ChapterModal />
     </>
   );
 };
