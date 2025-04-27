@@ -31,11 +31,6 @@ public class CourseRequest {
     private CourseCategory category;
 
     @Nullable
-    @Size(min = 3, max = 255, message = "Image URL must be between {min} and {max} characters")
-    @Pattern(regexp = "^(https?|ftp)://[^\s/$.?#].[^\s]*$", message = "Image URL must be a valid URL")
-    private String imageUrl;
-
-    @Nullable
     @Positive(message = "Price must be a positive value")
     private Integer price;
 

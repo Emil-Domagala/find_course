@@ -45,6 +45,9 @@ public class ChapterServiceImpl implements ChapterService {
                 finalChapters.add(chapterToProcess);
             }
         }
+        for (int i = 0; i < finalChapters.size(); i++) {
+            finalChapters.get(i).setPosition(i);
+        }
         section.getChapters().clear();
         section.getChapters().addAll(finalChapters);
     }
@@ -60,9 +63,6 @@ public class ChapterServiceImpl implements ChapterService {
 
     private void updateChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section,
             MultipartFile video) {
-        if (chapterRequest.getPosition() != null) {
-            chapterToProcess.setPosition(chapterRequest.getPosition());
-        }
         if (chapterRequest.getTitle() != null) {
             chapterToProcess.setTitle(chapterRequest.getTitle());
         }

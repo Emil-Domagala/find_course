@@ -43,8 +43,8 @@ export default function DroppableComponent() {
       <Droppable droppableId="sections">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            {sections.map((section: SectionDetailsProtectedDto, sectionIndex: number) => (
-              <Draggable key={section.id} draggableId={section.id} index={sectionIndex}>
+            {sections.map((section: SectionDetailsProtectedDto & { tempId?: string }, sectionIndex: number) => (
+              <Draggable key={(section.id || section.tempId)!} draggableId={(section.id || section.tempId)!} index={sectionIndex}>
                 {(draggableProvider) => (
                   <div
                     ref={draggableProvider.innerRef}
@@ -56,8 +56,8 @@ export default function DroppableComponent() {
                       <Droppable droppableId={`chapters-${section.id}`}>
                         {(droppableProvider) => (
                           <div ref={droppableProvider.innerRef} {...droppableProvider.droppableProps}>
-                            {section.chapters?.map((chapter: ChapterDetailsProtectedDto, chapterIndex: number) => (
-                              <Draggable key={chapter.id} draggableId={chapter.id} index={chapterIndex}>
+                            {section.chapters?.map((chapter: ChapterDetailsProtectedDto & { tempId?: string }, chapterIndex: number) => (
+                              <Draggable key={(chapter.id || chapter.tempId)!} draggableId={(chapter.id || chapter.tempId)!} index={chapterIndex}>
                                 {(draggableProvider) => (
                                   <ChapterItem chapter={chapter} chapterIndex={chapterIndex} sectionIndex={sectionIndex} draggableProvider={draggableProvider} />
                                 )}

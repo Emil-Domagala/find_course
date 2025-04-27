@@ -18,9 +18,10 @@ type Props = {
   maxImgDimetion: number;
   maxImageSizeMB: number;
   imgOnDelete: string;
+  deletable?: boolean;
 };
 
-const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, aspect, maxImgDimetion, maxImageSizeMB, imgOnDelete }) => {
+const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, aspect, maxImgDimetion, maxImageSizeMB, imgOnDelete, deletable = true }) => {
   const { control, setValue } = useFormContext();
   const { previewUrl, cropping, crop, zoom, setCrop, setZoom, onCropComplete, handleFileSelect, handleCropConfirm, reset } = useImageCropper({
     maxImgDimetion,
@@ -54,13 +55,15 @@ const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, a
         name={name}
         render={({ field: { ref, name: fieldName, onBlur } }) => (
           <FormItem className="group relative flex items-center w-full">
-            {previewUrl !== imgOnDelete && (
+            {previewUrl !== imgOnDelete && deletable ? (
               <button
                 type="button"
                 onClick={handleDeleteImg}
                 className="absolute z-50 bg-customgreys-primarybg p-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-[-4.5rem] hover:bg-customgreys-darkGrey rounded-lg transition-all duration-500 cursor-pointer">
                 <Trash className="size-5 text-white" />
               </button>
+            ) : (
+              ''
             )}
             <div className={cn(`flex flex-col items-center space-y-2 overflow-hidden`, className)}>
               <FormLabel className="relative cursor-pointer w-full h-full">

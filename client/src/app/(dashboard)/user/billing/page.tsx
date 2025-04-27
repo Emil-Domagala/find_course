@@ -1,7 +1,7 @@
 'use client';
 import Pagination from '@/components/Common/Filter/Pagination';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SearchDirection } from '@/types/enums';
 import { centsToDollars } from '@/lib/utils';
 import { useLazyGetTransactionsQuery } from '@/state/api';
@@ -75,15 +75,20 @@ const BillingPage = ({}) => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell className="border-none p-4" colSpan={4}>
+                    <TableCell className="border-none p-4 text-center" colSpan={4}>
                       No Transactions Found
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
-              <TableCell colSpan={4} className=" bg-customgreys-primarybg p-0 m-0">
-                <Pagination className="p-0" setPage={setPage} currentPage={page || 0} totalPages={transactions?.totalPages} />
-              </TableCell>
+
+              <TableFooter className="bg-customgreys-primarybg border-customgreys-secondarybg">
+                <TableRow>
+                  <TableCell colSpan={4} className="p-0 m-0 border-none">
+                    <Pagination className="p-3" setPage={setPage} currentPage={page || 0} totalPages={transactions?.totalPages} /> {/* Added padding back for aesthetics */}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           )}
         </div>

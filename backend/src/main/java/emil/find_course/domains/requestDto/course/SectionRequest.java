@@ -18,10 +18,6 @@ public class SectionRequest {
     @Nullable
     private String tempId;
 
-    @NotBlank
-    @Positive(message = "Price must be a positive value")
-    private Integer position;
-
     @Nullable
     @Size(min = 3, max = 100, message = "Section title must be between {min} and {max} characters")
     private String title;

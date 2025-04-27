@@ -66,6 +66,24 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const onSubmit = async (data: CourseFormData) => {
     console.log('Submitting');
     console.log(data);
+    console.log(sections);
+
+    const createCoursePayload = {
+      id: courseId,
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      status: data.status,
+      level: data.level,
+      sections: sections,
+    };
+
+    console.log(createCoursePayload);
+
+    const formData = new FormData();
+    formData.append('courseData', JSON.stringify(data));
+    if (data.image) formData.append('image', data.image);
   };
 
   // const course = await getCoursesPublic(courseId);
@@ -109,11 +127,11 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
           <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-dm-sans">
             <div className="basis-1/2">
               <div className="space-y-4 max-h-64 ">
-                <CustomFormField name="title" label="Course Title" type="text" placeholder="Write course title here" className="border-none" initialValue={course?.title} />
+                <CustomFormField name="title" label="Title" type="text" placeholder="Write course title here" className="border-none" initialValue={course?.title} />
 
                 <CustomFormField
                   name="description"
-                  label="Course Description"
+                  label="Description"
                   type="textarea"
                   placeholder="Write course description here"
                   inputClassName="max-h-[50vh]"
@@ -122,7 +140,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
 
                 <CustomFormField
                   name="category"
-                  label="Course Category"
+                  label="Category"
                   type="select"
                   placeholder="Select category here"
                   options={Object.values(CourseCategory).map((category) => ({
@@ -133,7 +151,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                 />
                 <CustomFormField
                   name="level"
-                  label="Course Level"
+                  label="Level"
                   type="select"
                   placeholder="Select level here"
                   options={Object.values(Level).map((level) => ({
@@ -143,7 +161,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                   initialValue={course?.level}
                 />
 
-                <CustomFormField name="price" label="Course Price" type="number" placeholder="0" initialValue={course?.price} />
+                <CustomFormField name="price" label="Price in cents" type="number" placeholder="0" initialValue={course?.price} />
               </div>
             </div>
 
@@ -154,10 +172,11 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                   aspect={16 / 9}
                   cropShape="rect"
                   name="image"
-                  maxImgDimetion={600}
-                  maxImageSizeMB={5}
+                  maxImgDimetion={800}
+                  maxImageSizeMB={0.5}
                   imageUrl={displayImageUrl}
                   imgOnDelete="/placeholder.png"
+                  deletable={false}
                 />
               </div>
               <div className="bg-customgreys-darkGrey mt-4 md:mt-0 p-4 rounded-lg">

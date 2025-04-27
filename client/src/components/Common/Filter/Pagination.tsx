@@ -14,7 +14,7 @@ const Pagination = ({ setPage, currentPage, totalPages, className }: Props) => {
   return (
     <div className={cn('flex flex-row gap-2 justify-center py-4', className)}>
       {currentPage != 0 && (
-        <Button onClick={() => setPage((prev) => prev || 1 - 1)}>
+        <Button size="sm" className="p-3 font-semibold" onClick={() => setPage((prev) => prev || 1 - 1)}>
           <ChevronLeft className="h-4 w-4" />
           Previous
         </Button>
@@ -26,13 +26,17 @@ const Pagination = ({ setPage, currentPage, totalPages, className }: Props) => {
         </>
       )}
       {/* Current Page */}
-      <Button variant="outline">{currentPage + 1}</Button>
+      <Button size="sm" className="p-3 font-semibold" variant="outline">
+        {currentPage + 1}
+      </Button>
       {totalPages ? (
         currentPage < totalPages - 1 ? (
           <>
             <span>...</span>
-            <Button onClick={() => setPage(totalPages - 1)}>{totalPages}</Button>
-            <Button onClick={() => setPage((prev) => prev || 0 + 1)}>
+            <Button size="sm" className="p-3 font-semibold" onClick={() => setPage(totalPages - 1)}>
+              {totalPages}
+            </Button>
+            <Button size="sm" className="p-3 font-semibold" onClick={() => setPage((prev) => prev || 0 + 1)}>
               Next
               <ChevronRight className="h-4 w-4" />
             </Button>

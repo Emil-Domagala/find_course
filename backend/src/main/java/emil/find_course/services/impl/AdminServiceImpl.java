@@ -41,12 +41,11 @@ public class AdminServiceImpl implements AdminService {
         return Map.of("newRequests", newRequests);
     }
 
+    // TODO: BOOLEAN == NULL ERROR
     @Override
     public PagingResult<BecomeTeacherDto> searchBecomeTeacherDto(BecomeTeacherStatus status, Boolean seenByAdmin,
             PaginationRequest request) {
         final Pageable pageable = PaginationUtils.getPageable(request);
-        System.out.println(request.toString());
-        System.out.println(seenByAdmin);
 
         Page<BecomeTeacher> becomeTeacher = becomeTeacherRepository.searchBecomeTeacherRequest(
                 status, seenByAdmin, pageable);

@@ -3,15 +3,16 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { SetStateAction, useCallback, useEffect, useState } from 'react';
 
+// INITIAL VALUE IS USED TO ENSURE THAT VALUE WILL NOT BE UNDEFINED
+
 type UseSelectFilterProps<T = string | number> = {
   valueName: string;
   initialValue?: T;
-  clearable?: boolean;
 };
 
 type UseSelectFilterReturn<T> = [T | undefined, React.Dispatch<SetStateAction<T | undefined>>];
 
-export const useSelectFilter = <T extends string | number = string>({ valueName, initialValue, clearable }: UseSelectFilterProps<T>): UseSelectFilterReturn<T> => {
+export const useSelectFilter = <T extends string | number = string>({ valueName, initialValue }: UseSelectFilterProps<T>): UseSelectFilterReturn<T> => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -25,17 +26,16 @@ export const useSelectFilter = <T extends string | number = string>({ valueName,
       }
       return paramValue as T;
     }
-    if (!clearable) {
-      return initialValue;
-    }
-    return;
-  }, [searchParams, valueName, initialValue]);
+
+    return initialValue;
+  }, [initialValue]);
 
   const [filterValue, setFilterValue] = useState<T | undefined>(getInitialState);
 
   useEffect(() => {
     setFilterValue(getInitialState());
-  }, [getInitialState]);
+    console.log(getInitialState() + ' getInitialState');
+  }, []);
 
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -47,7 +47,7 @@ export const useSelectFilter = <T extends string | number = string>({ valueName,
     const queryString = newParams.toString();
     const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
     router.replace(newUrl);
-  }, [filterValue]);
+  }, [filterValue, valueName, pathname, router, searchParams]);
 
   return [filterValue, setFilterValue];
 };

@@ -23,13 +23,11 @@ const BecomeTeacherRequestsPage = ({}) => {
   // Filter states
   const [requetsStatus, setRequestsStatus] = useSelectFilter<BecomeTeacherRequestStatus>({
     valueName: 'status',
-    initialValue: BecomeTeacherRequestStatus.PENDING,
-    clearable: true,
   });
   const [direction, setDirection] = useSelectFilter<SearchDirection>({ valueName: 'direction', initialValue: SearchDirection.ASC });
-  const [seenByAdmin, setSeenByAdmin] = useSelectFilter<'true' | 'false'>({ valueName: 'seenByAdmin', initialValue: 'false', clearable: true });
+  const [seenByAdmin, setSeenByAdmin] = useSelectFilter<'true' | 'false'>({ valueName: 'seenByAdmin' });
   const [size, setSize] = useSelectFilter<number>({ valueName: 'size', initialValue: 12 });
-  const [page, setPage] = useSelectFilter<number>({ valueName: 'page', initialValue: 0 });
+  const [page, setPage] = useSelectFilter<number>({ valueName: 'page' });
 
   // RTK Query
   const [fetchBecomeTeacherRequest, { data: becomeTeacherRequestPage, isLoading }] = useLazyGetAdminBecomeUserRequestsQuery();

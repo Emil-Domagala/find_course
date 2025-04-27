@@ -91,7 +91,7 @@ const SectionModal = () => {
                 Cancel
               </Button>
               <Button type="submit" className="bg-primary-700">
-                Save
+                Add
               </Button>
             </div>
           </form>

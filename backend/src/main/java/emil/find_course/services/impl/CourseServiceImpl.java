@@ -129,12 +129,12 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (courseRequest.getSections() != null) {
-            sectionService.syncSections(course, courseRequest.getSections(),videos);
+            sectionService.syncSections(course, courseRequest.getSections(), videos);
 
         }
 
         course.getSections().toString();
-        // courseRepository.save(course);
+        courseRepository.save(course);
 
     }
 

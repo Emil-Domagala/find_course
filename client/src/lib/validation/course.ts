@@ -8,10 +8,7 @@ export const courseSchema = z.object({
   category: z.nativeEnum(CourseCategory),
   level: z.nativeEnum(Level),
   status: z.string(),
-  price: z
-    .number()
-    .positive('Price must be positive')
-    .refine((value) => value % 1 !== 0, { message: 'Price must be a decimal (double)' }),
+  price: z.number().positive('Price must be positive'),
   image: z.union([z.string(), z.instanceof(File)]).optional(),
 });
 
@@ -30,7 +27,7 @@ export type ChapterFormData = z.infer<typeof chapterSchema>;
 export const sectionSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(50, 'Title must be less than 50 characters'),
   description: z.string().min(3, 'Description must be at least 10 characters').max(500, 'Description must be less than 200 characters'),
-  chapters: z.array(chapterSchema),
+  chapters: z.array(chapterSchema).optional(),
 });
 
 export type SectionFormData = z.infer<typeof sectionSchema>;

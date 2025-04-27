@@ -21,10 +21,9 @@ public interface BecomeTeacherRepository extends JpaRepository<BecomeTeacher, UU
 
     Integer countAllBySeenByAdmin(boolean seenByAdmin);
 
-    // TODO:FIX THIS QUERRY IT DOESENT WORK WITH COALESCE
     @Query("SELECT b FROM BecomeTeacher b WHERE"
             + " (COALESCE (:seenByAdmin, NULL) IS NULL OR b.seenByAdmin = :seenByAdmin )"
             + " AND (COALESCE (:status, NULL) IS NULL OR b.status = :status) ")
-    Page<BecomeTeacher> searchBecomeTeacherRequest(BecomeTeacherStatus status, boolean seenByAdmin, Pageable pageable);
+    Page<BecomeTeacher> searchBecomeTeacherRequest(BecomeTeacherStatus status, Boolean seenByAdmin, Pageable pageable);
 
 }

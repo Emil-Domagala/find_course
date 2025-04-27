@@ -47,8 +47,13 @@ public class SectionServiceImpl implements SectionService {
                 finalSections.add(sectionToProcess);
 
             }
-            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters(),videos);
+            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters(), videos);
         }
+
+        for (int i = 0; i < finalSections.size(); i++) {
+            finalSections.get(i).setPosition(i);
+        }
+
         course.getSections().clear();
         course.getSections().addAll(finalSections);
     }
@@ -65,9 +70,6 @@ public class SectionServiceImpl implements SectionService {
 
     private void updateSection(SectionRequest sectionRequest, Section sectionToProcess, Course course) {
 
-        if (sectionRequest.getPosition() != null) {
-            sectionToProcess.setPosition(sectionRequest.getPosition());
-        }
         if (sectionRequest.getTitle() != null) {
             sectionToProcess.setTitle(sectionRequest.getTitle());
         }

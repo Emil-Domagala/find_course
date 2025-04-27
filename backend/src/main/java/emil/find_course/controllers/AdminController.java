@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.domains.dto.BecomeTeacherDto;
-import emil.find_course.domains.dto.CourseDto;
 import emil.find_course.domains.enums.BecomeTeacherStatus;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
@@ -41,11 +40,10 @@ public class AdminController {
             @RequestParam(required = false) BecomeTeacherStatus status,
             @RequestParam(required = false) Boolean seenByAdmin) {
 
-if(size>100){size=100;}
-
-        if (seenByAdmin == null) {
-            seenByAdmin = false;
+        if (size > 100) {
+            size = 100;
         }
+
         if (sortField == null) {
             sortField = "createdAt";
         }
