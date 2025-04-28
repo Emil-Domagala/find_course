@@ -1,6 +1,45 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
 import { ChapterType } from './enums';
 
+export type CourseProgress = {
+  id: string;
+  courseId: string;
+  createdAt: string;
+  updatedAt: string;
+  overallProgress: number;
+  sections: SectionProgress[];
+};
+
+export type SectionProgress = {
+  id: string;
+  sectionId: string;
+  chapters: ChapterProgress[];
+};
+
+export type ChapterProgress = {
+  id: string;
+  chapterId: string;
+  completed: boolean;
+};
+
+export type CourseStructure = {
+  id: string;
+  title: string;
+  sections: SectionStructure[];
+};
+
+export type SectionStructure = {
+  id: string;
+  title: string;
+  chapters: ChapterStructure[];
+};
+
+export type ChapterStructure = {
+  id: string;
+  title: string;
+  type: ChapterType;
+};
+
 export type CartDto = {
   id: string;
   courses: CourseDto[];

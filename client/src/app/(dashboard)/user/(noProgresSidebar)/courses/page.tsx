@@ -20,14 +20,16 @@ const EnrolledCourses = ({}) => {
   }, [page, size]);
 
   return (
-    <div className="user-courses">
+    <div className="flex flex-col w-full min-h-full">
       <Header title="My Courses" subtitle="View your enrolled courses" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 mt-6 w-full h-full flex-1">
-        {coursesPage?.content?.map((course) => (
-          <CourseCard key={course.id} course={course} link={`/user/courses/${course.id}`} />
-        ))}
+      <div className="flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 mt-6 w-full h-full flex-1">
+          {coursesPage?.content?.map((course) => (
+            <CourseCard key={course.id} course={course} link={`/user/course/${course.id}`} cardClasses="bg-customgreys-primarybg hover:bg-customgreys-primarybg/60" />
+          ))}
+        </div>
       </div>
-      <Pagination setPage={setPage} currentPage={page} totalPages={coursesPage?.totalPages} />
+      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages} />
     </div>
   );
 };

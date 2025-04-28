@@ -2,27 +2,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
 import Tag from '../NonDashboard/Home/Tag';
-import { formatPrice } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 
 export const CourseCardSkeleton = () => {
   return <Skeleton className="h-[300px] rounded-lg"></Skeleton>;
 };
 
-const CourseCard = ({ course, isSearch, link }: { course: CourseDto; isSearch?: boolean; link: string }) => {
+const CourseCard = ({ course, isSearch, link, cardClasses }: { course: CourseDto; isSearch?: boolean; link: string; cardClasses?: string }) => {
   return (
     <Link href={link}>
       <div
-        className={`bg-customgreys-secondarybg overflow-hidden rounded-lg hover:bg-white-100/10 transition duration-200 flex flex-col cursor-pointer h-full group`}>
+        className={cn(
+          `bg-customgreys-secondarybg overflow-hidden rounded-lg hover:bg-white-100/10 transition duration-200 flex flex-col cursor-pointer h-full group`,
+          cardClasses,
+        )}>
         <div className="relative w-full">
-          <Image
-            src={course.imageUrl || '/placeholder.png'}
-            alt={course.title}
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="w-full h-auto"
-          />
+          <Image src={course.imageUrl || '/placeholder.png'} alt={course.title} width={0} height={0} sizes="100vw" className="w-full h-auto" />
         </div>
         <div className="p-4 flex flex-col justify-between flex-grow">
           <div className="flex justify-between">
@@ -39,10 +35,7 @@ const CourseCard = ({ course, isSearch, link }: { course: CourseDto; isSearch?: 
           </div>
           <div className="mt-2 flex gap-2 items-center">
             <Avatar className="size-6 rounded-full overflow-hidden">
-              <AvatarImage
-                alt={course.teacher.username}
-                src={course.teacher.imageUrl || '/Profile_avatar_placeholder.png'}
-              />
+              <AvatarImage alt={course.teacher.username} src={course.teacher.imageUrl || '/Profile_avatar_placeholder.png'} />
               <AvatarFallback>
                 <Skeleton className="size-6 rounded-full bg-customgreys-darkerGrey" />
               </AvatarFallback>

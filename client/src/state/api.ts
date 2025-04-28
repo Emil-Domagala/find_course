@@ -45,7 +45,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'AdminNotyfication'],
+  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'AdminNotyfication', 'UserCourseProgress'],
   endpoints: (build) => ({
     // *******************
     // -------AUTH--------
@@ -366,6 +366,54 @@ export const api = createApi({
       },
       invalidatesTags: ['AdminNotyfication'],
     }),
+    // ***************
+    // --PROGRESSBAR--
+    // ***************
+    // Fetch user course progress
+    getUserCourseProgress: build.query<UserCourseProgressDto, { courseId: string }>({
+      query: ({ courseId }) => ({
+        url: `user/courses/${courseId}/progress`,
+      }),
+      providesTags: ['UserCourseProgress'],
+    }),
+
+    // Update course progress
+    updateUserCourseProgress: build.mutation<
+      UserCourseProgressDto,
+      {
+        courseId: string;
+        progressData: {
+          sections: SectionProgress[];
+        };
+      }
+    >({
+      query: ({ courseId, progressData }) => ({
+        url: `users/course-progress/courses/${courseId}`,
+        method: 'PUT',
+        body: progressData,
+      }),
+      invalidatesTags: ['UserCourseProgress'],
+      async onQueryStarted({ courseId, progressData }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          api.util.updateQueryData('getUserCourseProgress', { courseId }, (draft) => {
+            Object.assign(draft, {
+              ...draft,
+              sections: progressData.sections,
+            });
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+    }),
+
+    // Fetch Course Structure
+
+
+    // Fetch Chapter whole data 
   }),
 });
 
@@ -406,4 +454,5 @@ export const {
   useGetAdminNotyficationQuery,
   useLazyGetAdminBecomeUserRequestsQuery,
   useAdminUpdateTeacherRequestsMutation,
+  // PROGRESSBAR
 } = api;

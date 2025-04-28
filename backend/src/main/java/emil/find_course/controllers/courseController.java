@@ -197,4 +197,11 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
+    @GetMapping("/user/courses/{courseId}")
+    public ResponseEntity<Void> getCourseStructure(Principal principal,
+            @PathVariable UUID courseId) {
+
+        return ResponseEntity.noContent().build();
+    }
+
 }
