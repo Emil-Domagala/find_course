@@ -8,6 +8,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import emil.find_course.domains.dto.CourseDto;
+import emil.find_course.domains.dto.courseProgress.CourseStructure;
 import emil.find_course.domains.dto.detailsProt.CourseDetailsProtectedDto;
 import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;
 import emil.find_course.domains.entities.course.Course;
@@ -25,6 +26,8 @@ public interface CourseMapping {
 
     @Mapping(target = "sections", source = "sections")
     CourseDetailsProtectedDto toProtectedDto(Course course);
+
+    CourseStructure toCourseStructure(Course course);
 
     @Named("calculateEnrolledStudents")
     default long calculateEnrolledStudents(Set<User> students) {

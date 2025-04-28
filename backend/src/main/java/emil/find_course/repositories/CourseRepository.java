@@ -1,5 +1,7 @@
 package emil.find_course.repositories;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -17,7 +19,8 @@ import emil.find_course.domains.enums.CourseStatus;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
-// :TODO:Optimize Course lookup. Do not look for course id you later gonna change it to CourseDto. Uneffective. Count enrollments on db querry
+        // :TODO:Optimize Course lookup. Do not look for course id you later gonna
+        // change it to CourseDto. Uneffective. Count enrollments on db querry
 
         Page<Course> findAllByStatus(CourseStatus status, Pageable pageable);
 
@@ -44,5 +47,10 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
                         Pageable pageable);
 
         Course findByIdAndStatus(UUID id, CourseStatus status);
+
+        Optional<LocalDateTime> findUpdatedAtByCourseId(UUID courseId);
+
+        @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Course c WHERE c.id = :courseId AND :user MEMBER OF c.students")
+        boolean isEnrolled(@Param("courseId") UUID courseId, @Param("user") User user);
 
 }

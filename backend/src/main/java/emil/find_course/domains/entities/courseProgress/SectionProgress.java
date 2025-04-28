@@ -51,8 +51,8 @@ public class SectionProgress {
     private int position;
 
     @OneToMany(mappedBy = "sectionProgress", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("position ASC") 
+    @OrderBy("position ASC")
     @Builder.Default
-    private List<ChapterProgress> chapterProgresses = new ArrayList<>();
+    private List<ChapterProgress> chapters = new ArrayList<>();
 
 }

@@ -59,7 +59,6 @@ public class SectionServiceImpl implements SectionService {
     }
 
     private void manageNewSection(SectionRequest sectionRequest, Section sectionToProcess, Course course) {
-        sectionToProcess.setPosition(sectionRequest.getPosition() == null ? 0 : sectionRequest.getPosition());
         sectionToProcess.setTitle(sectionRequest.getTitle() == null ? "Default Title" : sectionRequest.getTitle());
         sectionToProcess.setDescription(
                 sectionRequest.getDescription() == null ? "Default Description" : sectionRequest.getDescription());

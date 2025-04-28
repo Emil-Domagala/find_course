@@ -49,7 +49,7 @@ public class ChapterProgress {
     @Builder.Default
     private boolean completed = false;
 
-    @Column(nullable = false)
-    private int lastPosition;
+    // @Column(nullable = false)
+    // private int lastPosition;
 
 }

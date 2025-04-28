@@ -54,7 +54,6 @@ public class ChapterServiceImpl implements ChapterService {
 
     private void manageNewChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section,
             MultipartFile video) {
-        chapterToProcess.setPosition(chapterRequest.getPosition() == null ? 0 : chapterRequest.getPosition());
         chapterToProcess.setTitle(chapterRequest.getTitle() == null ? "Default Title" : chapterRequest.getTitle());
         chapterToProcess.setContent(
                 chapterRequest.getContent() == null ? "Default Content" : chapterRequest.getContent());
