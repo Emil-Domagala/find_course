@@ -9,7 +9,7 @@ import lombok.Data;
 public class UpdateProgressRequest {
 
     @NotNull(message = "Chapter Progress ID is required")
-    private UUID ChapterProgressId;
+    private UUID chapterProgressId;
 
     private boolean completed;
 

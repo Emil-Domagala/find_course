@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.domains.dto.CourseDto;
+import emil.find_course.domains.dto.course.CourseDto;
+import emil.find_course.domains.dto.course.CourseDtoWithFirstChapter;
 import emil.find_course.domains.dto.detailsProt.CourseDetailsProtectedDto;
 import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;
 import emil.find_course.domains.entities.user.User;
@@ -176,7 +177,7 @@ public class CourseController {
 
     // Show enrolled courses
     @GetMapping("/user/courses")
-    public ResponseEntity<PagingResult<CourseDto>> getUserEnrolledCourses(Principal principal,
+    public ResponseEntity<PagingResult<CourseDtoWithFirstChapter>> getUserEnrolledCourses(Principal principal,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
@@ -192,16 +193,9 @@ public class CourseController {
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 
-        final PagingResult<CourseDto> courses = courseService.getUserEnrolledCourses(user,
+        final PagingResult<CourseDtoWithFirstChapter> courses = courseService.getUserEnrolledCourses(user,
                 request);
         return ResponseEntity.ok(courses);
-    }
-
-    @GetMapping("/user/courses/{courseId}")
-    public ResponseEntity<Void> getCourseStructure(Principal principal,
-            @PathVariable UUID courseId) {
-
-        return ResponseEntity.noContent().build();
     }
 
 }

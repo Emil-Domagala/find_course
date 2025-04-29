@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.domains.dto.CourseDto;
+import emil.find_course.domains.dto.course.CourseDto;
+import emil.find_course.domains.dto.course.CourseDtoWithFirstChapter;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
@@ -35,5 +36,5 @@ public interface CourseService {
     public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image,User user, Map<String,MultipartFile> videos);
 
     // Student
-    public PagingResult<CourseDto> getUserEnrolledCourses(User student, PaginationRequest request);
+    public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request);
 }

@@ -6,7 +6,7 @@ import { useLazyGetEnrolledCoursesQuery } from '@/state/api';
 import { useEffect, useState } from 'react';
 
 const EnrolledCourses = ({}) => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number | undefined>(0);
   const [size, setSize] = useState(10);
 
   const [getEnrolledCourses, { data: coursesPage, isLoading }] = useLazyGetEnrolledCoursesQuery();
@@ -25,7 +25,12 @@ const EnrolledCourses = ({}) => {
       <div className="flex-1">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 mt-6 w-full h-full flex-1">
           {coursesPage?.content?.map((course) => (
-            <CourseCard key={course.id} course={course} link={`/user/course/${course.id}`} cardClasses="bg-customgreys-primarybg hover:bg-customgreys-primarybg/60" />
+            <CourseCard
+              key={course.id}
+              course={course}
+              link={`/user/course/${course.id}/chapter/${course.firstChapter}`}
+              cardClasses="bg-customgreys-primarybg hover:bg-customgreys-primarybg/60"
+            />
           ))}
         </div>
       </div>

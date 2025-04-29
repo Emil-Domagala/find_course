@@ -1,26 +1,24 @@
+import { SectionProgress } from '@/types/courses';
 import ChapterItem from './ChapterItem';
 
 type Props = {
-  section: any;
-  sectionProgress: any;
-  chapterId: string;
-  handleChapterClick: (sectionId: string, chapterId: string) => void;
-  updateChapterProgress: (sectionId: string, chapterId: string, completed: boolean) => void;
+  sectionProgress: SectionProgress;
+  currentChapterId: string;
+  updateChapterProgress: (chapterProgressId: string, isCompleted: boolean) => void;
+  handleChapterClick: (chapterId: string) => void;
 };
 
-const ChaptersList = ({ section, sectionProgress, chapterId, handleChapterClick, updateChapterProgress }: Props) => {
+const ChaptersList = ({ currentChapterId, sectionProgress, updateChapterProgress, handleChapterClick }: Props) => {
   return (
     <ul>
-      {section.chapters.map((chapter: any, index: number) => (
+      {sectionProgress.chapters.map((chapter, index: number) => (
         <ChapterItem
-          key={chapter.chapterId}
-          chapter={chapter}
+          key={chapter.id}
           index={index}
-          sectionId={section.sectionId}
-          sectionProgress={sectionProgress}
-          chapterId={chapterId}
-          handleChapterClick={handleChapterClick}
+          chapter={chapter}
+          currentChapterId={currentChapterId}
           updateChapterProgress={updateChapterProgress}
+          handleChapterClick={handleChapterClick}
         />
       ))}
     </ul>

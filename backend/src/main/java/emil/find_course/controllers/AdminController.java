@@ -18,7 +18,6 @@ import emil.find_course.domains.enums.BecomeTeacherStatus;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.BecomeTeacherUpdateRequest;
-import emil.find_course.mapping.BecomeTeacherMapping;
 import emil.find_course.services.AdminService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
-    private final BecomeTeacherMapping becomeTeacherMapping;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("teacher-requests")

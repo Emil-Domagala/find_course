@@ -3,7 +3,7 @@ package emil.find_course.mapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import emil.find_course.domains.dto.SectionDto;
+import emil.find_course.domains.dto.course.SectionDto;
 import emil.find_course.domains.dto.courseProgress.SectionStructure;
 import emil.find_course.domains.dto.detailsProt.SectionProtectedDto;
 import emil.find_course.domains.dto.detailsPub.SectionPublicDto;

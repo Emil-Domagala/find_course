@@ -3,6 +3,7 @@ package emil.find_course.domains.dto;
 import java.util.HashSet;
 import java.util.UUID;
 
+import emil.find_course.domains.dto.course.CourseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

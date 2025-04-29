@@ -48,8 +48,6 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
 
         Course findByIdAndStatus(UUID id, CourseStatus status);
 
-        Optional<LocalDateTime> findUpdatedAtByCourseId(UUID courseId);
-
         @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Course c WHERE c.id = :courseId AND :user MEMBER OF c.students")
         boolean isEnrolled(@Param("courseId") UUID courseId, @Param("user") User user);
 

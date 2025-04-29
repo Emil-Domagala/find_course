@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,8 @@ public class CourseProgressController {
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseProgressDto> getProgress(@PathVariable UUID courseId, Principal principal) {
 
+        System.out.println("Request recived for grtting progress");
+
         User user = userService.findByEmail(principal.getName());
         CourseProgressDto courseProgressDto = courseProgressService.getCourseProgress(courseId, user);
         return ResponseEntity.ok(courseProgressDto);
@@ -38,10 +41,14 @@ public class CourseProgressController {
 
     @PatchMapping("/{courseId}")
     public ResponseEntity<Void> updateProgress(@PathVariable UUID courseId, Principal principal,
-            @Valid UpdateProgressRequest request) {
-        User user = userService.findByEmail(principal.getName());
+            @Valid @RequestBody UpdateProgressRequest request) {
+        System.out.println("Request recived for updating progress");
+        System.out.println(courseId);
+        System.out.println(request.toString());
 
-        
+        User user = userService.findByEmail(principal.getName());
+        courseProgressService.updateChapterProgress(courseId, user, request);
+
         return ResponseEntity.ok().build();
     }
 

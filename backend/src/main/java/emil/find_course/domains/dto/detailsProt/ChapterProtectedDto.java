@@ -1,6 +1,6 @@
 package emil.find_course.domains.dto.detailsProt;
 
-import emil.find_course.domains.dto.ChapterDto;
+import emil.find_course.domains.dto.course.ChapterDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

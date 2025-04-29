@@ -44,9 +44,10 @@ public class CourseProgressServiceImpl implements CourseProgressService {
     public ChapterProgress updateChapterProgress(UUID courseId, User user, UpdateProgressRequest request) {
 
         ChapterProgress chapterProgress = chapterProgressRepository
-                .findByUserCourseAndOriginalChapter(request.getChapterProgressId(),
+                .findByUserCourseAndOriginalChapter(
                         user.getId(),
-                        courseId)
+                        courseId,
+                        request.getChapterProgressId())
                 .orElseThrow(() -> new EntityNotFoundException("Course progress not found"));
 
         chapterProgress.setCompleted(request.isCompleted());
@@ -54,7 +55,7 @@ public class CourseProgressServiceImpl implements CourseProgressService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public CourseProgressDto getCourseProgress(UUID courseId, User user) {
 
         Course course = courseRepository.findById(courseId)
@@ -71,12 +72,15 @@ public class CourseProgressServiceImpl implements CourseProgressService {
         if (courseProgressUpdatedAt.isEmpty()) {
             // This means that the CourseUpdata was not created yet. So i needt to create
             // new Entity.
+            System.out.println("Course progress not found");
             courseProgressDto = courseProgressMapping.toDto(createCourseProject(course, user));
         } else if (course.getUpdatedAt().isAfter(courseProgressUpdatedAt.get())) {
             // Course progress might be unsync
+            System.out.println("Course progress might be unsync");
             courseProgressDto = courseProgressMapping.toDto(updateCourseProgress(course, user));
         } else {
             // Course progress is sync
+            System.out.println("Course progress found");
             CourseProgressProjection courseProgressProjection = courseProgressRepository
                     .findProjectedByCourseIdAndUserId(courseId, user.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Course progress not found"));
@@ -114,7 +118,9 @@ public class CourseProgressServiceImpl implements CourseProgressService {
         courseProgress.getSections().clear();
         courseProgress.getSections().addAll(sectionsProgressFinall);
 
-        return courseProgressRepository.save(courseProgress);
+        CourseProgress savedCourseProgress = courseProgressRepository.save(courseProgress);
+
+        return savedCourseProgress;
     }
 
     // Section exists
@@ -165,7 +171,9 @@ public class CourseProgressServiceImpl implements CourseProgressService {
 
         courseProgress.setSections(sectionsProgressFinall);
 
-        return courseProgressRepository.save(courseProgress);
+        CourseProgress savedCourseProgress = courseProgressRepository.save(courseProgress);
+
+        return savedCourseProgress;
     }
 
     private void createSectionProgress(CourseProgress courseProgress, Section section,

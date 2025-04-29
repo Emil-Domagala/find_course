@@ -1,41 +1,45 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import ProgressVisuals from './ProgresVisuals';
 import ChaptersList from './ChaptersList';
+import { ChapterProgress, SectionProgress, UpdateProgressRequest } from '@/types/courses';
 
-type Props = {
-  section: any;
-  index: number;
-  sectionProgress: any;
-  chapterId: string;
-  expandedSections: string[];
-  toggleSection: (sectionTitle: string) => void;
-  handleChapterClick: (sectionId: string, chapterId: string) => void;
-  updateChapterProgress: (sectionId: string, chapterId: string, completed: boolean) => void;
+export type UpdateProgressPayload = {
+  courseId: string;
+  request: UpdateProgressRequest;
 };
 
-const SectionItem = ({ section, index, sectionProgress, chapterId, expandedSections, toggleSection, handleChapterClick, updateChapterProgress }: Props) => {
-  const completedChapters = sectionProgress?.chapters.filter((c: any) => c.completed).length || 0;
-  const totalChapters = section.chapters.length;
-  const isExpanded = expandedSections.includes(section.sectionTitle);
+type Props = {
+  currentChapterId: string;
+  index: number;
+  sectionProgress: SectionProgress;
+  expandedSections: string[];
+  toggleSection: (sectionTitle: string) => void;
+  handleChapterClick: (chapterId: string) => void;
+  updateChapterProgress: (chapterProgressId: string, isCompleted: boolean) => void;
+};
+
+const SectionItem = ({ currentChapterId, index, sectionProgress, expandedSections, toggleSection, updateChapterProgress, handleChapterClick }: Props) => {
+  const completedChapters = sectionProgress.chapters.filter((c: ChapterProgress) => c.completed).length || 0;
+  const totalChapters = sectionProgress.chapters.length;
+  const isExpanded = expandedSections.includes(sectionProgress.originalSection.title);
 
   return (
     <div className="min-w-[300px]">
-      <div onClick={() => toggleSection(section.sectionTitle)} className="cursor-pointer px-8 py-6 hover:bg-gray-700/50">
+      <div onClick={() => toggleSection(sectionProgress.originalSection.title)} className="cursor-pointer px-8 py-6 hover:bg-gray-700/50">
         <div className="flex justify-between items-center">
           <p className="text-gray-500 text-sm">Section 0{index + 1}</p>
           {isExpanded ? <ChevronUp className="text-white-50/70 w-4 h-4" /> : <ChevronDown className="text-white-50/70 w-4 h-4" />}
         </div>
-        <h3 className="text-white-50/90 font-semibold">{section.sectionTitle}</h3>
+        <h3 className="text-white-50/90 font-semibold">{sectionProgress.originalSection.title}</h3>
       </div>
       <hr className="border-gray-700" />
 
       {isExpanded && (
         <div className="pt-8 pb-8 bg-customgreys-primarybg/40">
-          <ProgressVisuals section={section} sectionProgress={sectionProgress} completedChapters={completedChapters} totalChapters={totalChapters} />
+          <ProgressVisuals sectionProgress={sectionProgress} completedChapters={completedChapters} totalChapters={totalChapters} />
           <ChaptersList
-            section={section}
             sectionProgress={sectionProgress}
-            chapterId={chapterId}
+            currentChapterId={currentChapterId}
             handleChapterClick={handleChapterClick}
             updateChapterProgress={updateChapterProgress}
           />

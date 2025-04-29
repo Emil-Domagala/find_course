@@ -16,5 +16,4 @@ public class ChapterProgressDto {
     private UUID id;
     private ChapterStructure originalChapter;
     private boolean completed;
-    private int lastPosition;
 }

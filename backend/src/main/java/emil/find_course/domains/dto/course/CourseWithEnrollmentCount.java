@@ -1,25 +1,26 @@
-package emil.find_course.domains.dto;
+package emil.find_course.domains.dto.course;
 
 import java.time.LocalDateTime;
 
 import java.util.UUID;
 
+import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseDto {
+public class CourseWithEnrollmentCount {
 
     private UUID id;
-    private UserDto teacher;
+    private User teacher;
     private String title;
     private String description;
     private CourseCategory category;

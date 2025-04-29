@@ -2,8 +2,8 @@ package emil.find_course.domains.dto.detailsPub;
 
 import java.util.List;
 
-import emil.find_course.domains.dto.ChapterDto;
-import emil.find_course.domains.dto.SectionDto;
+import emil.find_course.domains.dto.course.ChapterDto;
+import emil.find_course.domains.dto.course.SectionDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

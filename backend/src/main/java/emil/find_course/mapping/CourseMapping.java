@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import emil.find_course.domains.dto.CourseDto;
+import emil.find_course.domains.dto.course.CourseDto;
 import emil.find_course.domains.dto.courseProgress.CourseStructure;
 import emil.find_course.domains.dto.detailsProt.CourseDetailsProtectedDto;
 import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;

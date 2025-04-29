@@ -1,9 +1,14 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
 import { ChapterType } from './enums';
 
+export type UpdateProgressRequest = {
+  chapterProgressId: string;
+  completed: boolean;
+};
+
 export type CourseProgress = {
   id: string;
-  courseId: string;
+  course: CourseStructure;
   createdAt: string;
   updatedAt: string;
   overallProgress: number;
@@ -12,26 +17,24 @@ export type CourseProgress = {
 
 export type SectionProgress = {
   id: string;
-  sectionId: string;
+  originalSection: SectionStructure;
   chapters: ChapterProgress[];
 };
 
 export type ChapterProgress = {
   id: string;
-  chapterId: string;
+  originalChapter: ChapterStructure;
   completed: boolean;
 };
 
 export type CourseStructure = {
   id: string;
   title: string;
-  sections: SectionStructure[];
 };
 
 export type SectionStructure = {
   id: string;
   title: string;
-  chapters: ChapterStructure[];
 };
 
 export type ChapterStructure = {
@@ -76,6 +79,10 @@ export type SectionDetailsProtectedDto = SectionDto & {
 export type ChapterDetailsProtectedDto = ChapterDto & {
   content: string;
   videoUrl?: string;
+};
+
+export type CourseDtoWithFirstChapter = CourseDto & {
+  firstChapter: string;
 };
 
 declare global {

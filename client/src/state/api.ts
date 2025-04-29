@@ -1,7 +1,7 @@
 import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
-import { CartDto, CourseDetailsPublicDto } from '@/types/courses';
+import { CartDto, CourseDetailsPublicDto, CourseDtoWithFirstChapter, CourseProgress, UpdateProgressRequest } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
 import { BecomeTeacherRequestStatus, SearchDirection, SearchField } from '@/types/enums';
 import { TransactionDto } from '@/types/payments';
@@ -155,7 +155,7 @@ export const api = createApi({
     // *******************
 
     getEnrolledCourses: build.query<
-      Page<CourseDto>,
+      Page<CourseDtoWithFirstChapter>,
       {
         page?: number;
         size?: number;
@@ -369,51 +369,73 @@ export const api = createApi({
     // ***************
     // --PROGRESSBAR--
     // ***************
-    // Fetch user course progress
-    getUserCourseProgress: build.query<UserCourseProgressDto, { courseId: string }>({
+    // Fetch user course progress with course structure
+    getUserCourseProgress: build.query<CourseProgress, { courseId: string }>({
       query: ({ courseId }) => ({
-        url: `user/courses/${courseId}/progress`,
+        url: `/progress/${courseId}`,
+        method: 'GET',
       }),
       providesTags: ['UserCourseProgress'],
     }),
 
     // Update course progress
-    updateUserCourseProgress: build.mutation<
-      UserCourseProgressDto,
-      {
-        courseId: string;
-        progressData: {
-          sections: SectionProgress[];
-        };
-      }
-    >({
-      query: ({ courseId, progressData }) => ({
-        url: `users/course-progress/courses/${courseId}`,
-        method: 'PUT',
-        body: progressData,
+    updateCourseChapterProgress: build.mutation<void, { courseId: string; request: UpdateProgressRequest }>({
+      query: ({ courseId, request }) => ({
+        url: `/progress/${courseId}`,
+        method: 'PATCH',
+        body: request,
       }),
-      invalidatesTags: ['UserCourseProgress'],
-      async onQueryStarted({ courseId, progressData }, { dispatch, queryFulfilled }) {
+      async onQueryStarted({ courseId, request }, { dispatch, queryFulfilled }) {
+        // Ensure consistent access (using lowercase 'c' here based on your code, adjust if type/backend differs)
+        const chapterIdToUpdate = request.chapterProgressId;
+        const newCompletedStatus = request.completed;
+
         const patchResult = dispatch(
-          api.util.updateQueryData('getUserCourseProgress', { courseId }, (draft) => {
-            Object.assign(draft, {
-              ...draft,
-              sections: progressData.sections,
-            });
+          api.util.updateQueryData('getUserCourseProgress', { courseId }, (draft: CourseProgress) => {
+            console.log('Attempting optimistic update for course:', courseId, 'Chapter ID:', chapterIdToUpdate, 'New Status:', newCompletedStatus);
+            console.log('Current draft state:', JSON.parse(JSON.stringify(draft ?? null))); // Deep copy for logging
+
+            if (!draft || !draft.sections) {
+              console.error('Optimistic update failed: Draft data is missing or invalid.');
+              return; // Don't modify if draft is not as expected
+            }
+
+            let found = false;
+            // Iterate safely
+            for (const section of draft.sections) {
+              if (section.chapters) {
+                const chapterIndex = section.chapters.findIndex((chapter) => chapter.id === chapterIdToUpdate);
+                if (chapterIndex !== -1) {
+                  console.log(`Found chapter at section index ${draft.sections.indexOf(section)}, chapter index ${chapterIndex}. Updating completed status.`);
+                  section.chapters[chapterIndex].completed = newCompletedStatus;
+                  found = true;
+                  break; // Exit section loop once chapter is found and updated
+                }
+              }
+            }
+
+            if (!found) {
+              console.warn(`Optimistic update: Chapter with ID ${chapterIdToUpdate} not found in draft data.`);
+            }
+            // Immer handles returning the draft implicitly if modified,
+            // but returning explicitly is fine too.
+            // return draft; // No need to explicitly return if draft is mutated directly
+            console.log('New draft state:', JSON.parse(JSON.stringify(draft ?? null)));
           }),
         );
+
         try {
           await queryFulfilled;
-        } catch {
+          console.log('Mutation successful for chapter:', chapterIdToUpdate);
+        } catch (err) {
+          console.error('Mutation failed for chapter:', chapterIdToUpdate, 'Reverting optimistic update.', err);
           patchResult.undo();
         }
       },
+      // invalidatesTags: ['UserCourseProgress'],
     }),
 
-    // Fetch Course Structure
-
-
-    // Fetch Chapter whole data 
+    // Fetch Chapter whole data
   }),
 });
 
@@ -455,4 +477,6 @@ export const {
   useLazyGetAdminBecomeUserRequestsQuery,
   useAdminUpdateTeacherRequestsMutation,
   // PROGRESSBAR
+  useGetUserCourseProgressQuery,
+  useUpdateCourseChapterProgressMutation,
 } = api;
