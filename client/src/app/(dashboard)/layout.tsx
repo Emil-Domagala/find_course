@@ -2,7 +2,7 @@ import AppSidebar from '@/components/Dashboard/AppSidebar/AppSidebar';
 import DashboardNav from '@/components/Dashboard/Navigation/DashboardNav';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cookies } from 'next/headers';
-import ProgresSidebar from '../../components/Dashboard/User/ProgresSidebar/ProgresSidebar';
+import ProgresSidebar from '../../components/Dashboard/User/Course/ProgresSidebar/ProgresSidebar';
 
 export default async function DashboardLayout({
   children,

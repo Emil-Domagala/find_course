@@ -10,6 +10,6 @@ import emil.find_course.domains.requestDto.course.SectionRequest;
 
 public interface SectionService {
 
-    public void syncSections(Course course, List<SectionRequest> sectionRequests,Map<String, MultipartFile> videos);
+    public void syncSections(Course course, List<SectionRequest> sectionRequests);
 
 }

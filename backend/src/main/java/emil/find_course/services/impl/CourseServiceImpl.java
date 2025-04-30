@@ -99,8 +99,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user,
-            Map<String, MultipartFile> videos) {
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user) {
         Course course = getById(courseId);
         if (course.getTeacher().getId() != user.getId()) {
             throw new UnauthorizedException("You are not the teacher of this course");
@@ -136,7 +135,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         if (courseRequest.getSections() != null) {
-            sectionService.syncSections(course, courseRequest.getSections(), videos);
+            sectionService.syncSections(course, courseRequest.getSections());
 
         }
 
@@ -148,7 +147,6 @@ public class CourseServiceImpl implements CourseService {
     public PagingResult<CourseDto> searchTeacherCourses(String keyword, CourseCategory category,
             PaginationRequest request, User teacher) {
         final Pageable pageable = PaginationUtils.getPageable(request);
-        System.out.println(teacher.getId());
         final Page<Course> courses = courseRepository.searchTeacherCourses(keyword, category,
                 teacher.getId(), pageable);
         final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();

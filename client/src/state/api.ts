@@ -1,7 +1,7 @@
 import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { ForgotPasswordRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
 import { UserLoginRequest } from '@/types/auth';
-import { CartDto, CourseDetailsPublicDto, CourseDtoWithFirstChapter, CourseProgress, UpdateProgressRequest } from '@/types/courses';
+import { CartDto, ChapterDetailsProtectedDto, CourseDetailsPublicDto, CourseDtoWithFirstChapter, CourseProgress, UpdateProgressRequest } from '@/types/courses';
 import { CourseCategory } from '@/types/courses-enum';
 import { BecomeTeacherRequestStatus, SearchDirection, SearchField } from '@/types/enums';
 import { TransactionDto } from '@/types/payments';
@@ -38,6 +38,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
         api,
         extraOptions,
       );
+      window.location.href = '/auth/login';
     }
   }
   return result;
@@ -45,7 +46,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraO
 
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'AdminNotyfication', 'UserCourseProgress'],
+  tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'AdminNotyfication', 'UserCourseProgress', 'Chapter'],
   endpoints: (build) => ({
     // *******************
     // -------AUTH--------
@@ -265,6 +266,9 @@ export const api = createApi({
 
     getTeacherCourseById: build.query<CourseDetailsPublicDto, string>({ query: (courseId) => ({ url: `teacher/courses/${courseId}` }) }),
 
+    updateCourse:build.mutation<void,{courseId:string,courseData:FormData}>({
+      query:({courseData,courseId})=>({url:`teacher/courses/${courseId}`,method:'PATCH',body:courseData}),
+      invalidatesTags:['TeachedCourseDtos']}),
     // ****************
     // ------Cart------
     // ****************
@@ -386,22 +390,15 @@ export const api = createApi({
         body: request,
       }),
       async onQueryStarted({ courseId, request }, { dispatch, queryFulfilled }) {
-        // Ensure consistent access (using lowercase 'c' here based on your code, adjust if type/backend differs)
         const chapterIdToUpdate = request.chapterProgressId;
         const newCompletedStatus = request.completed;
 
         const patchResult = dispatch(
           api.util.updateQueryData('getUserCourseProgress', { courseId }, (draft: CourseProgress) => {
-            console.log('Attempting optimistic update for course:', courseId, 'Chapter ID:', chapterIdToUpdate, 'New Status:', newCompletedStatus);
-            console.log('Current draft state:', JSON.parse(JSON.stringify(draft ?? null))); // Deep copy for logging
-
-            if (!draft || !draft.sections) {
-              console.error('Optimistic update failed: Draft data is missing or invalid.');
-              return; // Don't modify if draft is not as expected
-            }
+            if (!draft || !draft.sections) return;
 
             let found = false;
-            // Iterate safely
+
             for (const section of draft.sections) {
               if (section.chapters) {
                 const chapterIndex = section.chapters.findIndex((chapter) => chapter.id === chapterIdToUpdate);
@@ -409,7 +406,7 @@ export const api = createApi({
                   console.log(`Found chapter at section index ${draft.sections.indexOf(section)}, chapter index ${chapterIndex}. Updating completed status.`);
                   section.chapters[chapterIndex].completed = newCompletedStatus;
                   found = true;
-                  break; // Exit section loop once chapter is found and updated
+                  break;
                 }
               }
             }
@@ -417,25 +414,27 @@ export const api = createApi({
             if (!found) {
               console.warn(`Optimistic update: Chapter with ID ${chapterIdToUpdate} not found in draft data.`);
             }
-            // Immer handles returning the draft implicitly if modified,
-            // but returning explicitly is fine too.
-            // return draft; // No need to explicitly return if draft is mutated directly
-            console.log('New draft state:', JSON.parse(JSON.stringify(draft ?? null)));
           }),
         );
 
         try {
           await queryFulfilled;
-          console.log('Mutation successful for chapter:', chapterIdToUpdate);
-        } catch (err) {
-          console.error('Mutation failed for chapter:', chapterIdToUpdate, 'Reverting optimistic update.', err);
+        } catch (e) {
+          console.log(e);
           patchResult.undo();
         }
       },
-      // invalidatesTags: ['UserCourseProgress'],
     }),
 
     // Fetch Chapter whole data
+    getChapterEnrolledStudent: build.query<ChapterDetailsProtectedDto, { courseId: string; chapterId: string }>({
+      query: ({ courseId, chapterId }) => ({
+        url: `/user/courses/${courseId}/chapters/${chapterId}`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor:600,
+      providesTags: ['Chapter'],
+    }),
   }),
 });
 
@@ -460,6 +459,7 @@ export const {
   useCreateCourseMutation,
   useDeleteCourseMutation,
   useGetTeacherCourseByIdQuery,
+  useUpdateCourseMutation,
   // Student
   useLazyGetEnrolledCoursesQuery,
   // Courses
@@ -479,4 +479,7 @@ export const {
   // PROGRESSBAR
   useGetUserCourseProgressQuery,
   useUpdateCourseChapterProgressMutation,
+  // Chapter
+  useGetChapterEnrolledStudentQuery,
+  usePrefetch
 } = api;

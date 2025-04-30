@@ -15,10 +15,12 @@ import { useEffect } from 'react';
 import { openSectionModal, setSections } from '@/state';
 import { transformToFrontendFormat } from '@/lib/utils';
 import CustomAddImg from '@/components/Common/CustomAddImg';
-import { useGetTeacherCourseByIdQuery } from '@/state/api';
+import { useGetTeacherCourseByIdQuery, useUpdateCourseMutation } from '@/state/api';
 import SectionModal from './SectionModal';
 import DroppableComponent from './DroppableComponent';
 import ChapterModal from './ChapterModal';
+import { toast } from 'sonner';
+import { ApiErrorResponse } from '@/types/apiError';
 
 const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const router = useRouter();
@@ -26,6 +28,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
   // console.log('courseId: ' + courseId);
 
   const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string);
+  const [updateCourse]=useUpdateCourseMutation()
 
   // console.log(course);
 
@@ -82,8 +85,26 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
     console.log(createCoursePayload);
 
     const formData = new FormData();
-    formData.append('courseData', JSON.stringify(data));
+    const courseDataBlob = new Blob([JSON.stringify(createCoursePayload)], {
+    type: 'application/json'
+  });
+
+  formData.append('courseData', courseDataBlob);
+
     if (data.image) formData.append('image', data.image);
+   try{
+    await updateCourse({courseData: formData, courseId}).unwrap()
+      toast.success('Course Updated Successfully');
+    } catch (e) {
+      const errorFull = e as ApiErrorResponse;
+      const error = errorFull.data;
+      let message = 'Something went wrong';
+      if (error.message) {
+        message = error.message;
+      }
+      toast.error(message);
+    }
+
   };
 
   // const course = await getCoursesPublic(courseId);

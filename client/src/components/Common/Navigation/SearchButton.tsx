@@ -8,6 +8,10 @@ import { usePathname } from 'next/navigation';
 const SearchButton = ({ className }: { className?: string }) => {
   const pathname = usePathname();
 
+  const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F\-]{36})/chapter/([0-9a-fA-F\-]{36})$');
+
+  className = cn(`${viewCoursePageClass && 'bg-customgreys-secondarybg'}`);
+
   return (
     <>
       {pathname != '/search' && (

@@ -66,7 +66,6 @@ public class AdminServiceImpl implements AdminService {
     public void patchTeacherRequests(List<BecomeTeacherUpdateRequest> updates) {
         Map<UUID, BecomeTeacherUpdateRequest> updateMap = updates.stream()
                 .collect(Collectors.toMap(BecomeTeacherUpdateRequest::getId, Function.identity()));
-        System.out.println(updateMap.toString());
         List<BecomeTeacher> listOfEntities = becomeTeacherRepository.findAllById(updateMap.keySet());
 
         List<User> listOfAcceptedUsers = new ArrayList<>();

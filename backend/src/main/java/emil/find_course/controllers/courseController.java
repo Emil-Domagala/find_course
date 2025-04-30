@@ -139,7 +139,6 @@ public class CourseController {
     @GetMapping("/teacher/courses/{courseId}")
     public ResponseEntity<CourseDetailsProtectedDto> getTeacherCourse(Principal principal,
             @PathVariable UUID courseId) {
-        System.out.println(courseId);
 
         final CourseDetailsProtectedDto course = courseMapper.toProtectedDto(courseService.getById(courseId));
         if (course.getTeacher().getId() != userService.findByEmail(principal.getName()).getId()) {
@@ -154,11 +153,10 @@ public class CourseController {
     public ResponseEntity<Void> updateCourse(
             Principal principal, @PathVariable UUID courseId,
             @RequestPart("courseData") @Validated CourseRequest courseRequest,
-            @RequestPart(required = false) MultipartFile image,
-            @RequestPart(required = false) Map<String, MultipartFile> videos) {
+            @RequestPart(required = false) MultipartFile image) {
 
         final User user = userService.findByEmail(principal.getName());
-        courseService.updateCourse(courseId, courseRequest, image, user, videos);
+        courseService.updateCourse(courseId, courseRequest, image, user);
 
         return ResponseEntity.noContent().build();
     }

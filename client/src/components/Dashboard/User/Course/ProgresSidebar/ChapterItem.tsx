@@ -47,7 +47,7 @@ const ChapterItem = ({ currentChapterId, chapter, index, updateChapterProgress, 
         })}>
         {chapter.originalChapter.title}
       </span>
-      {chapter.originalChapter.type === ChapterType.VIDEO && <FileText className="text-gray-500 ml-2 w-4 h-4" />}
+      {chapter.originalChapter.type !== ChapterType.VIDEO && <FileText className="text-gray-500 ml-2 w-4 h-4" />}
     </li>
   );
 };

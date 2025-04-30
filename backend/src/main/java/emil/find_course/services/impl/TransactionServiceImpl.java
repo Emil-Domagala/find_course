@@ -47,8 +47,6 @@ public class TransactionServiceImpl implements TransactionService {
         final Page<Transaction> transactions = transactionRepository.findAllByUser(user, pageable);
         final List<TransactionDto> transactionsDto = transactions.stream().map(transactionMapping::toDto).toList();
 
-        System.out.println(request.toString());
-
         return new PagingResult<TransactionDto>(
                 transactionsDto,
                 transactions.getTotalPages(),

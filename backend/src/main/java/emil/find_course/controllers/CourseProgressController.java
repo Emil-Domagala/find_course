@@ -31,8 +31,6 @@ public class CourseProgressController {
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseProgressDto> getProgress(@PathVariable UUID courseId, Principal principal) {
 
-        System.out.println("Request recived for grtting progress");
-
         User user = userService.findByEmail(principal.getName());
         CourseProgressDto courseProgressDto = courseProgressService.getCourseProgress(courseId, user);
         return ResponseEntity.ok(courseProgressDto);
@@ -42,9 +40,6 @@ public class CourseProgressController {
     @PatchMapping("/{courseId}")
     public ResponseEntity<Void> updateProgress(@PathVariable UUID courseId, Principal principal,
             @Valid @RequestBody UpdateProgressRequest request) {
-        System.out.println("Request recived for updating progress");
-        System.out.println(courseId);
-        System.out.println(request.toString());
 
         User user = userService.findByEmail(principal.getName());
         courseProgressService.updateChapterProgress(courseId, user, request);

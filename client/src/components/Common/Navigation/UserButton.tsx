@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 import { useLogoutMutation, useRefetchTokenMutation } from '@/state/api';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 type Props = {
   authToken?: AuthToken;
@@ -19,9 +19,9 @@ type Props = {
 };
 
 const UserButton = ({ authToken, className, classNamePopover }: Props) => {
+  const pathname = usePathname();
   const [refetchToken, { error }] = useRefetchTokenMutation();
   const [logoutUser] = useLogoutMutation();
-  const router = useRouter();
 
   useEffect(() => {
     let isMounted = true; // Prevent execution on unmount
@@ -45,6 +45,11 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
     };
   }, [authToken]);
 
+  const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F\-]{36})/chapter/([0-9a-fA-F\-]{36})$');
+
+  className = cn(`${viewCoursePageClass && 'bg-customgreys-secondarybg'}`);
+  classNamePopover = cn(`${viewCoursePageClass && 'bg-customgreys-secondarybg'}`);
+
   return (
     <Popover>
       <PopoverTrigger
@@ -54,16 +59,21 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
         )}>
         <p className="text-white-50 font-semibold hidden sm:block">{authToken?.sub || 'User'}</p>
         <Avatar>
-          <AvatarImage
-            src={authToken?.picture || '/Profile_avatar_placeholder.png'}
-            className="group-hover:opacity-50 transition-opacity duration-300"
-          />
+          <AvatarImage src={authToken?.picture || '/Profile_avatar_placeholder.png'} className="group-hover:opacity-50 transition-opacity duration-300" />
           <AvatarFallback>
             <Skeleton className="h-10 w-10 rounded-full bg-customgreys-darkerGrey"></Skeleton>
           </AvatarFallback>
         </Avatar>
       </PopoverTrigger>
       <PopoverContent className={cn('bg-customgreys-secondarybg min-w-32 rounded-lg overflow-hidden z-50', className)}>
+        <Link
+          href={'/user/courses'}
+          className={cn(
+            'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
+            className,
+          )}>
+          Courses
+        </Link>
         <Link
           href={'/user/profile'}
           className={cn(

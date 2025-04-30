@@ -46,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userPrincipal);
         String refreshToken = jwtUtils.generateRefreshToken(userPrincipal.getUser());
-        System.out.println(userPrincipal.getUser().toString());
 
         return new AuthResponse(token, refreshToken);
     }
@@ -78,7 +77,6 @@ public class AuthServiceImpl implements AuthService {
         }
         try {
             if (!jwtUtils.validateRefreshToken(recivedRefreshToken)) {
-                System.out.println("Invalid refresh token");
                 throw new UnauthorizedException("Invalid refresh token");
             }
             String email = jwtUtils.getUserEmailFromJwtToken(recivedRefreshToken);

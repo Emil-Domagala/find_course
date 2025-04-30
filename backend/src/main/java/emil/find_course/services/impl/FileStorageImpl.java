@@ -41,7 +41,6 @@ public class FileStorageImpl implements FileStorageService {
 
     @Override
     public String saveProcessedImage(InputStream inputStream, String identifier, String originalFilenameBase) {
-        System.out.println("saveProcessedImg");
         final DateTimeFormatter FILENAME_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
         Objects.requireNonNull(inputStream, "InputStream cannot be null.");
         Objects.requireNonNull(identifier, "Identifier cannot be null or blank.");
@@ -109,8 +108,6 @@ public class FileStorageImpl implements FileStorageService {
 
         boolean needsProcessing = false;
         byte[] originalImageBytes;
-
-        System.out.println("In resizing method");
 
         try {
             originalImageBytes = file.getBytes();

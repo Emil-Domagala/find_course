@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class PaginationUtils {
 
     public static Pageable getPageable(PaginationRequest request) {
-        System.out.println(request.toString());
         return PageRequest.of(request.getPage(), request.getSize(), request.getDirection(), request.getSortField());
     }
 }

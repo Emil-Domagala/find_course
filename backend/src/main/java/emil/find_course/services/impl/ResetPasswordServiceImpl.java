@@ -39,24 +39,19 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
                 .orElseThrow(() -> new EntityNotFoundException("Couldn't find token"));
 
         if (resetPasswordOTT.getExpiration().isBefore(Instant.now())) {
-            System.out.println("Token has expired");
             resetPasswordOTTRepository.delete(resetPasswordOTT);
             throw new IllegalArgumentException("Token has expired");
         }
         if (!resetPasswordOTT.getToken().equals(token)) {
-            System.out.println("Invalid token");
             throw new IllegalArgumentException("Invalid token");
         }
         User user = resetPasswordOTT.getUser();
         if (user.isEmailVerified() == false) {
-            System.out.println("Email is not verified");
             throw new IllegalArgumentException("Email is not verified");
         }
         if (passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println("Old password cannot be used");
             throw new IllegalArgumentException("Old password cannot be used");
         }
-        System.out.println("Reset password without errors");
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         resetPasswordOTTRepository.delete(resetPasswordOTT);

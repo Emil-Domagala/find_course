@@ -62,6 +62,8 @@ const MyCourses = () => {
     }
   };
 
+  console.log(coursesPage?.content);
+
   return (
     <div className="flex flex-col w-full min-h-full ">
       <Header

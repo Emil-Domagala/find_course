@@ -57,7 +57,6 @@ public class AdminController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("notifications/teacher-requests")
     public ResponseEntity<Map<String, Integer>> getNotifications() {
-        System.out.println("getNotifications");
         Map<String, Integer> result = adminService.getNotifications();
         return ResponseEntity.ok(result);
     }

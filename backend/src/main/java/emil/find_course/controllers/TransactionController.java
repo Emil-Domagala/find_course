@@ -54,7 +54,6 @@ public class TransactionController {
             @RequestHeader("Stripe-Signature") String sigHeader) {
         // stripe listen --forward-to
         // localhost:8080/api/v1/public/transaction/stripe/webhook
-        System.out.println("Stripe webhook working!");
 
         stripeService.handleWebhookEvent(payload, sigHeader);
         return ResponseEntity.ok().build();

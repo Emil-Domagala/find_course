@@ -24,7 +24,7 @@ const SectionItem = ({ currentChapterId, index, sectionProgress, expandedSection
   const isExpanded = expandedSections.includes(sectionProgress.originalSection.title);
 
   return (
-    <div className="min-w-[300px]">
+    <div className="min-w-[300px] max-w-[400px]">
       <div onClick={() => toggleSection(sectionProgress.originalSection.title)} className="cursor-pointer px-8 py-6 hover:bg-gray-700/50">
         <div className="flex justify-between items-center">
           <p className="text-gray-500 text-sm">Section 0{index + 1}</p>

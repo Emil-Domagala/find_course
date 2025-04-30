@@ -16,6 +16,8 @@ const DashboardNav = async () => {
     console.error('JWT Verification Failed:', err);
   }
 
+
+
   return (
     <nav className="w-full px-4 sm:px-8 pt-5 z-10">
       <div className="flex justify-between items-center w-full my-3">
@@ -25,11 +27,7 @@ const DashboardNav = async () => {
           </div>
           <SearchButton className="bg-customgreys-primarybg" />
         </div>
-        <UserButton
-          authToken={decoded}
-          className="bg-customgreys-primarybg"
-          classNamePopover="bg-customgreys-primarybg hover:bg-customgreys-primarybg/50"
-        />
+        <UserButton authToken={decoded} className="bg-customgreys-primarybg" classNamePopover="bg-customgreys-primarybg hover:bg-customgreys-primarybg/50" />
       </div>
     </nav>
   );

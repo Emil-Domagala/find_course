@@ -19,10 +19,7 @@ const LogoutButton = ({ className }: { className?: string }) => {
     <form action={handleLogout}>
       <Button
         variant={'secondary'}
-        className={cn(
-          `text-md py-2 px-4 w-full rounded-none text-white-50 font-semibold hover:bg-red-600 duration-300 transition-colors`,
-          className,
-        )}
+        className={cn(`text-md py-2 px-4 w-full rounded-none text-white-50 font-semibold hover:bg-red-600 duration-300 transition-colors`, className)}
         disabled={isLoading}>
         {isLoading ? <Loader size={20} className="animate-[spin_2s_linear_infinite]" /> : 'Logout'}
       </Button>

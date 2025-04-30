@@ -33,7 +33,7 @@ public interface CourseService {
 
     public Course getById(UUID id);
 
-    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image,User user, Map<String,MultipartFile> videos);
+    public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user);
 
     // Student
     public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request);

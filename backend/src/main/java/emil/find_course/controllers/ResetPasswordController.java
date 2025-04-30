@@ -30,9 +30,6 @@ public class ResetPasswordController {
     public ResponseEntity<Void> resetPassword(@RequestParam(required = false) String token,
             @Validated @RequestBody PasswordRequest password) {
 
-        System.out.println(token);
-        System.out.println(password.getPassword());
-
         resetPasswordService.resetPassword(token, password.getPassword());
         return ResponseEntity.noContent().build();
     }

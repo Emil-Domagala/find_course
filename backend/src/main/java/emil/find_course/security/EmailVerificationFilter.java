@@ -37,14 +37,12 @@ public class EmailVerificationFilter extends OncePerRequestFilter {
                     .getContext().getAuthentication().getPrincipal();
 
             if (!userDetailsImpl.isEmailVerified()) {
-                System.out.println("EMAIL NOT VERIFIED");
                 throw new EmailConfirmException("Email is not verified. Please verify your email to proceed.");
             }
         } catch (EmailConfirmException e) {
             exceptionResolver.resolveException(request, response, null, e);
             return;
         } catch (Exception e) {
-            System.out.println("unknown Exception in Email Verification FILTER");
             exceptionResolver.resolveException(request, response, null, e);
             return;
         }

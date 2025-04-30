@@ -1,5 +1,6 @@
 import DashboardNav from '@/components/Dashboard/Navigation/DashboardNav';
-import ProgresSidebar from '../../../../components/Dashboard/User/ProgresSidebar/ProgresSidebar';
+import ProgresSidebar from '@/components/Dashboard/User/Course/ProgresSidebar/ProgresSidebar';
+
 
 export default async function UserLayout({
   children,
@@ -9,7 +10,10 @@ export default async function UserLayout({
   return (
     <>
       <ProgresSidebar />
-      <div className={'flex flex-grow flex-col min-h-screen transition-all duration-500 ease-in-out overflow-y-auto bg-customgreys-secondarybg'}>
+      <div
+        className={
+          'flex flex-grow flex-col min-h-screen transition-all duration-500 ease-in-out overflow-y-auto bg-gradient-to-b from-customgreys-darkGrey via-customgreys-darkGrey to-customgreys-secondary'
+        }>
         <DashboardNav />
         <main className={`px-8 py-4 flex-1`}>{children}</main>
       </div>

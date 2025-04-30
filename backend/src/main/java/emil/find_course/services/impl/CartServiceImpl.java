@@ -65,7 +65,6 @@ public class CartServiceImpl implements CartService {
         cart.getCourses().add(course);
 
         cart.setTotalPrice(cart.getTotalPrice() + course.getPrice());
-        System.out.println(cart.toString());
 
         return cartRepository.save(cart);
 

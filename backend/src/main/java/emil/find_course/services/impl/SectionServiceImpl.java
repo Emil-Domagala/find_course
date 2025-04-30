@@ -24,7 +24,7 @@ public class SectionServiceImpl implements SectionService {
     private final ChapterService chapterService;
 
     @Override
-    public void syncSections(Course course, List<SectionRequest> sectionRequests, Map<String, MultipartFile> videos) {
+    public void syncSections(Course course, List<SectionRequest> sectionRequests) {
         List<Section> oldSections = course.getSections();
         Map<UUID, Section> oldSectionsMap = oldSections.stream()
                 .collect(Collectors.toMap(Section::getId, Function.identity()));
@@ -47,7 +47,7 @@ public class SectionServiceImpl implements SectionService {
                 finalSections.add(sectionToProcess);
 
             }
-            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters(), videos);
+            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters());
         }
 
         for (int i = 0; i < finalSections.size(); i++) {
