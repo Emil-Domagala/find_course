@@ -1,14 +1,12 @@
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import CustomModal from '@/components/Common/CustomModal';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
 import { ChapterFormData, chapterSchema } from '@/lib/validation/course';
 
 import { addChapter, closeChapterModal, editChapter } from '@/state';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { ChapterDetailsProtectedDto } from '@/types/courses';
-import { ChapterType } from '@/types/enums';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
