@@ -2,14 +2,11 @@ package emil.find_course.mapping;
 
 import java.util.Set;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import emil.find_course.domains.dto.UserDto;
 import emil.find_course.domains.dto.course.CourseDto;
 import emil.find_course.domains.dto.courseProgress.CourseStructure;
 import emil.find_course.domains.dto.detailsProt.CourseDetailsProtectedDto;
@@ -40,17 +37,4 @@ public interface CourseMapping {
         }
         return students.stream().count();
     }
-
-    // TODO: DELETE BELOW AFTER MOVING TO S3
-    @AfterMapping
-    default void addFullImageUrl(@MappingTarget CourseDto dto, Course course) {
-        String relativePath = course.getImageUrl();
-        if (relativePath != null) {
-            // Consider making the base URL configurable instead of hardcoding
-            String baseUrl = "http://localhost:8080/uploads/images/";
-            String fullUrl = baseUrl + relativePath;
-            dto.setImageUrl(fullUrl);
-        }
-    }
-
 }

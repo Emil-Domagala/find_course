@@ -16,16 +16,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.services.FileStorageService;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.Thumbnails.Builder;
 import net.coobird.thumbnailator.geometry.Positions;
+import software.amazon.awssdk.core.exception.SdkException;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FileStorageImpl implements FileStorageService {
-    private static final String OUTPUT_FORMAT = "jpg";
+
+    Dotenv dotenv = Dotenv.load();
+
+    private final String BUCKET_NAME = dotenv.get("BUCKET_NAME");
+    private final String R2_PUBLIC_BASE_URL = dotenv.get("R2_PUBLIC_BASE_URL");
+
+    private final S3Client s3Client;
+
+    private static final String OUTPUT_FORMAT = "jpeg";
     private String storageLocation = "./uploads/images";
     private Path rootLocation;
 
@@ -51,52 +68,84 @@ public class FileStorageImpl implements FileStorageService {
         }
 
         String sanitizedIdentifier = identifier.replaceAll("[^a-zA-Z0-9_\\-]", "_");
-        Path userDirectory = this.rootLocation.resolve(sanitizedIdentifier);
+        String cleanedBaseName = originalFilenameBase.replaceAll("[^a-zA-Z0-9_\\-]", "_");
+        String timestamp = LocalDateTime.now().format(FILENAME_DATE_FORMATTER);
 
+        String objectKey = String.format("%s_%s_%s.%s",
+                sanitizedIdentifier,
+                timestamp,
+                cleanedBaseName,
+                OUTPUT_FORMAT);
+        String fullUrl = null;
         try {
-            Files.createDirectories(userDirectory);
+            byte[] imageBytes = inputStream.readAllBytes();
+            long contentLength = imageBytes.length;
+            String contentType = "image/jpeg";
 
-            String cleanedBaseName = originalFilenameBase.replaceAll("[^a-zA-Z0-9_\\-]", "_");
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(BUCKET_NAME)
+                    .key(objectKey)
+                    .contentType(contentType)
+                    .contentLength(contentLength)
+                    .build();
 
-            String timestamp = LocalDateTime.now().format(FILENAME_DATE_FORMATTER);
-            String filename = String.format("%s_%s_%s.%s",
-                    sanitizedIdentifier,
-                    timestamp,
-                    cleanedBaseName,
-                    OUTPUT_FORMAT);
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
+            log.info("Successfully uploaded object '{}' to R2 bucket '{}'. Size: {} bytes.", objectKey,
+                    BUCKET_NAME,
+                    contentLength);
 
-            Path destinationFile = userDirectory.resolve(filename).normalize().toAbsolutePath();
-
-            if (!destinationFile.getParent().equals(userDirectory.toAbsolutePath())) {
-                throw new RuntimeException("Cannot store file outside target directory structure.");
-            }
-            Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-            String relativePath = sanitizedIdentifier + "/" + filename;
-            return relativePath;
+            String baseUrl = R2_PUBLIC_BASE_URL.endsWith("/") ? R2_PUBLIC_BASE_URL : R2_PUBLIC_BASE_URL + "/";
+            String keyForUrl = objectKey.startsWith("/") ? objectKey.substring(1) : objectKey;
+            return fullUrl = baseUrl + BUCKET_NAME + "/" + keyForUrl;
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save processed image stream", e);
+            log.error("Failed to read processed image stream for R2 upload", e);
+            throw new RuntimeException("Failed to read processed image stream", e);
+        } catch (S3Exception e) {
+            log.error("S3Exception during R2 upload for key {}: {} - {}", objectKey, e.statusCode(), e.getMessage(), e);
+            throw new RuntimeException("Failed to upload image to R2 storage: " + e.getMessage(), e);
+        } catch (SdkException e) {
+            log.error("SdkException during R2 upload for key {}: {}", objectKey, e.getMessage(), e);
+            throw new RuntimeException("Failed to upload image to R2 storage (SDK Error): " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error saving processed image stream", e);
+            log.error("Unexpected error saving processed image stream to R2 for key {}", objectKey, e);
+            throw new RuntimeException("Unexpected error saving processed image stream to R2", e);
+        } finally {
+            try {
+                inputStream.close(); // Ensure the input stream is closed
+            } catch (IOException e) {
+                log.warn("Failed to close input stream after R2 upload attempt", e);
+            }
         }
     }
 
     @Override
-    public void deleteImage(String relativePath) {
-        if (relativePath == null || relativePath.isBlank()) {
+    public void deleteImage(String imageUrl) {
+        if (imageUrl == null || imageUrl.isBlank()) {
             return;
         }
 
+        String objectKey;
         try {
-            Path filePath = this.rootLocation.resolve(relativePath).normalize();
-            if (!filePath.startsWith(this.rootLocation)) {
-                throw new SecurityException("Cannot delete file outside storage root.");
-            }
-            Files.deleteIfExists(filePath);
+            objectKey = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-        } catch (IOException e) {
-            log.error("Could not delete file {}: {}", relativePath, e.getMessage(), e);
-        } catch (InvalidPathException e) {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(BUCKET_NAME)
+                    .key(objectKey)
+                    .build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                log.warn("Attempted to delete non-existent object from R2 bucket");
+            } else {
+                log.error("S3Exception during R2 delete for key");
+            }
+        } catch (SdkException e) {
+            log.error("AWS SDKException during R2 delete for key");
+        } catch (Exception e) {
+            log.error("Unexpected error deleting object from R2");
         }
     }
 
@@ -204,7 +253,8 @@ public class FileStorageImpl implements FileStorageService {
                             "Image size ({}) still exceeds limit ({}) even after reducing quality to {}. Cannot process further.",
                             finalSize, maxSizeBytes, String.format("%.3f", qualityFactor));
                     throw new RuntimeException(
-                            "Image could not be reduced to the required size limit (" + (maxSizeBytes / 1024) + " KB).");
+                            "Image could not be reduced to the required size limit (" + (maxSizeBytes / 1024)
+                                    + " KB).");
                 }
             } else {
                 log.info("Image size is within limit. No quality reduction needed.");

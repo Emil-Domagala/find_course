@@ -13,6 +13,9 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Find your course',
   description: 'Best platform for finding courses',
+  icons: {
+    icon: '/logo.svg',
+  },
 };
 
 export default function RootLayout({
