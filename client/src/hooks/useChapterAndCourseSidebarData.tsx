@@ -25,7 +25,6 @@ export const useChapterAndCourseSidebarData = (): UseChapterAndCourseSidebarData
   const {
     data: chapterData,
     isLoading: chapterIsLoading,
-    isSuccess: chapterIsSuccess,
   } = useGetChapterEnrolledStudentQuery({ courseId: courseId as string, chapterId: chapterId as string }, { skip: !courseId || !chapterId });
  const prefetchChapter = usePrefetch('getChapterEnrolledStudent');
   const {

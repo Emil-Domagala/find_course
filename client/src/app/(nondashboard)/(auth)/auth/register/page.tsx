@@ -11,7 +11,6 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
-import Link from 'next/link';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -62,9 +61,7 @@ const RegisterPage = () => {
         </div>
         <CustomFormField name="email" label="Email adress" type="email" className="mb-2" />
         <CustomFormField name="password" label="Password" type="password" className="mb-2" />
-        {form.formState.errors.root && (
-          <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
-        )}
+        {form.formState.errors.root && <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>}
         <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
           Sign Up {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
         </Button>

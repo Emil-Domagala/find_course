@@ -1,7 +1,5 @@
 package emil.find_course.repositories;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;

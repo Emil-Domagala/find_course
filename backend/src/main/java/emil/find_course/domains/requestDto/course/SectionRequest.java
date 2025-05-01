@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 

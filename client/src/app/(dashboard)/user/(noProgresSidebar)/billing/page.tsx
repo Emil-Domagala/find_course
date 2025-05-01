@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 const BillingPage = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);
-  const [size, setSize] = useState(10);
+  const [size] = useState(10);
   const [sortField, setSortField] = useState<string>('createdAt');
   const [direction, setDirection] = useState(SearchDirection.DESC);
 

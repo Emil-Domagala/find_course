@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.domains.entities.course.Chapter;
 import emil.find_course.domains.entities.course.Section;

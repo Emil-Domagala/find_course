@@ -11,15 +11,13 @@ const PrivacyPolicyPage = () => {
           Effective date: <span className="text-primary-700">16.04.2025r.</span>
         </p>
         <p>
-          Thank you for using our platform. Your privacy is important, and this Privacy Policy outlines how your data is
-          collected, stored, used, and protected when using the "Find Course" feature and other parts of the platform.
+          Thank you for using our platform. Your privacy is important, and this Privacy Policy outlines how your data is collected, stored, used, and protected when using the
+          &quot;Find Course&quot; feature and other parts of the platform.
         </p>
       </div>
       <div className="mb-4 ">
         <h2 className={h2Class}>1. Data We Collect</h2>
-        <p className={subtitleClass}>
-          We may collect and store the following personal information when you use our service:
-        </p>
+        <p className={subtitleClass}>We may collect and store the following personal information when you use our service:</p>
         <ul className={ulClass}>
           <li>Email address</li>
           <li>Password (stored securely and never in plain text)</li>
@@ -34,10 +32,7 @@ const PrivacyPolicyPage = () => {
           <li>Authentication (using secure, HTTP-only, SameSite=Strict cookies)</li>
           <li>Session management</li>
         </ul>
-        <p>
-          Cookies are required for proper functioning of the platform and are not used for marketing or tracking
-          purposes.
-        </p>
+        <p>Cookies are required for proper functioning of the platform and are not used for marketing or tracking purposes.</p>
       </div>
       <div className="mb-4 ">
         <h2 className={h2Class}>3. Third-Party Services</h2>
@@ -47,8 +42,7 @@ const PrivacyPolicyPage = () => {
             <a href="https://stripe.com/" className="font-semibold text-primary-700 hover:underline">
               Stripe
             </a>
-            – for handling payments securely. Your payment details are processed by Stripe and never stored on our
-            servers.
+            – for handling payments securely. Your payment details are processed by Stripe and never stored on our servers.
           </li>
           <li>
             <a href="https://sendgrid.com/" className="font-semibold text-primary-700 hover:underline">
@@ -63,7 +57,7 @@ const PrivacyPolicyPage = () => {
             – for storing all provided files (video and images)
           </li>
           <li>
-            <a href="https://cloudinary.com/" className="font-semibold text-primary-700 hover:underline">
+            <a href="https://neon.tech/" className="font-semibold text-primary-700 hover:underline">
               DATABASE
             </a>{' '}
             – for storing all provided information
@@ -75,22 +69,16 @@ const PrivacyPolicyPage = () => {
         <h2 className={h2Class}>4. Data Deletion</h2>
         <p>
           You can request deletion of your data at any time by contacting us at:{' '}
-          <a
-            className="text-primary-700 hover:underline"
-            href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@example.com'}`}>
+          <a className="text-primary-700 hover:underline" href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@example.com'}`}>
             {process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@example.com'}
           </a>
         </p>
-        <p>
-          We also reserve the right to delete any or all user data at any time, without prior notice, particularly for
-          maintenance or demo-related purposes.
-        </p>
+        <p>We also reserve the right to delete any or all user data at any time, without prior notice, particularly for maintenance or demo-related purposes.</p>
       </div>
       <div className="mb-4 ">
         <h2 className={h2Class}>5. Data Security</h2>
         <p>
-          We take appropriate technical and organizational measures to protect your data. However, as this is a demo
-          platform, we recommend you avoid using sensitive personal data.
+          We take appropriate technical and organizational measures to protect your data. However, as this is a demo platform, we recommend you avoid using sensitive personal data.
         </p>
       </div>
       <div className="mb-4 ">
@@ -105,10 +93,7 @@ const PrivacyPolicyPage = () => {
       </div>
       <div className="mb-4 ">
         <h2 className={h2Class}>7. Disclaimer</h2>
-        <p>
-          This platform is a demo application and does not offer real, purchasable courses. Data collected is used
-          solely for testing and demonstration purposes.
-        </p>
+        <p>This platform is a demo application and does not offer real, purchasable courses. Data collected is used solely for testing and demonstration purposes.</p>
       </div>
     </section>
   );

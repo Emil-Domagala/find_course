@@ -8,7 +8,6 @@ import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
 import emil.find_course.domains.enums.Validate.ValidEnum;
 import io.micrometer.common.lang.Nullable;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;

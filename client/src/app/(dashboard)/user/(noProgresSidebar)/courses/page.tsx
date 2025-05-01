@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 
 const EnrolledCourses = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);
-  const [size, setSize] = useState(10);
+  const [size] = useState(10);
 
-  const [getEnrolledCourses, { data: coursesPage, isLoading }] = useLazyGetEnrolledCoursesQuery();
+  const [getEnrolledCourses, { data: coursesPage }] = useLazyGetEnrolledCoursesQuery();
 
   const handleGetEnrolledCourses = () => {
     return getEnrolledCourses({ page, size });

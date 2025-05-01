@@ -41,7 +41,6 @@ public class AdminServiceImpl implements AdminService {
         return Map.of("newRequests", newRequests);
     }
 
-    // TODO: BOOLEAN == NULL ERROR
     @Override
     public PagingResult<BecomeTeacherDto> searchBecomeTeacherDto(BecomeTeacherStatus status, Boolean seenByAdmin,
             PaginationRequest request) {
