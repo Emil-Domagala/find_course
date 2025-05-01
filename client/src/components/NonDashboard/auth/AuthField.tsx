@@ -3,6 +3,7 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Input } from '../../ui/input';
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   showDesc?: boolean;
   description?: string;
@@ -30,12 +31,7 @@ const AuthField = ({ form, showDesc = false, name, description, label, placehold
         <FormItem className="relative pb-5 mb-4 w-full">
           <FormLabel className="text-white-50 font-medium text-md">{label}</FormLabel>
           <FormControl>
-            <Input
-              type={type}
-              {...field}
-              placeholder={placeholder}
-              className="bg-customgreys-primarybg text-white-50 !shadow-none border-none font-medium text-md md:text-lg "
-            />
+            <Input type={type} {...field} placeholder={placeholder} className="bg-customgreys-primarybg text-white-50 !shadow-none border-none font-medium text-md md:text-lg " />
           </FormControl>
           {description && showDesc && <FormDescription>{description}</FormDescription>}
           <FormMessage className="text-red-500 text-xs absolute bottom-0 " />

@@ -20,7 +20,7 @@ type Props = {
 
 const UserButton = ({ authToken, className, classNamePopover }: Props) => {
   const pathname = usePathname();
-  const [refetchToken, { error }] = useRefetchTokenMutation();
+  const [refetchToken] = useRefetchTokenMutation();
   const [logoutUser] = useLogoutMutation();
 
   useEffect(() => {
@@ -30,7 +30,8 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
       if (!authToken && isMounted) {
         try {
           await refetchToken({});
-        } catch (err) {
+        } catch (e) {
+          console.log(e);
           logoutUser({});
         }
       }

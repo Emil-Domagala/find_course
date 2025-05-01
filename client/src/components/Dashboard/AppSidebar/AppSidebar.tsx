@@ -1,27 +1,8 @@
 'use client';
 
 import { useLogoutMutation } from '@/state/api';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
-import {
-  BookOpen,
-  Library,
-  LogOut,
-  NotebookPen,
-  PanelLeft,
-  Receipt,
-  ShoppingCart,
-  User,
-  UserCheck,
-} from 'lucide-react';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { BookOpen, LogOut, NotebookPen, PanelLeft, Receipt, ShoppingCart, User, UserCheck } from 'lucide-react';
 import Image from 'next/image';
 import SidebarGroupCustom from './SidebarGroupCustom';
 import { jwtDecode } from 'jwt-decode';
@@ -37,15 +18,13 @@ const navLinks = {
     { icon: Receipt, label: 'Billing', href: '/user/billing' },
     { icon: ShoppingCart, label: 'Cart', href: '/user/cart' },
   ],
-  teacher: [
-    { icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' },
-  ],
+  teacher: [{ icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' }],
   admin: [{ icon: UserCheck, label: 'New Teachers', href: '/admin/teacher-requests', notification: true }],
 };
 
 const AppSidebar = ({ authToken }: Props) => {
   const router = useRouter();
-  const [logoutUser, { isLoading }] = useLogoutMutation();
+  const [logoutUser] = useLogoutMutation();
   const { toggleSidebar } = useSidebar();
 
   const handleLogout = async () => {
@@ -62,29 +41,15 @@ const AppSidebar = ({ authToken }: Props) => {
   const decoded = jwtDecode(authToken) as AuthToken;
 
   return (
-    <Sidebar
-      collapsible="icon"
-      side="left"
-      variant="sidebar"
-      className="bg-customgreys-primarybg border-none shadow-lg">
+    <Sidebar collapsible="icon" side="left" variant="sidebar" className="bg-customgreys-primarybg border-none shadow-lg">
       <SidebarHeader className="p-0">
         <SidebarMenu className="mt-5 mb-7">
           <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => toggleSidebar()}
-              className="group hover:bg-customgreys-secondarybg h-auto">
+            <SidebarMenuButton onClick={() => toggleSidebar()} className="group hover:bg-customgreys-secondarybg h-auto">
               <div className="flex justify-between items-center gap-5 py-2 pl-3 pr-1 min-h-10 w-full group-data-[collapsible=icon]:ml-1 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:px-0">
                 <div className=" flex items-center gap-5">
-                  <Image
-                    src={'/logo.svg'}
-                    alt="Logo"
-                    width={25}
-                    height={20}
-                    className="transition duration-200 group-data-[collapsible=icon]:group-hover:brightness-75 w-auto"
-                  />
-                  <p className="text-lg font-extrabold text-nowrap overflow-hidden group-data-[collapsible=icon]:hidden">
-                    Find Course
-                  </p>
+                  <Image src={'/logo.svg'} alt="Logo" width={25} height={20} className="transition duration-200 group-data-[collapsible=icon]:group-hover:brightness-75 w-auto" />
+                  <p className="text-lg font-extrabold text-nowrap overflow-hidden group-data-[collapsible=icon]:hidden">Find Course</p>
                 </div>
                 <PanelLeft className="text-gray-400 w-5 h-5 group-data-[collapsible=icon]:hidden" />
               </div>

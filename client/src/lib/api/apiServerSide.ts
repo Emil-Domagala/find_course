@@ -1,6 +1,5 @@
-import { ApiErrorResponse } from '@/types/apiError';
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-
+import { CourseDetailsPublicDto } from '@/types/courses';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 class ApiService {
   private api: AxiosInstance;
@@ -10,7 +9,6 @@ class ApiService {
     this.api = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
       withCredentials: true,
-      
     });
   }
 
@@ -32,4 +30,3 @@ class ApiService {
 }
 
 export const apiServerService = ApiService.getInstance();
-

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useState } from 'react';
 import type { Area } from 'react-easy-crop';
 import imageCompression from 'browser-image-compression';
