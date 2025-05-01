@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { useEffect } from 'react';
@@ -22,11 +22,12 @@ import ChapterModal from './ChapterModal';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
 
-const EditCourseForm = ({ courseId }: { courseId: string }) => {
+const EditCourseForm = () => {
+  const { courseId } = useParams();
   const router = useRouter();
 
-  const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string);
-  const [updateCourse]=useUpdateCourseMutation()
+  const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string, { skip: !courseId });
+  const [updateCourse] = useUpdateCourseMutation();
 
   const dispatch = useAppDispatch();
   const { sections } = useAppSelector((state) => state.global.courseEditor);
@@ -45,7 +46,7 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
   });
 
   useEffect(() => {
-console.log(course);
+    console.log(course);
 
     if (course) {
       methods.reset({
@@ -61,11 +62,11 @@ console.log(course);
     }
   }, [course, methods]);
 
-  const checkData=()=>{
-    console.log("Checking DATA:::");
+  const checkData = () => {
+    console.log('Checking DATA:::');
     console.log(methods.getValues());
-    console.log("END OF CHECKING DATA");
-  }
+    console.log('END OF CHECKING DATA');
+  };
 
   const onSubmit = async (data: CourseFormData) => {
     console.log('Submitting');
@@ -85,14 +86,14 @@ console.log(course);
 
     const formData = new FormData();
     const courseDataBlob = new Blob([JSON.stringify(createCoursePayload)], {
-    type: 'application/json'
-  });
+      type: 'application/json',
+    });
 
-  formData.append('courseData', courseDataBlob);
+    formData.append('courseData', courseDataBlob);
 
     if (data.image) formData.append('image', data.image);
-   try{
-    await updateCourse({courseData: formData, courseId}).unwrap()
+    try {
+      await updateCourse({ courseData: formData, courseId }).unwrap();
       toast.success('Course Updated Successfully');
     } catch (e) {
       const errorFull = e as ApiErrorResponse;
@@ -103,11 +104,10 @@ console.log(course);
       }
       toast.error(message);
     }
-
   };
 
-  if(isLoading||!course) return <h1>LOADING</h1>
-console.log(course);
+  if (isLoading || !course) return <h1>LOADING</h1>;
+  console.log(course);
   const displayImageUrl = course?.imageUrl || '/placeholder.png';
 
   return (
@@ -141,7 +141,9 @@ console.log(course);
                 <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
                   {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
                 </Button>
-                <button type='button' onClick={checkData}>Update</button>
+                <button type="button" onClick={checkData}>
+                  Update
+                </button>
               </div>
             }
           />
