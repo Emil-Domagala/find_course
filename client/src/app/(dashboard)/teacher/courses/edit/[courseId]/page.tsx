@@ -1,8 +1,13 @@
 import EditCourseForm from './EditCourseForm';
 
-const EditCoursePage = ({ params }: { params: { courseId: string } }) => {
+type EditCoursePageProps = {
+  params: { courseId: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
+
+const EditCoursePage = ({ params }: EditCoursePageProps) => {
   const { courseId } = params;
 
-  return <EditCourseForm courseId={courseId as string} />;
+  return <EditCourseForm courseId={courseId} />;
 };
 export default EditCoursePage;
