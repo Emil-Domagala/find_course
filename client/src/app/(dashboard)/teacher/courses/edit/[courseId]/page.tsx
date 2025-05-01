@@ -1,7 +1,7 @@
 import EditCourseForm from './EditCourseForm';
 
-const EditCoursePage = async ({ params }: { params: { courseId: string } }) => {
-  const { courseId } = await params;
+const EditCoursePage = ({ params }: { params: { courseId: string } }) => {
+  const { courseId } = params;
 
   return <EditCourseForm courseId={courseId as string} />;
 };

@@ -9,11 +9,10 @@ import { centsToDollars } from '@/lib/utils';
 import { SectionDetailsPublicDto } from '@/types/courses';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
-  const { courseId } = await params;
+  const { courseId } = params;
   const course = await apiServerService.getCoursesPublic(courseId);
   const cookieStore = await cookies();
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME as string)?.value;
-
 
   return (
     <>
