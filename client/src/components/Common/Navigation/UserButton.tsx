@@ -28,8 +28,6 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
 
     const fetchToken = async () => {
       if (!authToken && isMounted) {
-        console.log('Refetching token... in UserButton.tsx');
-        console.log(new Date());
         try {
           await refetchToken({});
         } catch (err) {

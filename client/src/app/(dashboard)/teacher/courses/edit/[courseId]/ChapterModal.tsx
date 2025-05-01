@@ -100,7 +100,11 @@ const ChapterModal = () => {
 
             <CustomFormField name="content" label="Chapter Content" type="textarea" placeholder="Write chapter content here" />
 
-            <FormField
+            <CustomFormField name="videoUrl" label="Video Url" placeholder="Paste video url here" />
+
+
+{/* TODO: Videos are not supported yet. I will add it later. */}
+            {/* <FormField
               control={methods.control}
               name="videoUrl"
               render={({ field: { onChange, value } }) => (
@@ -126,7 +130,8 @@ const ChapterModal = () => {
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}
-            />
+            /> */}
+
 
             <div className="flex justify-end space-x-2 mt-6">
               <Button type="button" variant="outline" onClick={onClose}>

@@ -2,6 +2,8 @@ package emil.find_course.domains.requestDto.course;
 
 import java.util.UUID;
 
+import org.hibernate.validator.constraints.URL;
+
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -23,6 +25,10 @@ public class ChapterRequest {
     @Nullable
     @Size(min = 3, max = 1000, message = "Chapter content must be between {min} and {max} characters")
     private String content;
+
+    @Nullable
+    @URL(message = "Invalid video URL")
+    private String videoUrl;
 
     @Valid
     private boolean isValid() {

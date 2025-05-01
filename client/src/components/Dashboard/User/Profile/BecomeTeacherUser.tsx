@@ -38,15 +38,15 @@ const BecomeTeacherUser = () => {
   return (
     <Accordion type="single" collapsible className=" mt-7 bg-customgreys-primarybg/50 rounded-lg overflow-hidden">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="bg-customgreys-primarybg p-3 w-full rounded-lg text-white-100 text-lg font-semibold  ">
-          Become a Teacher
-        </AccordionTrigger>
+        <AccordionTrigger className="bg-customgreys-primarybg p-3 w-full rounded-lg text-white-100 text-lg font-semibold  ">Become a Teacher</AccordionTrigger>
         <AccordionContent className=" px-3 py-5">
           {becomeTeacherRequestStatus?.id ? (
             <p>
               Your request was send {new Date(becomeTeacherRequestStatus.createdAt).toLocaleDateString()} and it is{' '}
               <span
-                className={`${becomeTeacherRequestStatus.status === 'DENIED' ? 'text-red-500' : becomeTeacherRequestStatus.status === 'PENDING' ? 'text-yellow-500' : 'text-green-500'}`}>
+                className={`${
+                  becomeTeacherRequestStatus.status === 'DENIED' ? 'text-red-500' : becomeTeacherRequestStatus.status === 'PENDING' ? 'text-yellow-500' : 'text-green-500'
+                }`}>
                 {transformToFrontendFormat(becomeTeacherRequestStatus.status)}
               </span>
             </p>
@@ -58,9 +58,7 @@ const BecomeTeacherUser = () => {
               </Button>
             </>
           ) : (
-            <h3 className={`text-center  font-semibold text-lg ${isError ? 'text-red-500' : 'text-primary-750'}`}>
-              {message}
-            </h3>
+            <h3 className={`text-center  font-semibold text-lg ${isError ? 'text-red-500' : 'text-primary-750'}`}>{message}</h3>
           )}
         </AccordionContent>
       </AccordionItem>

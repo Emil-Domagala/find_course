@@ -23,14 +23,12 @@ const ConfirmEmailPage = () => {
     }, 1500);
 
   const pushToCourses = () => {
-    console.log('push to profile');
     setTimeout(() => {
       router.push('/user/courses');
     }, 1500);
   };
 
   const handleError = (e: unknown) => {
-    console.log(e);
     setIsError(true);
     const errorFull = e as ApiErrorResponse;
     const error = errorFull.data;

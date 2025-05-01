@@ -14,7 +14,6 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
   const cookieStore = await cookies();
   const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME as string)?.value;
 
-  console.log(course);
 
   return (
     <>

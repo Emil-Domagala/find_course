@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { useEffect } from 'react';
@@ -25,12 +25,8 @@ import { ApiErrorResponse } from '@/types/apiError';
 const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const router = useRouter();
 
-  // console.log('courseId: ' + courseId);
-
   const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string);
   const [updateCourse]=useUpdateCourseMutation()
-
-  // console.log(course);
 
   const dispatch = useAppDispatch();
   const { sections } = useAppSelector((state) => state.global.courseEditor);
@@ -38,21 +34,19 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
   const methods = useForm<CourseFormData>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      status: CourseStatus.DRAFT,
-      category: CourseCategory.PROGRAMMING,
+      status: undefined,
+      category: undefined,
       title: '',
       description: '',
-      level: Level.BEGINNER,
+      level: undefined,
       price: 0,
       image: '',
     },
   });
 
   useEffect(() => {
-    console.log(methods.formState.errors);
-  }, [methods.formState.errors]);
+console.log(course);
 
-  useEffect(() => {
     if (course) {
       methods.reset({
         title: course.title,
@@ -61,10 +55,17 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
         price: course.price,
         status: course.status,
         level: course.level,
+        image: course.imageUrl,
       });
       dispatch(setSections(course.sections || []));
     }
   }, [course, methods]);
+
+  const checkData=()=>{
+    console.log("Checking DATA:::");
+    console.log(methods.getValues());
+    console.log("END OF CHECKING DATA");
+  }
 
   const onSubmit = async (data: CourseFormData) => {
     console.log('Submitting');
@@ -81,8 +82,6 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
       level: data.level,
       sections: sections,
     };
-
-    console.log(createCoursePayload);
 
     const formData = new FormData();
     const courseDataBlob = new Blob([JSON.stringify(createCoursePayload)], {
@@ -107,9 +106,10 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
 
   };
 
-  // const course = await getCoursesPublic(courseId);
-
+  if(isLoading||!course) return <h1>LOADING</h1>
+console.log(course);
   const displayImageUrl = course?.imageUrl || '/placeholder.png';
+
   return (
     <>
       <div className="flex items-center gap-5 mb-5">
@@ -139,8 +139,9 @@ const EditCourseForm = ({ courseId }: { courseId: string }) => {
                   initialValue={course?.status}
                 />
                 <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
-                  {methods.watch('status') === CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
+                  {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
                 </Button>
+                <button type='button' onClick={checkData}>Update</button>
               </div>
             }
           />

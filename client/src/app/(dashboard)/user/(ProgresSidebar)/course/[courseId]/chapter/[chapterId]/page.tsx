@@ -12,7 +12,7 @@ const WatchCoursePage = () => {
   const {chapterIsLoading, currentProgressChapter,courseId, chapterId, chapterData, courseProgressData, nextChapterId, handleUpdateChapterProgress } =
     useChapterAndCourseSidebarData();
 
-  if (!courseProgressData||chapterIsLoading || !chapterData) return <WatchCourseLoading />;
+  if (!courseProgressData||chapterIsLoading || !chapterData||!currentProgressChapter) return <WatchCourseLoading />;
 
   return (
     <div className="flex h-full">

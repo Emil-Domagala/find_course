@@ -3,24 +3,30 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import ReactPlayer from 'react-player';
 
-type Props = {courseId:string,currentProgressChapter:ChapterProgress, chapterData: ChapterDetailsProtectedDto; chapterId?: string; nextChapterId?: string; handleUpdateChapterProgress: (chapterProgressId: string, completed: boolean) => void; };
+type Props = {
+  courseId: string;
+  currentProgressChapter: ChapterProgress;
+  chapterData: ChapterDetailsProtectedDto;
+  chapterId?: string;
+  nextChapterId?: string;
+  handleUpdateChapterProgress: (chapterProgressId: string, completed: boolean) => void;
+};
 
-const ReactVideo = ({courseId, currentProgressChapter,chapterData, chapterId, nextChapterId, handleUpdateChapterProgress }: Props) => {
-  const router=useRouter();
+const ReactVideo = ({ courseId, currentProgressChapter, chapterData, chapterId, nextChapterId, handleUpdateChapterProgress }: Props) => {
+  const router = useRouter();
   const playerRef = useRef<ReactPlayer>(null);
 
-
   const handleProgress = ({ played }: { played: number }) => {
-    if (played >= 0.8 && chapterId) {
+    if (played >= 0.8 && chapterId && currentProgressChapter) {
       handleUpdateChapterProgress(currentProgressChapter.id, false);
     }
-    }
-  
+  };
 
   const handleNextChapter = () => {
-   if ( nextChapterId) {
-      router.push(`/user/course/${courseId}/chapter/${nextChapterId}`, {scroll: false,})
-    }}
+    if (nextChapterId) {
+      router.push(`/user/course/${courseId}/chapter/${nextChapterId}`, { scroll: false });
+    }
+  };
 
   return (
     <ReactPlayer

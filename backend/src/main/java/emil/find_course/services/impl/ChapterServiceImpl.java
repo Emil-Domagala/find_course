@@ -48,8 +48,6 @@ public class ChapterServiceImpl implements ChapterService {
                 if (chapterToProcess == null) {
                     throw new IllegalArgumentException("Chapter not found");
                 }
-                // MultipartFile video = videos.get("video_" +
-                // chapterRequest.getId().toString());
                 updateChapter(chapterRequest, chapterToProcess, section);
                 finalChapters.add(chapterToProcess);
 
@@ -71,6 +69,10 @@ public class ChapterServiceImpl implements ChapterService {
         chapterToProcess.setContent(
                 chapterRequest.getContent() == null ? "Default Content" : chapterRequest.getContent());
         chapterToProcess.setSection(section);
+        // TODO: For now Video Url are fine but in the future create presigned.
+        if (chapterRequest.getVideoUrl() != null) {
+            chapterToProcess.setVideoUrl(chapterRequest.getVideoUrl());
+        }
     }
 
     private void updateChapter(ChapterRequest chapterRequest, Chapter chapterToProcess, Section section) {
@@ -79,6 +81,9 @@ public class ChapterServiceImpl implements ChapterService {
         }
         if (chapterRequest.getContent() != null) {
             chapterToProcess.setContent(chapterRequest.getContent());
+        }
+        if (chapterRequest.getVideoUrl() != null) {
+            chapterToProcess.setVideoUrl(chapterRequest.getVideoUrl());
         }
 
     }

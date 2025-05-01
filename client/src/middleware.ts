@@ -41,7 +41,6 @@ export async function middleware(req: NextRequest) {
     }
     // Redirect protected routes AND confirm-email route to login if not logged in
     if (isProtectedRoute || isConfirmEmailRoute) {
-      console.log(`[Middleware] No token, redirecting protected route ${pathname} to login.`);
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
     }
     // Allow other public routes
@@ -58,7 +57,6 @@ export async function middleware(req: NextRequest) {
     // Clear the invalid cookie and redirect to login
     const response = NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
     response.cookies.delete(AUTH_COOKIE_NAME);
-    console.log(`[Middleware] Invalid token, redirecting ${pathname} to login and clearing cookie.`);
     return response;
   }
 
@@ -70,31 +68,25 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next(); // Allow access
     }
     // Redirect ALL other pages (including auth, protected) to confirm-email
-    console.log(`[Middleware] Email not verified, redirecting ${pathname} to ${CONFIRM_EMAIL_PATH}.`);
     return NextResponse.redirect(new URL(CONFIRM_EMAIL_PATH, req.url));
   }
 
   if (decoded && decoded.isEmailVerified === true) {
     // 1. Redirect verified users away from /auth pages
     if (isAuthRoute) {
-      console.log(
-        `[Middleware] Verified user accessing auth route ${pathname}, redirecting to ${DEFAULT_LOGGED_IN_REDIRECT}.`,
-      );
       return NextResponse.redirect(new URL(DEFAULT_LOGGED_IN_REDIRECT, req.url));
     }
 
     // Ensure your AuthToken type reliably has roles array
-    const roles = decoded.roles  || [];
+    const roles = decoded.roles || [];
 
     // 2. Protect teacher routes
     if (isTeacherRoute && !roles.includes('TEACHER')) {
-      console.log(`[Middleware] User without TEACHER role accessing ${pathname}, redirecting.`);
       return NextResponse.redirect(new URL(DEFAULT_LOGGED_IN_REDIRECT, req.url)); // Or a specific "access denied" page
     }
 
     // 3. Protect admin routes
     if (isAdminRoute && !roles.includes('ADMIN')) {
-      console.log(`[Middleware] User without ADMIN role accessing ${pathname}, redirecting.`);
       return NextResponse.redirect(new URL(DEFAULT_LOGGED_IN_REDIRECT, req.url)); // Or a specific "access denied" page
     }
 
@@ -103,7 +95,6 @@ export async function middleware(req: NextRequest) {
   }
 
   // --- Fallback (Should ideally not be reached if logic above is complete) ---
-  console.warn('[Middleware] Reached unexpected fallback state.');
   // Default to redirecting to login as a safe measure
   const response = NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
   if (authToken) {

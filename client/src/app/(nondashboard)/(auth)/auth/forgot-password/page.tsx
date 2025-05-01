@@ -37,7 +37,6 @@ const ForgotPasswordPage = () => {
       await sendResetPassword(values).unwrap();
       setMessage('Reset password email has been send');
     } catch (e) {
-      console.log(e);
       setIsError(true);
       const errorFull = e as ApiErrorResponse;
       const error = errorFull.data;
@@ -58,9 +57,7 @@ const ForgotPasswordPage = () => {
           {showInputs ? (
             <CustomFormField name="email" label="Email adress" type="email" />
           ) : (
-            <h3 className={`text-center  font-semibold text-lg  ${isError ? 'text-red-500' : 'text-primary-750'}`}>
-              {message}
-            </h3>
+            <h3 className={`text-center  font-semibold text-lg  ${isError ? 'text-red-500' : 'text-primary-750'}`}>{message}</h3>
           )}
         </div>
         <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading || !showInputs}>

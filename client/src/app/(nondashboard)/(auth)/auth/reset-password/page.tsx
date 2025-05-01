@@ -54,7 +54,6 @@ const ResetPassword = ({}) => {
       setMessage('Password has been reset');
       pushToLogin();
     } catch (e) {
-        console.log(e);
       setIsError(true);
       const errorFull = e as ApiErrorResponse;
       const error = errorFull.data;

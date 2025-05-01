@@ -23,7 +23,6 @@ const ConfirmEmailPage = () => {
     }, 1500);
 
   const pushToCourses = () => {
-    console.log('push to profile');
     setTimeout(() => {
       router.push('/user/courses');
     }, 1500);

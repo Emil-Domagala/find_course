@@ -38,8 +38,7 @@ const navLinks = {
     { icon: ShoppingCart, label: 'Cart', href: '/user/cart' },
   ],
   teacher: [
-    { icon: Library, label: 'My courses', href: '/teacher/courses/my-courses' },
-    { icon: NotebookPen, label: 'Create course', href: '/teacher/courses/create' },
+    { icon: NotebookPen, label: 'My courses', href: '/teacher/courses/my-courses' },
   ],
   admin: [{ icon: UserCheck, label: 'New Teachers', href: '/admin/teacher-requests', notification: true }],
 };

@@ -403,7 +403,6 @@ export const api = createApi({
               if (section.chapters) {
                 const chapterIndex = section.chapters.findIndex((chapter) => chapter.id === chapterIdToUpdate);
                 if (chapterIndex !== -1) {
-                  console.log(`Found chapter at section index ${draft.sections.indexOf(section)}, chapter index ${chapterIndex}. Updating completed status.`);
                   section.chapters[chapterIndex].completed = newCompletedStatus;
                   found = true;
                   break;

@@ -1,4 +1,4 @@
-import { CourseCategory, Level } from '@/types/courses-enum';
+import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import * as z from 'zod';
 
 // Course Editor Schemas
@@ -7,7 +7,7 @@ export const courseSchema = z.object({
   description: z.string().min(3, 'Description must be at least 3 characters').max(1000, 'Description must be less than 1000 characters'),
   category: z.nativeEnum(CourseCategory),
   level: z.nativeEnum(Level),
-  status: z.string(),
+  status: z.nativeEnum(CourseStatus),
   price: z.number().positive('Price must be positive'),
   image: z.union([z.string(), z.instanceof(File)]).optional(),
 });

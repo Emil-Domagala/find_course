@@ -12,6 +12,8 @@ import { CourseCategory } from '@/types/courses-enum';
 import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { ApiErrorResponse } from '@/types/apiError';
 
 const MyCourses = () => {
   const router = useRouter();
@@ -45,7 +47,6 @@ const MyCourses = () => {
 
   const handleDelete = (course: CourseDto) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
-      console.log('course deleted' + course.id);
       deleteCourse({ courseId: course.id });
     }
   };
@@ -54,15 +55,20 @@ const MyCourses = () => {
     try {
       setIsCreating(true);
       const createdCourse = await createCourse().unwrap();
+      toast.success('Course created successfully');
       router.push(`/teacher/courses/edit/${createdCourse?.id}`);
     } catch (e) {
-      console.log(e);
+      const errorFull = e as ApiErrorResponse;
+      const error = errorFull.data;
+      let message = 'Something went wrong';
+      if (error.message) {
+        message = error.message;
+      }
+      toast.error(message);
     } finally {
       setIsCreating(false);
     }
   };
-
-  console.log(coursesPage?.content);
 
   return (
     <div className="flex flex-col w-full min-h-full ">

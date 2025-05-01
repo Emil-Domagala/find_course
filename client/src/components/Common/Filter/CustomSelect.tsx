@@ -34,7 +34,6 @@ const CustomSelect = <T extends SelectOptionValue>({
 }: CustomSelectProps<T>) => {
   const handleValueChange = (selectedValue: string) => {
     if (clearable && selectedValue === '__clear__') {
-      console.log('habdle val change clear');
       onChange(undefined);
     } else {
       const originalOption = options.find((opt) => String(opt) === selectedValue);

@@ -34,7 +34,6 @@ export const useSelectFilter = <T extends string | number = string>({ valueName,
 
   useEffect(() => {
     setFilterValue(getInitialState());
-    console.log(getInitialState() + ' getInitialState');
   }, []);
 
   useEffect(() => {

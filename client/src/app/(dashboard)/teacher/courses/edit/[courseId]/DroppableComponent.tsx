@@ -30,7 +30,6 @@ export default function DroppableComponent() {
     const endIndex = result.destination.index;
 
     const updatedSections = [...sections];
-    console.log(updatedSections);
     const updatedChapters = [...(updatedSections[sectionIndex].chapters || [])];
     const [reorderedChapter] = updatedChapters.splice(startIndex, 1);
     updatedChapters.splice(endIndex, 0, reorderedChapter);

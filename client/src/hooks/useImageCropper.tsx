@@ -53,7 +53,6 @@ export function useImageCropper({ maxImgDimetion, maxImageSizeMB, imgOnDelete, i
       type: compressedFile.type || 'image/jpeg',
       lastModified: rawFile.lastModified,
     });
-
     return { file: compressedImg, url: finalUrl };
   };
 

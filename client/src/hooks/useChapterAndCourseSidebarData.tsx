@@ -98,7 +98,6 @@ export const useChapterAndCourseSidebarData = (): UseChapterAndCourseSidebarData
 
 useEffect(()=>{
      if (nextChapterId && courseId) {
-        console.log("nextChapterId: "+nextChapterId);
         prefetchChapter({ courseId: courseId as string, chapterId: nextChapterId }, { force: false });
       }
 },[nextChapterId])

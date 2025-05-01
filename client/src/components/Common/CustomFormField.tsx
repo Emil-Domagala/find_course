@@ -40,20 +40,10 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
   const renderFormControl = (field: ControllerRenderProps<FieldValues, string>) => {
     switch (type) {
       case 'textarea':
-        return (
-          <Textarea
-            placeholder={placeholder}
-            {...field}
-            rows={3}
-            className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
-          />
-        );
+        return <Textarea placeholder={placeholder} {...field} rows={3} className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`} />;
       case 'select':
         return (
-          <Select
-            value={field.value || (initialValue as string)}
-            defaultValue={field.value || (initialValue as string)}
-            onValueChange={field.onChange}>
+          <Select value={field.value} onValueChange={field.onChange}>
             <SelectTrigger className={`w-full border-none bg-customgreys-primarybg p-4 ${inputClassName}`}>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
@@ -70,30 +60,11 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           </Select>
         );
       case 'number':
-        return (
-          <Input
-            type="number"
-            placeholder={placeholder}
-            {...field}
-            className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
-            disabled={disabled}
-            step={0.01}
-          />
-        );
+        return <Input type="number" placeholder={placeholder} {...field} className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`} disabled={disabled} step={0.01} />;
       case 'multi-input':
-        return (
-          <MultiInputField name={name} control={control} placeholder={placeholder} inputClassName={inputClassName} />
-        );
+        return <MultiInputField name={name} control={control} placeholder={placeholder} inputClassName={inputClassName} />;
       default:
-        return (
-          <Input
-            type={type}
-            placeholder={placeholder}
-            {...field}
-            className={`border-none bg-customgreys-primarybg p-4 ${inputClassName}`}
-            disabled={disabled}
-          />
-        );
+        return <Input type={type} placeholder={placeholder} {...field} className={`border-none bg-customgreys-primarybg p-4 ${inputClassName}`} disabled={disabled} />;
     }
   };
 
@@ -146,30 +117,16 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({ name, control, placeh
             name={`${name}.${index}`}
             render={({ field }) => (
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder={placeholder}
-                  className={`flex-1 border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
-                />
+                <Input {...field} placeholder={placeholder} className={`flex-1 border-none bg-customgreys-darkGrey p-4 ${inputClassName}`} />
               </FormControl>
             )}
           />
-          <Button
-            type="button"
-            onClick={() => remove(index)}
-            variant="secondary"
-            size="icon"
-            className="text-customgreys-dirtyGrey">
+          <Button type="button" onClick={() => remove(index)} variant="secondary" size="icon" className="text-customgreys-dirtyGrey">
             <X className="w-4 h-4" />
           </Button>
         </div>
       ))}
-      <Button
-        type="button"
-        onClick={() => append('')}
-        variant="outline"
-        size="sm"
-        className="mt-2 text-customgreys-dirtyGrey">
+      <Button type="button" onClick={() => append('')} variant="outline" size="sm" className="mt-2 text-customgreys-dirtyGrey">
         <Plus className="w-4 h-4 mr-2" />
         Add Item
       </Button>
