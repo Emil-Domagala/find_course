@@ -46,8 +46,8 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
 
   const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F-]{36})/chapter/([0-9a-fA-F-]{36})$');
 
-  className = cn(`${viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
-  classNamePopover = cn(`${viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
+  className = cn(`${!viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
+  classNamePopover = cn(`${!viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
 
   return (
     <Popover>
