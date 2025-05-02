@@ -3,6 +3,7 @@ package emil.find_course.services.impl;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +17,19 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import emil.find_course.services.EmailService;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    Dotenv dotenv = Dotenv.load();
+    @Value("${sendgrid.api.key}")
+    private  String SENDGRID_API_KEY ;
+
+    @Value("${sendgrid.mail.username}")
+    private  String MY_EMAIL;
 
     private final SpringTemplateEngine thymeleafTemplateEngine;
-    private final String SENDGRID_API_KEY = dotenv.get("SENDGRID_API_KEY");
-    private final String MY_EMAIL = dotenv.get("SPRING_MAIL_USERNAME");
 
     @Override
     @Async

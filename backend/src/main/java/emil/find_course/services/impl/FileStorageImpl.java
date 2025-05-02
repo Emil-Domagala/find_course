@@ -5,19 +5,17 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.services.FileStorageService;
-import io.github.cdimascio.dotenv.Dotenv;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -35,26 +33,15 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @RequiredArgsConstructor
 public class FileStorageImpl implements FileStorageService {
 
-    Dotenv dotenv = Dotenv.load();
+    @Value("${bucket.name}")
+    private String BUCKET_NAME;
 
-    private final String BUCKET_NAME = dotenv.get("BUCKET_NAME");
-    private final String R2_PUBLIC_BASE_URL = dotenv.get("R2_PUBLIC_BASE_URL");
+    @Value("${r2.public.base.url}")
+    private String R2_PUBLIC_BASE_URL;
 
     private final S3Client s3Client;
 
     private static final String OUTPUT_FORMAT = "jpeg";
-    private String storageLocation = "./uploads/images";
-    private Path rootLocation;
-
-    @PostConstruct
-    public void init() {
-        try {
-            rootLocation = Paths.get(storageLocation).toAbsolutePath().normalize();
-            Files.createDirectories(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage location: " + storageLocation, e);
-        }
-    }
 
     @Override
     public String saveProcessedImage(InputStream inputStream, String identifier, String originalFilenameBase) {

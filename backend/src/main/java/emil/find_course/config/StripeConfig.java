@@ -1,19 +1,17 @@
 package emil.find_course.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import com.stripe.Stripe;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class StripeConfig {
 
-    Dotenv dotenv = Dotenv.load();
-
-    private final String secretKey = dotenv.get("STRIPE_SECRET_KEY");
-    // private final String webhookSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
+    @Value("${STRIPE_SECRET_KEY}")
+    private String secretKey;
 
     @PostConstruct
     public void initStripe() {

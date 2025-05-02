@@ -2,25 +2,30 @@ package emil.find_course.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @Slf4j
 public class DataSourceConfig {
 
-    private final Dotenv dotenv = Dotenv.load();
+    @Value("${db.url}")
+    private String dbUrl;
 
-    String dbUrl = dotenv.get("DB_URL");
-    String dbUsername = dotenv.get("DB_USERNAME");
-    String dbPassword = dotenv.get("DB_PASSWORD");
-    String dbDriverClassName = dotenv.get("DB_DRIVER_CLASS_NAME", "org.postgresql.Driver");
+    @Value("${db.username}")
+    private String dbUsername;
+
+    @Value("${db.password}")
+    private String dbPassword;
+
+    @Value("${db.driver.class.name}")
+    private String dbDriverClassName;
 
     @Bean
     @Primary

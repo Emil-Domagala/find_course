@@ -27,7 +27,6 @@ import emil.find_course.services.EmailService;
 import emil.find_course.services.StripeService;
 import emil.find_course.services.TransactionService;
 import emil.find_course.services.UserService;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class StripeServiceImpl implements StripeService {
-    Dotenv dotenv = Dotenv.load();
 
-    private final String webhookSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
+    @Value("${stripe.webhook.secret}")
+    private String webhookSecret;
 
     @Value("${frontend.domain}")
     private String frontendDomain;

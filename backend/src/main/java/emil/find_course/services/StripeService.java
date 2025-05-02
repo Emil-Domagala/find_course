@@ -11,5 +11,4 @@ public interface StripeService {
 
     public void handleWebhookEvent(String payload, String sigHeader);
 
-
 }

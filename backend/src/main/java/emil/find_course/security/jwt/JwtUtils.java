@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.exceptions.JwtAuthException;
 import emil.find_course.exceptions.UnauthorizedException;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,9 +21,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtils {
 
-    Dotenv dotenv = Dotenv.load();
-
-    private final String jwtSecret = dotenv.get("JWT_SECRET");
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     @Value("${jwt.authToken.expiration}")
     private int jwtAuthTokenExpirationMs;
