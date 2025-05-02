@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class FindCourseApplication {
 
 	public static void main(String[] args) {
-
+		System.out.println("Find Course Version 1");
 		SpringApplication.run(FindCourseApplication.class, args);
 	}
 

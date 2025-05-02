@@ -8,17 +8,17 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CookieHelper {
 
-    @Value("${frontend.domain}")
-    private static String frontendDomain;
+    public static ResponseCookie setCookieHelper(String cookieName, String value, int maxAgeMilis, String path,
+            String springProfile, String frontendDomain) {
 
-    public static ResponseCookie setCookieHelper(String cookieName, String value, int maxAge, String path) {
         return ResponseCookie.from(cookieName, value)
                 .httpOnly(true)
-                .secure(false)
-                .domain(frontendDomain)
+                .secure(!"local".equals(
+                        springProfile))
+                .domain("." + frontendDomain)
                 .sameSite("Strict")
                 .path(path)
-                .maxAge(maxAge / 1)
+                .maxAge(maxAgeMilis / 100)
                 .build();
     }
 }

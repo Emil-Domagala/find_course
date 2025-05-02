@@ -37,6 +37,11 @@ public class AuthController {
         @Value("${jwt.refreshToken.expiration}")
         private int refreshCookieExpiration;
 
+        @Value("${domain.name}")
+        private String domainName;
+        @Value("${spring.profiles.active}")
+        private String springProfile;
+
         private final JwtUtils jwtUtils;
         private final AuthService authService;
 
@@ -47,10 +52,10 @@ public class AuthController {
                 AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), refreshToken);
 
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
-                                "/");
+                                "/", springProfile, domainName);
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, refreshToken, refreshCookieExpiration,
-                                "/");
+                                "/", springProfile, domainName);
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(auth);
@@ -61,10 +66,10 @@ public class AuthController {
                 AuthResponse auth = authService.loginUser(request);
 
                 ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
-                                "/");
+                                "/", springProfile, domainName);
                 ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/");
+                                "/", springProfile, domainName);
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(auth);
@@ -72,9 +77,10 @@ public class AuthController {
 
         @PostMapping("/public/logout")
         public ResponseEntity<Void> logout() {
-                ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/");
+                ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/", springProfile,
+                                domainName);
                 ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
-                                "/");
+                                "/", springProfile, domainName);
 
                 return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())
@@ -87,7 +93,8 @@ public class AuthController {
                         @CookieValue(name = "${cookie.auth.refreshToken.name}") String refreshToken) {
 
                 String authToken = authService.refreshAuthToken(refreshToken);
-                ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
+                ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/",
+                                springProfile, domainName);
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                                 cookie.toString()).build();

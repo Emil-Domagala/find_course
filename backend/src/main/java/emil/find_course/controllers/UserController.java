@@ -37,81 +37,86 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-    @Value("${cookie.auth.authToken.name}")
-    private String authCookieName;
-    @Value("${jwt.authToken.expiration}")
-    private int cookieExpiration;
-    @Value("${cookie.auth.refreshToken.name}")
-    private String refreshCookieName;
-    @Value("${jwt.refreshToken.expiration}")
-    private int refreshCookieExpiration;
+        @Value("${cookie.auth.authToken.name}")
+        private String authCookieName;
+        @Value("${jwt.authToken.expiration}")
+        private int cookieExpiration;
+        @Value("${cookie.auth.refreshToken.name}")
+        private String refreshCookieName;
+        @Value("${jwt.refreshToken.expiration}")
+        private int refreshCookieExpiration;
+        @Value("${domain.name}")
+        private String domainName;
+        @Value("${spring.profiles.active}")
+        private String springProfile;
 
-    private final JwtUtils jwtUtils;
-    private final UserService userService;
-    private final UserMapping userMapping;
-    private final BecomeTeacherMapping becomeTeacherMapping;
+        private final JwtUtils jwtUtils;
+        private final UserService userService;
+        private final UserMapping userMapping;
+        private final BecomeTeacherMapping becomeTeacherMapping;
 
-    @GetMapping
-    public ResponseEntity<UserDto> getUserInfo(Principal principal) {
+        @GetMapping
+        public ResponseEntity<UserDto> getUserInfo(Principal principal) {
 
-        UserDto user = userMapping.toDto(userService.findByEmail(principal.getName()));
-        return ResponseEntity.ok(user);
+                UserDto user = userMapping.toDto(userService.findByEmail(principal.getName()));
+                return ResponseEntity.ok(user);
 
-    }
+        }
 
-    @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<UserDto> updateUserInfo(Principal principal,
-            @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser,
-            @RequestPart(required = false) MultipartFile image) {
+        @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+        public ResponseEntity<UserDto> updateUserInfo(Principal principal,
+                        @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser,
+                        @RequestPart(required = false) MultipartFile image) {
 
-        User currUser = userService.findByEmail(principal.getName());
+                User currUser = userService.findByEmail(principal.getName());
 
-        User updatedUser = userService.updateUser(currUser, requestUpdateUser, image);
-        UserDto userDto = userMapping.toDto(updatedUser);
+                User updatedUser = userService.updateUser(currUser, requestUpdateUser, image);
+                UserDto userDto = userMapping.toDto(updatedUser);
 
-        String refreshToken = jwtUtils.generateRefreshToken(updatedUser);
-        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser), refreshToken);
-        ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
-                "/");
-        ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
-                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                "/");
+                String refreshToken = jwtUtils.generateRefreshToken(updatedUser);
+                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser), refreshToken);
+                ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
+                                "/", springProfile, domainName);
+                ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
+                                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
+                                "/", springProfile, domainName);
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
-                .body(userDto);
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
+                                .body(userDto);
 
-    }
+        }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUser(Principal principal) {
-        User user = userService.findByEmail(principal.getName());
-        userService.deleteUser(user);
-        ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/");
-        ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
-                "/");
+        @DeleteMapping
+        public ResponseEntity<Void> deleteUser(Principal principal) {
+                User user = userService.findByEmail(principal.getName());
+                userService.deleteUser(user);
+                ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/", springProfile,
+                                domainName);
+                ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
+                                "/", springProfile, domainName);
 
-        return ResponseEntity.noContent()
-                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())
-                .build();
-    }
+                return ResponseEntity.noContent()
+                                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())
+                                .build();
+        }
 
-    @PostMapping("/become-teacher")
-    public ResponseEntity<Void> becomeTeacher(Principal principal) {
+        @PostMapping("/become-teacher")
+        public ResponseEntity<Void> becomeTeacher(Principal principal) {
 
-        User user = userService.findByEmail(principal.getName());
-        userService.createBecomeTeacherRequest(user);
-        return ResponseEntity.noContent().build();
-    }
+                User user = userService.findByEmail(principal.getName());
+                userService.createBecomeTeacherRequest(user);
+                return ResponseEntity.noContent().build();
+        }
 
-    @GetMapping("/become-teacher")
-    public ResponseEntity<BecomeTeacherDto> getBecomeTeacherRequest(Principal principal) {
+        @GetMapping("/become-teacher")
+        public ResponseEntity<BecomeTeacherDto> getBecomeTeacherRequest(Principal principal) {
 
-        User user = userService.findByEmail(principal.getName());
-        Optional<BecomeTeacher> becomeTeacherOpt = userService.getBecomeTeacherRequest(user);
-        BecomeTeacherDto becomeTeacherDto = becomeTeacherOpt.map(becomeTeacherMapping::toDto)
-                .orElse(new BecomeTeacherDto());
-        return ResponseEntity.ok(becomeTeacherDto);
+                User user = userService.findByEmail(principal.getName());
+                Optional<BecomeTeacher> becomeTeacherOpt = userService.getBecomeTeacherRequest(user);
+                BecomeTeacherDto becomeTeacherDto = becomeTeacherOpt.map(becomeTeacherMapping::toDto)
+                                .orElse(new BecomeTeacherDto());
+                return ResponseEntity.ok(becomeTeacherDto);
 
-    }
+        }
 
 }

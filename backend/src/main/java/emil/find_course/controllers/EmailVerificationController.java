@@ -31,6 +31,10 @@ public class EmailVerificationController {
     private int cookieExpiration;
     @Value("${frontend.domain}")
     private String frontendDomain;
+    @Value("${domain.name}")
+    private String domainName;
+    @Value("${spring.profiles.active}")
+    private String springProfile;
 
     private final JwtUtils jwtUtils;
     private final UserService userService;
@@ -45,7 +49,8 @@ public class EmailVerificationController {
         emailVerificationService.validateEmail(user, token.getToken());
         String authToken = jwtUtils.generateToken(user);
 
-        ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/");
+        ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, authToken, cookieExpiration, "/",
+                springProfile, domainName);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }

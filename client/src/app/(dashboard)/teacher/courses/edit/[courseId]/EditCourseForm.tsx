@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
 
 const EditCourseForm = () => {
-  const { courseId } = useParams();
+  const { courseId }: { courseId: string } = useParams();
   const router = useRouter();
 
   const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string, { skip: !courseId });
@@ -46,14 +46,12 @@ const EditCourseForm = () => {
   });
 
   useEffect(() => {
-    console.log(course);
-
     if (course) {
       methods.reset({
         title: course.title,
         description: course.description,
         category: course.category,
-        price: course.price,
+        price: +course.price,
         status: course.status,
         level: course.level,
         image: course.imageUrl,
@@ -62,23 +60,13 @@ const EditCourseForm = () => {
     }
   }, [course, methods]);
 
-  const checkData = () => {
-    console.log('Checking DATA:::');
-    console.log(methods.getValues());
-    console.log('END OF CHECKING DATA');
-  };
-
   const onSubmit = async (data: CourseFormData) => {
-    console.log('Submitting');
-    console.log(data);
-    console.log(sections);
-
     const createCoursePayload = {
       id: courseId,
       title: data.title,
       description: data.description,
       category: data.category,
-      price: data.price,
+      price: +data.price,
       status: data.status,
       level: data.level,
       sections: sections,
@@ -107,7 +95,7 @@ const EditCourseForm = () => {
   };
 
   if (isLoading || !course) return <h1>LOADING</h1>;
-  console.log(course);
+
   const displayImageUrl = course?.imageUrl || '/placeholder.png';
 
   return (
@@ -141,9 +129,6 @@ const EditCourseForm = () => {
                 <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
                   {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
                 </Button>
-                <button type="button" onClick={checkData}>
-                  Update
-                </button>
               </div>
             }
           />
@@ -185,7 +170,7 @@ const EditCourseForm = () => {
                   initialValue={course?.level}
                 />
 
-                <CustomFormField name="price" label="Price in cents" type="number" placeholder="0" initialValue={course?.price} />
+                <CustomFormField name="price" label="Price in cents" type="number" placeholder={'0'} initialValue={course?.price} />
               </div>
             </div>
 
