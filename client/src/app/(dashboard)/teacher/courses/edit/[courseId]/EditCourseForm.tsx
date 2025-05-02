@@ -170,7 +170,7 @@ const EditCourseForm = () => {
                   initialValue={course?.level}
                 />
 
-                <CustomFormField name="price" label="Price in cents" type="number" placeholder={'0'} initialValue={course?.price} />
+                <CustomFormField name="price" label="Price in cents" type="number" placeholder={'0'} initialValue={+course?.price} />
               </div>
             </div>
 

@@ -8,9 +8,9 @@ import { usePathname } from 'next/navigation';
 const SearchButton = ({ className }: { className?: string }) => {
   const pathname = usePathname();
 
-  const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F\-]{36})/chapter/([0-9a-fA-F\-]{36})$');
+  const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F-]{36})/chapter/([0-9a-fA-F-]{36})$');
 
-  className = cn(`${viewCoursePageClass && 'bg-customgreys-secondarybg'}`);
+  className = cn(`${viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
 
   return (
     <>
@@ -19,7 +19,7 @@ const SearchButton = ({ className }: { className?: string }) => {
           <Link
             href={'/search'}
             className={cn(
-              'bg-customgreys-secondarybg items-center flex flex-row gap-2  px-5 sm:px-14 py-3 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base',
+              ' items-center flex flex-row gap-2  px-5 sm:px-14 py-3 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base',
               className,
             )}>
             <BookOpen size={18} className="left-1 sm:left-5 transform top-1/2" />

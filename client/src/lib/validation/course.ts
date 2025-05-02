@@ -8,7 +8,7 @@ export const courseSchema = z.object({
   category: z.nativeEnum(CourseCategory),
   level: z.nativeEnum(Level),
   status: z.nativeEnum(CourseStatus),
-  price: z.number().positive('Price must be positive'),
+  price: z.coerce.number().positive('Price must be positive'),
   image: z.union([z.string(), z.instanceof(File)]).optional(),
 });
 
