@@ -4,6 +4,7 @@ import AuthButtons from './AuthButtons';
 import SearchButton from '../../Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from '@/types/auth';
+import CartButton from '@/components/Common/Navigation/CartButton';
 
 const NonDashboardNav = async () => {
   const cookieStore = await cookies();
@@ -24,14 +25,15 @@ const NonDashboardNav = async () => {
       <div className="flex container justify-between items-center py-7 mx-auto">
         {/* LEFT */}
         <div className="flex gap-10 md:gap-20 items-center ">
-          <Link
-            href={'/'}
-            className="font-bold py-2 text-lg md:text-3xl text-white-50 sm:text-2xl hover:text-customgreys-dirtyGrey duration-300">
+          <Link href={'/'} className="font-bold py-2 text-lg md:text-3xl text-white-50 sm:text-2xl hover:text-customgreys-dirtyGrey duration-300">
             Find Course
           </Link>
           <SearchButton />
         </div>
-        <AuthButtons authToken={decoded} />
+        <div className="flex items-center gap-4 sm:gap-5">
+          <CartButton authToken={decoded} />
+          <AuthButtons authToken={decoded} />
+        </div>
       </div>
     </nav>
   );

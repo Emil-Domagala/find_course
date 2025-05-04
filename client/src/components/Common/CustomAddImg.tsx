@@ -74,7 +74,7 @@ const CustomAddImg: React.FC<Props> = ({ name, imageUrl, className, cropShape, a
               </FormLabel>
             </div>
             <FormControl>
-              <input ref={ref} name={fieldName} type="file" onBlur={onBlur} onChange={onFileChange} className="hidden" accept="image/png, image/jpeg, image/*" />
+              <input ref={ref} name={fieldName} type="file" onBlur={onBlur} onChange={onFileChange} className="hidden" accept="image/png, image/jpeg, image/jpg, image/webp" />
             </FormControl>
             <FormMessage className="text-red-500 text-xs absolute bottom-0" />
           </FormItem>

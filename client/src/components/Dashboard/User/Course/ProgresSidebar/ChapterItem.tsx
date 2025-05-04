@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { ChapterProgress } from '@/types/courses';
 import { ChapterType } from '@/types/enums';
-import { CheckCircle, FileText } from 'lucide-react';
+import { CheckCircle, FileText, Video } from 'lucide-react';
 
 type Props = {
   currentChapterId: string;
@@ -47,7 +47,7 @@ const ChapterItem = ({ currentChapterId, chapter, index, updateChapterProgress, 
         })}>
         {chapter.originalChapter.title}
       </span>
-      {chapter.originalChapter.type !== ChapterType.VIDEO && <FileText className="text-gray-500 ml-2 w-4 h-4" />}
+      {chapter.originalChapter.type === ChapterType.TEXT ? <FileText className="text-gray-500 ml-2 w-4 h-4" /> : <Video className="text-gray-500 ml-2 w-4 h-4" />}
     </li>
   );
 };

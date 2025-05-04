@@ -55,18 +55,12 @@
   </head>
   <body>
     <div class="container">
-      <img
-        src="https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_640.png"
-        alt="Find Course Logo"
-        class="logo" />
+      <img src="https://course.emildomagala.pl/logo.svg" alt="Find Course Logo" class="logo" />
       <div class="header">
         <h1>Welcome to Find Course, <span th:text="${user.username}"></span>!</h1>
       </div>
 
-      <p>
-        We're excited to have you here. To complete your registration, please verify your email address using the code
-        below:
-      </p>
+      <p>We're excited to have you here. To complete your registration, please verify your email address using the code below:</p>
 
       <div class="code-box" th:text="${token}"></div>
 

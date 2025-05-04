@@ -7,7 +7,7 @@ import { CourseFormData, courseSchema } from '@/lib/validation/course';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft, Loader, Plus } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
@@ -126,8 +126,9 @@ const EditCourseForm = () => {
                   className="flex items-center pb-0"
                   initialValue={course?.status}
                 />
-                <Button type="submit" className="bg-primary-700 hover:bg-primary-600">
+                <Button type="submit" className="bg-primary-700 hover:bg-primary-600" disabled={isLoading}>
                   {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
+                  {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
                 </Button>
               </div>
             }

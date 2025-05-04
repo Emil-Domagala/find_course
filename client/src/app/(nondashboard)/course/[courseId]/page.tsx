@@ -1,12 +1,13 @@
 import Tag from '@/components/NonDashboard/Home/Tag';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { apiServerService } from '@/lib/api/apiServerSide';
-import { FileText } from 'lucide-react';
+import { FileText, Video } from 'lucide-react';
 import Image from 'next/image';
 import { cookies } from 'next/headers';
 import BuyButton from './BuyButton';
 import { centsToDollars } from '@/lib/utils';
 import { SectionDetailsPublicDto } from '@/types/courses';
+import { ChapterType } from '@/types/enums';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = params;
@@ -61,7 +62,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
                   <ul>
                     {section.chapters?.map((chapter) => (
                       <li className="flex items-center text-gray-400/90 py-1" key={chapter.id}>
-                        <FileText className="mr-2 size-4" />
+                        {chapter.type === ChapterType.TEXT ? <FileText className="mr-2 size-4" /> : <Video className="mr-2 size-4" />}
                         <span className="text-sm">{chapter.title}</span>
                       </li>
                     ))}

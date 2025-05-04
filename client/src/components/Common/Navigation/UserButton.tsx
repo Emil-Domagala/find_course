@@ -46,8 +46,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
 
   const viewCoursePageClass = pathname.toString().match('^/user/course/([0-9a-fA-F-]{36})/chapter/([0-9a-fA-F-]{36})$');
 
-  className = cn(`${!viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
-  classNamePopover = cn(`${!viewCoursePageClass ? 'bg-customgreys-primarybg' : 'bg-customgreys-secondarybg'}`);
+  const isSecondary = `${viewCoursePageClass && '!bg-customgreys-secondarybg'}`;
 
   return (
     <Popover>
@@ -55,10 +54,11 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
         className={cn(
           ' sm:pl-4 rounded-full bg-customgreys-secondarybg flex items-center gap-2 hover:bg-customgreys-secondarybg/50 transition-colors duration-300 group',
           classNamePopover,
+          isSecondary,
         )}>
-        <p className="text-white-50 font-semibold hidden sm:block">{authToken?.sub || 'User'}</p>
+        <p className="text-customgreys-dirtyGrey hover:text-white-50 font-semibold hidden sm:block transition-colors duration-300">{authToken?.sub || 'User'}</p>
         <Avatar>
-          <AvatarImage src={authToken?.picture || '/Profile_avatar_placeholder.png'} className="group-hover:opacity-50 transition-opacity duration-300" />
+          <AvatarImage src={authToken?.picture || '/Profile_avatar_placeholder.png'} />
           <AvatarFallback>
             <Skeleton className="h-10 w-10 rounded-full bg-customgreys-darkerGrey"></Skeleton>
           </AvatarFallback>
@@ -70,6 +70,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           className={cn(
             'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
             className,
+            isSecondary,
           )}>
           Courses
         </Link>
@@ -78,6 +79,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           className={cn(
             'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
             className,
+            isSecondary,
           )}>
           Profile
         </Link>
@@ -86,6 +88,7 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           className={cn(
             'text-md py-2 px-4 justify-center items-center flex rounded-none text-white-50 font-semibold  duration-300 transition-colors hover:bg-primary-600',
             className,
+            isSecondary,
           )}>
           Cart
         </Link>

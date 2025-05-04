@@ -12,12 +12,13 @@ import { ApiError } from 'next/dist/server/api-utils';
 import EditUserFormLoading from './EditUserFormLoading';
 import { useRouter } from 'next/navigation';
 import CustomAddImg from '@/components/Common/CustomAddImg';
+import { Loader } from 'lucide-react';
 
 const EditUserForm = () => {
   const router = useRouter();
   const { data: profileData, isLoading } = useGetUserInfoQuery();
   const [deleteUser] = useDeleteUserMutation();
-  const [updateUserInfo] = useUpdateUserInfoMutation();
+  const [updateUserInfo, { isLoading: isUpdating }] = useUpdateUserInfoMutation();
 
   const methods = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
@@ -65,7 +66,19 @@ const EditUserForm = () => {
         type: 'application/json',
       }),
     );
-    updateUserInfo(formData);
+    try {
+      await updateUserInfo(formData).unwrap();
+      toast.success('Profile updated successfully');
+      router.refresh();
+    } catch (e) {
+      let message = 'Something went wrong. Please try again later.';
+      if (e instanceof ApiError) {
+        message = e.message;
+      }
+      toast.error('Error updating profile', {
+        description: message,
+      });
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -115,7 +128,8 @@ const EditUserForm = () => {
           <CustomFormField name="password" label="New Password (optional)" type="password" />
 
           <div className="flex justify-between mt-4">
-            <Button type="submit" variant="primary" className="min-w-40">
+            <Button type="submit" variant="primary" className="min-w-40" disabled={isUpdating}>
+              {isUpdating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
               Save Changes
             </Button>
             <Button type="button" variant="warning" className="min-w-40" onClick={() => handleDeleteAccount()}>

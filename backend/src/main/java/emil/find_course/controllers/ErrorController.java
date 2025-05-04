@@ -81,7 +81,7 @@ public class ErrorController {
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
 
-        @ExceptionHandler(IllegalStateException.class)
+        @ExceptionHandler({ IllegalStateException.class, IllegalArgumentException.class })
         public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message(ex.getMessage()).build();
