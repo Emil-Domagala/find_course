@@ -52,11 +52,11 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
     <Popover>
       <PopoverTrigger
         className={cn(
-          ' sm:pl-4 rounded-full bg-customgreys-secondarybg flex items-center gap-2 hover:bg-customgreys-secondarybg/50 transition-colors duration-300 group',
+          ' sm:pl-4 rounded-full bg-customgreys-secondarybg flex items-center gap-2 hover:bg-customgreys-darkerGrey transition-colors duration-300 group',
           classNamePopover,
           isSecondary,
         )}>
-        <p className="text-customgreys-dirtyGrey hover:text-white-50 font-semibold hidden sm:block transition-colors duration-300">{authToken?.sub || 'User'}</p>
+        <p className="text-customgreys-dirtyGrey group-hover:text-white-50 font-semibold hidden sm:block transition-colors duration-300">{authToken?.sub || 'User'}</p>
         <Avatar>
           <AvatarImage src={authToken?.picture || '/Profile_avatar_placeholder.png'} />
           <AvatarFallback>

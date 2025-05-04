@@ -17,7 +17,7 @@ const CartButton = ({ className, authToken }: { className?: string; authToken?: 
         <Link
           href={'/user/cart'}
           className={cn(
-            'relative  bg-customgreys-secondarybg h-10 min-w-10 px-3 rounded-full flex justify-center items-center cursor-pointer text-customgreys-dirtyGrey hover:text-white-50 transition-colors duration-300',
+            'relative  bg-customgreys-secondarybg h-10 min-w-10 px-3 rounded-full flex justify-center items-center cursor-pointer text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-colors duration-300 ',
             className,
             isSecondary,
           )}>
