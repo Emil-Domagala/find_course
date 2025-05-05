@@ -20,6 +20,13 @@ const AuthFooter = ({
 }) => {
   return (
     <>
+      <h3 className="text-red-600 text-center text-md my-2">
+        Due to{' '}
+        <a href="https://render.com" target="_blank" rel="noreferrer noopener nofollow" className="font-bold ">
+          render
+        </a>{' '}
+        cold start it might take up to 2 min
+      </h3>
       <p className="text-customgreys-dirtyGrey text-center mt-2">
         By {loggin ? 'logging in' : 'creating an account'}, you agree to our{' '}
         <Link href="/privacy-policy" className="text-primary-700 hover:underline">
@@ -37,9 +44,7 @@ const AuthFooter = ({
         </Link>
       </div>
       {!hideForgotPasswordLink && (
-        <Link
-          href={'/auth/forgot-password'}
-          className="mx-auto mt-2 text-primary-750 hover:text-primary-600 text-md transition-colors duration-300">
+        <Link href={'/auth/forgot-password'} className="mx-auto mt-2 text-primary-750 hover:text-primary-600 text-md transition-colors duration-300">
           Forgot password?
         </Link>
       )}

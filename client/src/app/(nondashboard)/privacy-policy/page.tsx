@@ -39,25 +39,25 @@ const PrivacyPolicyPage = () => {
         <p className={subtitleClass}>We use the following services to operate our platform:</p>
         <ul className={ulClass}>
           <li>
-            <a href="https://stripe.com/" className="font-semibold text-primary-700 hover:underline">
+            <a href="https://stripe.com/" target="_blank" rel="noreferrer noopener nofollow" className="font-semibold text-primary-700 hover:underline">
               Stripe
             </a>
             – for handling payments securely. Your payment details are processed by Stripe and never stored on our servers.
           </li>
           <li>
-            <a href="https://sendgrid.com/" className="font-semibold text-primary-700 hover:underline">
+            <a href="https://sendgrid.com/" target="_blank" rel="noreferrer noopener nofollow" className="font-semibold text-primary-700 hover:underline">
               SendGrid
             </a>{' '}
             – for transactional emails (e.g., verification, password resets)
           </li>
           <li>
-            <a href="https://cloudinary.com/" className="font-semibold text-primary-700 hover:underline">
+            <a href="https://cloudinary.com/" target="_blank" rel="noreferrer noopener nofollow" className="font-semibold text-primary-700 hover:underline">
               DATABASE
             </a>{' '}
             – for storing all provided files (video and images)
           </li>
           <li>
-            <a href="https://neon.tech/" className="font-semibold text-primary-700 hover:underline">
+            <a href="https://neon.tech/" target="_blank" rel="noreferrer noopener nofollow" className="font-semibold text-primary-700 hover:underline">
               DATABASE
             </a>{' '}
             – for storing all provided information
