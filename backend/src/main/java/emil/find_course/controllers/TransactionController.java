@@ -1,10 +1,10 @@
 package emil.find_course.controllers;
 
-import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +20,10 @@ import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.pagination.PaginationRequest;
 import emil.find_course.domains.pagination.PagingResult;
+import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CartService;
 import emil.find_course.services.StripeService;
 import emil.find_course.services.TransactionService;
-import emil.find_course.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,13 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    private final UserService userService;
     private final CartService cartService;
     private final StripeService stripeService;
 
     @PostMapping("transaction/stripe/create-payment-intent")
-    public ResponseEntity<Map<String, String>> createPaymentIntent(Principal principal) {
-        User user = userService.findByEmail(principal.getName());
+    public ResponseEntity<Map<String, String>> createPaymentIntent(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        final User user = userDetails.getUser();
         Cart cart = cartService.getCartByUser(user);
 
         PaymentIntent intent = stripeService.createPaymentIntent(cart, user);
@@ -64,11 +64,11 @@ public class TransactionController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
-            Principal principal) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (size > 100) {
             size = 100;
         }
-        User user = userService.findByEmail(principal.getName());
+        final User user = userDetails.getUser();
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
         final PagingResult<TransactionDto> transactions = transactionService.getTransaction(user, request);

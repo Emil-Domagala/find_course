@@ -1,12 +1,12 @@
 package emil.find_course.controllers;
 
-import java.security.Principal;
 import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +30,8 @@ import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.course.CourseRequest;
 import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
+import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CourseService;
-import emil.find_course.services.UserService;
-// import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -40,24 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CourseController {
 
-    // Ok So i need to have API Endpoinds for:
-
-    // User
-    // 1) Showing all published courses in order to show them for sale.(Title,
-    // image, author)
-    // 2) Showing course details for sale (chapters, sections, NO CONTENT)
-    // 3) Showing enrolled courses
-    // 4) showing enrolled course detail (full access)
-
-    // Teacher
-    // 5) Showing created courses (Published and Drafts)
-    // 6) Shwoing details of created course
-    // 7) Create course
-    // 8) Delete course (In real life shouldnt be possible if anyone enrolled)
-    // 9) Change course
-
     private final CourseService courseService;
-    private final UserService userService;
     private final CourseMapping courseMapper;
 
     // **************************
@@ -100,9 +82,9 @@ public class CourseController {
     // Create empty course
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping("/teacher/courses")
-    public ResponseEntity<CourseDto> postCourse(Principal principal) {
+    public ResponseEntity<CourseDto> postCourse(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        final User user = userService.findByEmail(principal.getName());
+        final User user = userDetails.getUser();
 
         final CourseDto course = courseMapper
                 .toDto(courseService.createCourse(user));
@@ -113,7 +95,8 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping("/teacher/courses")
-    public ResponseEntity<PagingResult<CourseDto>> getTeacherCourses(Principal principal,
+    public ResponseEntity<PagingResult<CourseDto>> getTeacherCourses(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
@@ -127,7 +110,7 @@ public class CourseController {
             sortField = "createdAt";
         }
 
-        final User user = userService.findByEmail(principal.getName());
+        final User user = userDetails.getUser();
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
         final PagingResult<CourseDto> courses = courseService.searchTeacherCourses(keyword, category,
                 request, user);
@@ -136,11 +119,12 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @GetMapping("/teacher/courses/{courseId}")
-    public ResponseEntity<CourseDetailsProtectedDto> getTeacherCourse(Principal principal,
+    public ResponseEntity<CourseDetailsProtectedDto> getTeacherCourse(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
 
         final CourseDetailsProtectedDto course = courseMapper.toProtectedDto(courseService.getById(courseId));
-        if (course.getTeacher().getId() != userService.findByEmail(principal.getName()).getId()) {
+        if (course.getTeacher().getId() != userDetails.getUser().getId()) {
             throw new UnauthorizedException("You are not the teacher of this course");
         }
         return ResponseEntity.ok(course);
@@ -150,11 +134,11 @@ public class CourseController {
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PatchMapping("/teacher/courses/{courseId}")
     public ResponseEntity<Void> updateCourse(
-            Principal principal, @PathVariable UUID courseId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable UUID courseId,
             @RequestPart("courseData") @Validated CourseRequest courseRequest,
             @RequestPart(required = false) MultipartFile image) {
 
-        final User user = userService.findByEmail(principal.getName());
+        final User user = userDetails.getUser();
         courseService.updateCourse(courseId, courseRequest, image, user);
 
         return ResponseEntity.noContent().build();
@@ -162,8 +146,9 @@ public class CourseController {
 
     // Delete course
     @DeleteMapping("/teacher/courses/{courseId}")
-    public ResponseEntity<?> deleteCourse(Principal principal, @PathVariable UUID courseId) {
-        final User user = userService.findByEmail(principal.getName());
+    public ResponseEntity<?> deleteCourse(@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID courseId) {
+        final User user = userDetails.getUser();
         final UUID deletedCourseId = courseService.deleteCourse(courseId, user.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deletedCourseId);
     }
@@ -174,7 +159,8 @@ public class CourseController {
 
     // Show enrolled courses
     @GetMapping("/user/courses")
-    public ResponseEntity<PagingResult<CourseDtoWithFirstChapter>> getUserEnrolledCourses(Principal principal,
+    public ResponseEntity<PagingResult<CourseDtoWithFirstChapter>> getUserEnrolledCourses(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
@@ -186,7 +172,7 @@ public class CourseController {
             sortField = "createdAt";
         }
 
-        final User user = userService.findByEmail(principal.getName());
+        final User user = userDetails.getUser();
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 

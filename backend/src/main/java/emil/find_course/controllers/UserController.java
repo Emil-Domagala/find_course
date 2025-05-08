@@ -2,13 +2,13 @@ package emil.find_course.controllers;
 
 import org.springframework.http.HttpHeaders;
 
-import java.security.Principal;
 import java.util.Optional;
 
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +28,7 @@ import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.mapping.BecomeTeacherMapping;
 import emil.find_course.mapping.UserMapping;
 import emil.find_course.security.jwt.JwtUtils;
+import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.UserService;
 import emil.find_course.utils.CookieHelper;
 import lombok.RequiredArgsConstructor;
@@ -56,19 +57,19 @@ public class UserController {
         private final BecomeTeacherMapping becomeTeacherMapping;
 
         @GetMapping
-        public ResponseEntity<UserDto> getUserInfo(Principal principal) {
+        public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-                UserDto user = userMapping.toDto(userService.findByEmail(principal.getName()));
+                UserDto user = userMapping.toDto(userDetails.getUser());
                 return ResponseEntity.ok(user);
 
         }
 
         @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-        public ResponseEntity<UserDto> updateUserInfo(Principal principal,
+        public ResponseEntity<UserDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser,
                         @RequestPart(required = false) MultipartFile image) {
 
-                User currUser = userService.findByEmail(principal.getName());
+                User currUser = userDetails.getUser();
 
                 User updatedUser = userService.updateUser(currUser, requestUpdateUser, image);
                 UserDto userDto = userMapping.toDto(updatedUser);
@@ -87,8 +88,8 @@ public class UserController {
         }
 
         @DeleteMapping
-        public ResponseEntity<Void> deleteUser(Principal principal) {
-                User user = userService.findByEmail(principal.getName());
+        public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+                final User user = userDetails.getUser();
                 userService.deleteUser(user);
                 ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/", springProfile,
                                 domainName);
@@ -101,17 +102,17 @@ public class UserController {
         }
 
         @PostMapping("/become-teacher")
-        public ResponseEntity<Void> becomeTeacher(Principal principal) {
+        public ResponseEntity<Void> becomeTeacher(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-                User user = userService.findByEmail(principal.getName());
+                final User user = userDetails.getUser();
                 userService.createBecomeTeacherRequest(user);
                 return ResponseEntity.noContent().build();
         }
 
         @GetMapping("/become-teacher")
-        public ResponseEntity<BecomeTeacherDto> getBecomeTeacherRequest(Principal principal) {
+        public ResponseEntity<BecomeTeacherDto> getBecomeTeacherRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-                User user = userService.findByEmail(principal.getName());
+                final User user = userDetails.getUser();
                 Optional<BecomeTeacher> becomeTeacherOpt = userService.getBecomeTeacherRequest(user);
                 BecomeTeacherDto becomeTeacherDto = becomeTeacherOpt.map(becomeTeacherMapping::toDto)
                                 .orElse(new BecomeTeacherDto());
