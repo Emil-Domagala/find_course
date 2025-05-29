@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service;
 
 import com.stripe.model.PaymentIntent;
 
+import emil.find_course.common.pagination.PaginationRequest;
+import emil.find_course.common.pagination.PaginationUtils;
+import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.domains.dto.TransactionDto;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.Transaction;
 import emil.find_course.domains.entities.user.User;
-import emil.find_course.domains.pagination.PaginationRequest;
-import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.mapping.TransactioMapping;
 import emil.find_course.repositories.TransactionRepository;
 import emil.find_course.services.TransactionService;
-import emil.find_course.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 
 @Service

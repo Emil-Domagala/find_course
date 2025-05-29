@@ -5,13 +5,13 @@ import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import emil.find_course.common.pagination.PaginationRequest;
+import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.domains.dto.course.CourseDto;
 import emil.find_course.domains.dto.course.CourseDtoWithFirstChapter;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
-import emil.find_course.domains.pagination.PaginationRequest;
-import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.course.CourseRequest;
 
 public interface CourseService {

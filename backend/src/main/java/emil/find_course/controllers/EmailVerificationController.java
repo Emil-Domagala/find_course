@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import emil.find_course.common.security.jwt.JwtUtils;
+import emil.find_course.common.security.jwt.UserDetailsImpl;
+import emil.find_course.common.util.CookieHelper;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestConfirmEmailOTT;
-import emil.find_course.security.jwt.JwtUtils;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.EmailVerificationService;
-import emil.find_course.utils.CookieHelper;
 import lombok.RequiredArgsConstructor;
 
 @RestController

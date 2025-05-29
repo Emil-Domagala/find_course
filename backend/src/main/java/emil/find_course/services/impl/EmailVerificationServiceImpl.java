@@ -7,13 +7,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import emil.find_course.common.service.EmailService;
+import emil.find_course.common.util.TokenGenerator;
 import emil.find_course.domains.entities.ConfirmEmailOTT;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.repositories.ConfirmEmailOTTRepository;
 import emil.find_course.repositories.UserRepository;
-import emil.find_course.services.EmailService;
 import emil.find_course.services.EmailVerificationService;
-import emil.find_course.utils.TokenGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

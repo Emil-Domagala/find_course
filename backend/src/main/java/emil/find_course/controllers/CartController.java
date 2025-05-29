@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.domains.dto.CartDto;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.mapping.CartMapping;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CartService;
 import emil.find_course.services.CourseService;
 import lombok.RequiredArgsConstructor;

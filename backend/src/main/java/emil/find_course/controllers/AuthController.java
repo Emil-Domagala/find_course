@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import emil.find_course.common.security.jwt.JwtUtils;
+import emil.find_course.common.util.CookieHelper;
 import emil.find_course.domains.dto.AuthResponse;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.UserLoginRequest;
 import emil.find_course.domains.requestDto.UserRegisterRequest;
-import emil.find_course.security.jwt.JwtUtils;
 import emil.find_course.services.AuthService;
-import emil.find_course.utils.CookieHelper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 

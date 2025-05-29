@@ -18,12 +18,12 @@ import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import emil.find_course.common.exception.CustomStripeException;
+import emil.find_course.common.service.EmailService;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.Transaction;
 import emil.find_course.domains.entities.user.User;
-import emil.find_course.exceptions.CustomStripeException;
 import emil.find_course.services.CartService;
-import emil.find_course.services.EmailService;
 import emil.find_course.services.StripeService;
 import emil.find_course.services.TransactionService;
 import emil.find_course.services.UserService;

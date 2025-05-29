@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import emil.find_course.common.security.jwt.JwtUtils;
+import emil.find_course.common.security.jwt.UserDetailsImpl;
+import emil.find_course.common.util.CookieHelper;
 import emil.find_course.domains.dto.AuthResponse;
 import emil.find_course.domains.dto.BecomeTeacherDto;
 import emil.find_course.domains.dto.UserDto;
@@ -27,10 +30,7 @@ import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.mapping.BecomeTeacherMapping;
 import emil.find_course.mapping.UserMapping;
-import emil.find_course.security.jwt.JwtUtils;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.UserService;
-import emil.find_course.utils.CookieHelper;
 import lombok.RequiredArgsConstructor;
 
 @RestController

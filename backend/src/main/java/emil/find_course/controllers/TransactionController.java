@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.model.PaymentIntent;
 
+import emil.find_course.common.pagination.PaginationRequest;
+import emil.find_course.common.pagination.PagingResult;
+import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.domains.dto.TransactionDto;
 import emil.find_course.domains.entities.Cart;
 import emil.find_course.domains.entities.user.User;
-import emil.find_course.domains.pagination.PaginationRequest;
-import emil.find_course.domains.pagination.PagingResult;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CartService;
 import emil.find_course.services.StripeService;
 import emil.find_course.services.TransactionService;

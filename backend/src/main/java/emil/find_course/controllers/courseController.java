@@ -19,18 +19,18 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import emil.find_course.common.exception.UnauthorizedException;
+import emil.find_course.common.pagination.PaginationRequest;
+import emil.find_course.common.pagination.PagingResult;
+import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.domains.dto.course.CourseDto;
 import emil.find_course.domains.dto.course.CourseDtoWithFirstChapter;
 import emil.find_course.domains.dto.detailsProt.CourseDetailsProtectedDto;
 import emil.find_course.domains.dto.detailsPub.CourseDetailsPublicDto;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.enums.CourseCategory;
-import emil.find_course.domains.pagination.PaginationRequest;
-import emil.find_course.domains.pagination.PagingResult;
 import emil.find_course.domains.requestDto.course.CourseRequest;
-import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseMapping;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CourseService;
 import lombok.RequiredArgsConstructor;
 

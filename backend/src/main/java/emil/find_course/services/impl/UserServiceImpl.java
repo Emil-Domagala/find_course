@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import emil.find_course.common.service.FileStorageService;
 import emil.find_course.domains.entities.BecomeTeacher;
 import emil.find_course.domains.entities.course.Course;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.RequestUpdateUser;
 import emil.find_course.repositories.BecomeTeacherRepository;
 import emil.find_course.repositories.UserRepository;
-import emil.find_course.services.FileStorageService;
 import emil.find_course.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.domains.dto.courseProgress.CourseProgressDto;
 
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.UpdateProgressRequest;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.CourseProgressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

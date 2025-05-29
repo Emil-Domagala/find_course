@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import emil.find_course.common.service.EmailService;
+import emil.find_course.common.util.TokenGenerator;
 import emil.find_course.domains.entities.ResetPasswordOTT;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.repositories.ResetPasswordOTTRepository;
 import emil.find_course.repositories.UserRepository;
-import emil.find_course.services.EmailService;
 import emil.find_course.services.ResetPasswordService;
-import emil.find_course.utils.TokenGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

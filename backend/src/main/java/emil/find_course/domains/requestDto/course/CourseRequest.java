@@ -3,10 +3,10 @@ package emil.find_course.domains.requestDto.course;
 import java.util.List;
 import java.util.UUID;
 
+import emil.find_course.common.validation.ValidEnum;
 import emil.find_course.domains.enums.CourseCategory;
 import emil.find_course.domains.enums.CourseStatus;
 import emil.find_course.domains.enums.Level;
-import emil.find_course.domains.enums.Validate.ValidEnum;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;

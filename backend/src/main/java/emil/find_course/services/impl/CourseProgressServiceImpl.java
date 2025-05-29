@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.domains.dto.courseProgress.CourseProgressDto;
 import emil.find_course.domains.dto.courseProgress.CourseProgressProjection;
 import emil.find_course.domains.entities.course.Chapter;
@@ -22,7 +23,6 @@ import emil.find_course.domains.entities.courseProgress.CourseProgress;
 import emil.find_course.domains.entities.courseProgress.SectionProgress;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.domains.requestDto.UpdateProgressRequest;
-import emil.find_course.exceptions.UnauthorizedException;
 import emil.find_course.mapping.CourseProgressMapping;
 import emil.find_course.repositories.ChapterProgressRepository;
 import emil.find_course.repositories.CourseProgressRepository;

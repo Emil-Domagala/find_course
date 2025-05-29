@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.domains.dto.detailsProt.ChapterProtectedDto;
 import emil.find_course.domains.entities.user.User;
 import emil.find_course.mapping.ChapterMapping;
-import emil.find_course.security.jwt.UserDetailsImpl;
 import emil.find_course.services.ChapterService;
 import lombok.RequiredArgsConstructor;
 
