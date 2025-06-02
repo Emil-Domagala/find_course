@@ -4,8 +4,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import emil.find_course.domains.entities.user.User;
-import emil.find_course.repositories.UserRepository;
+import emil.find_course.user.entity.User;
+import emil.find_course.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import emil.find_course.common.exception.JwtAuthException;
 import emil.find_course.common.exception.UnauthorizedException;
-import emil.find_course.domains.entities.user.User;
+import emil.find_course.user.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

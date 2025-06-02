@@ -2,7 +2,7 @@ package emil.find_course.admin.dto;
 
 import java.util.UUID;
 
-import emil.find_course.domains.enums.BecomeTeacherStatus;
+import emil.find_course.user.becomeTeacher.enums.BecomeTeacherStatus;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import emil.find_course.admin.dto.BecomeTeacherUpdateRequest;
 import emil.find_course.common.pagination.PaginationRequest;
 import emil.find_course.common.pagination.PagingResult;
-import emil.find_course.domains.dto.BecomeTeacherDto;
-import emil.find_course.domains.enums.BecomeTeacherStatus;
+import emil.find_course.user.becomeTeacher.dto.BecomeTeacherDto;
+import emil.find_course.user.becomeTeacher.enums.BecomeTeacherStatus;
 import lombok.RequiredArgsConstructor;
 
 @RestController

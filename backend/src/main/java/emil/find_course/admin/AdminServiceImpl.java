@@ -15,14 +15,14 @@ import emil.find_course.admin.dto.BecomeTeacherUpdateRequest;
 import emil.find_course.common.pagination.PaginationRequest;
 import emil.find_course.common.pagination.PaginationUtils;
 import emil.find_course.common.pagination.PagingResult;
-import emil.find_course.domains.dto.BecomeTeacherDto;
-import emil.find_course.domains.entities.BecomeTeacher;
-import emil.find_course.domains.entities.user.User;
-import emil.find_course.domains.enums.BecomeTeacherStatus;
-import emil.find_course.domains.enums.Role;
-import emil.find_course.mapping.BecomeTeacherMapping;
-import emil.find_course.repositories.BecomeTeacherRepository;
-import emil.find_course.repositories.UserRepository;
+import emil.find_course.user.becomeTeacher.dto.BecomeTeacherDto;
+import emil.find_course.user.becomeTeacher.entity.BecomeTeacher;
+import emil.find_course.user.becomeTeacher.enums.BecomeTeacherStatus;
+import emil.find_course.user.becomeTeacher.mapper.BecomeTeacherMapper;
+import emil.find_course.user.becomeTeacher.repository.BecomeTeacherRepository;
+import emil.find_course.user.entity.User;
+import emil.find_course.user.enums.Role;
+import emil.find_course.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminServiceImpl implements AdminService {
 
     private final BecomeTeacherRepository becomeTeacherRepository;
-    private final BecomeTeacherMapping becomeTeacherMapping;
+    private final BecomeTeacherMapper becomeTeacherMapper;
     private final UserRepository userRepository;
 
     @Override
@@ -48,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
         Page<BecomeTeacher> becomeTeacher = becomeTeacherRepository.searchBecomeTeacherRequest(
                 status, seenByAdmin, pageable);
 
-        final List<BecomeTeacherDto> becomeTeacherDto = becomeTeacher.stream().map(becomeTeacherMapping::toDto)
+        final List<BecomeTeacherDto> becomeTeacherDto = becomeTeacher.stream().map(becomeTeacherMapper::toDto)
                 .toList();
 
         return new PagingResult<BecomeTeacherDto>(

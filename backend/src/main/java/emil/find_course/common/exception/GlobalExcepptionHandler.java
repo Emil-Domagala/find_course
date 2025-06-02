@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import emil.find_course.domains.dto.ApiErrorResponse;
+import emil.find_course.common.exception.dto.ApiErrorResponse;
+import emil.find_course.payment.stripe.exception.CustomStripeException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 

@@ -63,7 +63,7 @@ public class FileStorageImpl implements FileStorageService {
                 timestamp,
                 cleanedBaseName,
                 OUTPUT_FORMAT);
-        String fullUrl = null;
+
         try {
             byte[] imageBytes = inputStream.readAllBytes();
             long contentLength = imageBytes.length;
@@ -83,7 +83,7 @@ public class FileStorageImpl implements FileStorageService {
 
             String baseUrl = R2_PUBLIC_BASE_URL.endsWith("/") ? R2_PUBLIC_BASE_URL : R2_PUBLIC_BASE_URL + "/";
             String keyForUrl = objectKey.startsWith("/") ? objectKey.substring(1) : objectKey;
-            return fullUrl = baseUrl + BUCKET_NAME + "/" + keyForUrl;
+            return baseUrl + BUCKET_NAME + "/" + keyForUrl;
 
         } catch (IOException e) {
             log.error("Failed to read processed image stream for R2 upload", e);

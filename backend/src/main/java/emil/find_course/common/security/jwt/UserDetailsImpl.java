@@ -6,11 +6,12 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import emil.find_course.domains.entities.user.User;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
+
+import emil.find_course.user.entity.User;
 
 @Data
 @RequiredArgsConstructor
