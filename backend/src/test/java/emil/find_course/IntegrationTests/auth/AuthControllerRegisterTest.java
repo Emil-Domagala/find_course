@@ -1,24 +1,31 @@
 package emil.find_course.IntegrationTests.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,21 +52,22 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         @Autowired
         private UserRepository userRepository;
 
-        @MockBean
+        @MockitoBean
         private JwtUtils jwtUtils;
 
-        @MockBean
+        @MockitoBean
         private EmailVerificationService emailVerificationService;
 
-        private UserRegisterRequest validUserRegisterRequest;
+        @Value("${cookie.auth.authToken.name}")
+        private String authCookieName;
+        @Value("${cookie.auth.refreshToken.name}")
+        private String refreshCookieName;
+
         private String mockAuthToken;
         private String mockRefreshToken;
 
         @BeforeEach
         void setUp() {
-                validUserRegisterRequest = AuthControllerUtils.createUserRegisterRequest(
-                                "testregister@example.com", "testUserReg", "TestLastNameReg", "Password123!");
-
                 mockAuthToken = "mockAuthTokenForRegister";
                 mockRefreshToken = "mockRefreshTokenForRegister";
 
@@ -70,96 +78,66 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         }
 
         @Test
+        @DisplayName("Should register user successfully")
         public void AuthController_Register_SucessfullyPasses() throws Exception {
                 UserRegisterRequest userRegisterRequest = AuthControllerUtils.createUserRegisterRequest();
                 String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequest);
+                String cookie = authCookieName + "=" + mockAuthToken;
+                String refreshCookie = refreshCookieName + "=" + mockRefreshToken;
+
                 mockMvc.perform(
                                 MockMvcRequestBuilders.post("/api/v1/public/register")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isOk());
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.header().stringValues(HttpHeaders.SET_COOKIE,
+                                                hasItem(containsString(cookie))))
+                                .andExpect(MockMvcResultMatchers.header().stringValues(HttpHeaders.SET_COOKIE,
+                                                hasItem(containsString(refreshCookie))));
 
                 Optional<User> savedUser = userRepository.findByEmail(userRegisterRequest.getEmail());
 
                 assertThat(savedUser.isPresent());
                 assertThat(savedUser.get().getUsername()).isEqualTo(userRegisterRequest.getUsername());
                 assertThat(savedUser.get().getUserLastname()).isEqualTo(userRegisterRequest.getUserLastname());
+                verify(emailVerificationService).sendVerificationEmail(any(User.class));
+                verify(jwtUtils).generateToken(any(User.class));
+                verify(jwtUtils).generateRefreshToken(any(User.class));
+
         }
 
-        @Test
-        public void AuthController_Register_Returns400WhenBadEmail() throws Exception {
-                UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils.createUserRegisterRequest("test",
-                                "John",
-                                "Doe", "Password");
-                String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post("/api/v1/public/register")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-                Optional<User> invalidUser = userRepository.findByEmail(userRegisterRequestInvalid.getEmail());
-                assertThat(invalidUser.isEmpty());
-        }
+        @ParameterizedTest(name = "Invalid input => email: {0}, name: {1}, lastname: {2}, password: {3}")
+        @DisplayName("Should return 400 for invalid inputs")
+        @CsvSource({
+                        "invalidEmail, John, Doe, Password",
+                        "test@test.com, , Doe, Password",
+                        "test@test.com, John, , Password",
+                        "test@test.com, John, Doe, "
+        })
+        void shouldReturn400ForInvalidInputs(String email, String name, String lastname, String password)
+                        throws Exception {
+                UserRegisterRequest userRegisterRequest = AuthControllerUtils.createUserRegisterRequest(email, name,
+                                lastname, password);
+                String json = objectMapper.writeValueAsString(userRegisterRequest);
 
-        @Test
-        public void AuthController_Register_Returns400WhenBadPassword() throws Exception {
-                UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils.createUserRegisterRequest(
-                                "test@test.com",
-                                "John",
-                                "Doe", "");
-                String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post("/api/v1/public/register")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(userRegisterRequestJson))
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/public/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
                                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-                Optional<User> invalidUser = userRepository.findByEmail(userRegisterRequestInvalid.getEmail());
-                assertThat(invalidUser.isEmpty());
+                assertThat(userRepository.findByEmail(email)).isEmpty();
         }
 
         @Test
-        public void AuthController_Register_Returns400WhenBadName() throws Exception {
-                UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils.createUserRegisterRequest(
-                                "test@test.com",
-                                "",
-                                "Doe", "Password");
-                String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post("/api/v1/public/register")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-                Optional<User> invalidUser = userRepository.findByEmail(userRegisterRequestInvalid.getEmail());
-                assertThat(invalidUser.isEmpty());
-        }
-
-        @Test
-        public void AuthController_Register_Returns400WhenBadLastname() throws Exception {
-                UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils.createUserRegisterRequest(
-                                "test@test.com",
-                                "John",
-                                "", "Password");
-                String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post("/api/v1/public/register")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-                Optional<User> invalidUser = userRepository.findByEmail(userRegisterRequestInvalid.getEmail());
-                assertThat(invalidUser.isEmpty());
-        }
-
-        @Test
+        @DisplayName("Should return 400 when email already exists")
         public void AuthController_Register_Returns400WhenEmailAlreadyExists() throws Exception {
                 UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils
                                 .createUserRegisterRequest("test@test.com");
                 User user = TestDataUtil.createVerifiedUser("test@test.com", "John");
                 userRepository.save(user);
 
-                Optional<User> savedUser = userRepository.findByEmail(user.getEmail());
-                assertThat(savedUser.isPresent());
+
+                assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
 
                 String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
                 mockMvc.perform(
