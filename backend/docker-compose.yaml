@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  find_course-app:
+    image: postgres
+    container_name: find_course-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - find_course_pg_data:/var/lib/postgresql/data
+    networks:
+      - find_course-net
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: find_course_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - find_course_pgadmin:/var/lib/pgadmin
+    ports:
+      - '5050:80'
+    networks:
+      - find_course-net
+    restart: unless-stopped
+
+networks:
+  find_course-net:
+    driver: bridge
+
+volumes:
+  find_course_pg_data:
+  find_course_pgadmin:
