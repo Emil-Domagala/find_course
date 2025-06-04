@@ -41,9 +41,8 @@
   <h2>🚀 Getting Started</h2>
   <ol>
     <li>Clone the project</li>
-    <li>
-      Set up environment variables (see <code>.env.example</code> for frontend and <code>application.properties</code> with <code>application-local.properties</code> (<code>application-example-local.properties</code> added for reference) for backend):
-    </li>
+    <li>Set up environment frontend variables <code>.env</code> (see <code>.env.example</code> for reference)</li>
+    <li>Setup backend properties <code>application-local.properties</code> ( see <code>application-example-local.properties</code> for reference)</li>
     <li>Run DB for backend: <code>docker-compose up</code></li>
     <li>Run compile and run backend: <code>./mvnw clean install</code> and <code>./mvnw spring-boot:run</code></li>
     <li>Run frontend: <code>npm run dev</code></li>
