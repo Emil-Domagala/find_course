@@ -13,7 +13,6 @@
     <li>shadcn/ui for modern UI components</li>
     <li>Zod for validation</li>
     <li>Stripe for payments</li>
-    <li>FilePond for media uploads</li>
   </ul>
 
   <h3>Backend</h3>
@@ -35,7 +34,7 @@
     <li>🖼 Image upload (avatars, thumbnails)</li>
     <li>🔍 Filtering, search, and pagination</li>
     <li>✅ Email verification and forgot password flow</li>
-    <li>🛒 Cart and checkout</li>
+    <li>🛒 Cart, checkout and transaction history</li>
     <li>🔒 Secure authentication (http-only cookies, SameSite=Strict)</li>
   </ul>
 
@@ -43,14 +42,10 @@
   <ol>
     <li>Clone the project</li>
     <li>
-      Set up environment variables (see <code>.env.example</code> for frontend and <code>application.properties</code> with <code>.env.example</code> for backend):
-      <ul>
-        <li>Stripe API keys</li>
-        <li>SendGrid API key</li>
-        <li>PostgreSQL DB connection details</li>
-        <li>JWT secrets</li>
-      </ul>
+      Set up environment variables (see <code>.env.example</code> for frontend and <code>application.properties</code> with <code>application-local.properties</code> (<code>application-example-local.properties</code> added for reference) for backend):
     </li>
-    <li>Run backend and frontend: <code>npm run dev</code></li>
+    <li>Run DB for backend: <code>docker-compose up</code></li>
+    <li>Run compile and run backend: <code>./mvnw clean install</code> and <code>./mvnw spring-boot:run</code></li>
+    <li>Run frontend: <code>npm run dev</code></li>
     <li>Access the app at <a href="http://localhost:3000">http://localhost:3000</a></li>
   </ol>
