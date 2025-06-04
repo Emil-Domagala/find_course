@@ -3,9 +3,11 @@ package emil.find_course.user.dto.request;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RequestUpdateUser {
 
     @NotBlank(message = "Username is required")

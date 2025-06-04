@@ -30,6 +30,16 @@ public class JwtUtils {
     @Value("${jwt.refreshToken.expiration}")
     private int refreshTokenExpirationMs;
 
+    public String generateExpiredRefreshToken(User user) {
+        String email = user.getEmail();
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date((new Date().getTime() + 1)))
+                .signWith(key())
+                .compact();
+    }
+
     public String generateRefreshToken(User user) {
         String email = user.getEmail();
         return Jwts.builder()

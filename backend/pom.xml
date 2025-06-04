@@ -152,6 +152,8 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- TESTS -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -162,10 +164,22 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.21.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.21.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<!-- todo: comment b4 prod but uncomment when locally -->
+		<!-- todo: uncomment b4 prod but comment when locally -->
 		<!-- <resources>
 			<resource>
 				<directory>src/main/resources</directory>
