@@ -40,16 +40,13 @@ public class UserController {
         @Value("${cookie.auth.authToken.name}")
         private String authCookieName;
         @Value("${jwt.authToken.expiration}")
-        private int cookieExpiration;
+        private int authExpiration;
         @Value("${cookie.auth.refreshToken.name}")
         private String refreshCookieName;
         @Value("${jwt.refreshToken.expiration}")
         private int refreshCookieExpiration;
-        @Value("${domain.name}")
-        private String domainName;
-        @Value("${spring.profiles.active}")
-        private String springProfile;
 
+        private final CookieHelper cookieHelper;
         private final JwtUtils jwtUtils;
         private final UserService userService;
         private final UserMapper userMapper;
@@ -75,11 +72,10 @@ public class UserController {
 
                 String refreshToken = jwtUtils.generateRefreshToken(updatedUser);
                 AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser), refreshToken);
-                ResponseCookie cookie = CookieHelper.setCookieHelper(authCookieName, auth.token(), cookieExpiration,
-                                "/", springProfile, domainName);
-                ResponseCookie refreshCookie = CookieHelper.setCookieHelper(
+                ResponseCookie cookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration, "/");
+                ResponseCookie refreshCookie = cookieHelper.setCookie(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/", springProfile, domainName);
+                                "/api/v1/public/refresh-token");
 
                 return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
                                 .body(userDto);
@@ -90,10 +86,9 @@ public class UserController {
         public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
                 final User user = userDetails.getUser();
                 userService.deleteUser(user);
-                ResponseCookie deleteCookie = CookieHelper.setCookieHelper(authCookieName, "", 0, "/", springProfile,
-                                domainName);
-                ResponseCookie deleteRefreshCookie = CookieHelper.setCookieHelper(refreshCookieName, "", 0,
-                                "/", springProfile, domainName);
+                ResponseCookie deleteCookie = cookieHelper.setCookie(authCookieName, "", 0, "/");
+                ResponseCookie deleteRefreshCookie = cookieHelper.setCookie(refreshCookieName, "", 0,
+                                "/api/v1/public/refresh-token");
 
                 return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())

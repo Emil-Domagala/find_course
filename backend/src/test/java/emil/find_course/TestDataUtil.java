@@ -8,10 +8,10 @@ import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.course.enums.Level;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.enums.Role;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class TestDataUtil {
-    private TestDataUtil() {
-    }
 
     public static User createVerifiedUser() {
         return User.builder().email("test@test.com").username("John").userLastname("Doe")

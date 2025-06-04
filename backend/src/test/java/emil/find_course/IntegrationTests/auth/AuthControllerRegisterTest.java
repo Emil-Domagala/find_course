@@ -1,13 +1,14 @@
 package emil.find_course.IntegrationTests.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
+import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
 import emil.find_course.auth.email.EmailVerificationService;
 import emil.find_course.common.security.jwt.JwtUtils;
@@ -51,6 +54,9 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
 
         @Autowired
         private UserRepository userRepository;
+
+        @Autowired
+        private CookieHelperTest cookieHelper;
 
         @MockitoBean
         private JwtUtils jwtUtils;
@@ -79,21 +85,28 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
 
         @Test
         @DisplayName("Should register user successfully")
-        public void AuthController_Register_SucessfullyPasses() throws Exception {
+        public void authController_Register_SucessfullyPasses() throws Exception {
                 UserRegisterRequest userRegisterRequest = AuthControllerUtils.createUserRegisterRequest();
                 String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequest);
-                String cookie = authCookieName + "=" + mockAuthToken;
-                String refreshCookie = refreshCookieName + "=" + mockRefreshToken;
 
-                mockMvc.perform(
-                                MockMvcRequestBuilders.post("/api/v1/public/register")
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.header().stringValues(HttpHeaders.SET_COOKIE,
-                                                hasItem(containsString(cookie))))
-                                .andExpect(MockMvcResultMatchers.header().stringValues(HttpHeaders.SET_COOKIE,
-                                                hasItem(containsString(refreshCookie))));
+                MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/public/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(userRegisterRequestJson))
+                                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+                List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
+                assertThat(setCookies).hasSize(2);
+
+                Map<String, CookieAttributes> cookies = setCookies.stream()
+                                .map(cookieHelper::parseSetCookie)
+                                .collect(Collectors.toMap(CookieAttributes::getName, ca -> ca));
+
+                // Assert auth token cookie
+                cookieHelper.testCookies(cookies.get(authCookieName), mockAuthToken, "/");
+
+                // Assert refresh token cookie
+                cookieHelper.testCookies(cookies.get(refreshCookieName), mockRefreshToken,
+                                "/api/v1/public/refresh-token");
 
                 Optional<User> savedUser = userRepository.findByEmail(userRegisterRequest.getEmail());
 
@@ -103,7 +116,6 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                 verify(emailVerificationService).sendVerificationEmail(any(User.class));
                 verify(jwtUtils).generateToken(any(User.class));
                 verify(jwtUtils).generateRefreshToken(any(User.class));
-
         }
 
         @ParameterizedTest(name = "Invalid input => email: {0}, name: {1}, lastname: {2}, password: {3}")
@@ -114,7 +126,7 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                         "test@test.com, John, , Password",
                         "test@test.com, John, Doe, "
         })
-        void shouldReturn400ForInvalidInputs(String email, String name, String lastname, String password)
+        void authController_Register_Returns400WhenInvalidInputs(String email, String name, String lastname, String password)
                         throws Exception {
                 UserRegisterRequest userRegisterRequest = AuthControllerUtils.createUserRegisterRequest(email, name,
                                 lastname, password);
@@ -130,12 +142,11 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
 
         @Test
         @DisplayName("Should return 400 when email already exists")
-        public void AuthController_Register_Returns400WhenEmailAlreadyExists() throws Exception {
+        public void authController_Register_Returns400WhenEmailAlreadyExists() throws Exception {
                 UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils
                                 .createUserRegisterRequest("test@test.com");
                 User user = TestDataUtil.createVerifiedUser("test@test.com", "John");
                 userRepository.save(user);
-
 
                 assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
 
@@ -146,5 +157,4 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                                                 .content(userRegisterRequestJson))
                                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
         }
-
 }

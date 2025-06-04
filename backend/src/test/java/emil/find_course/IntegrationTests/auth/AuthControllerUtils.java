@@ -2,10 +2,10 @@ package emil.find_course.IntegrationTests.auth;
 
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class AuthControllerUtils {
-    private AuthControllerUtils() {
-    }
 
     public static UserLoginRequest createUserLoginRequest() {
         return UserLoginRequest.builder().email("test@test.com").password("Password").build();
