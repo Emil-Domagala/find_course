@@ -54,14 +54,20 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Autowired
         private JwtUtils jwtUtils;
 
-        @Test
-        @DisplayName("Should refresh auth token when refresh token is valid")
-        public void authController_refreshToken_successfullyRefreshesAuthToken() throws Exception {
+        private User prepareVerifiedUser(){
                 User user = TestDataUtil.createVerifiedUser();
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 userRepository.save(user);
+                User foundUser = userRepository.findByEmail(user.getEmail()).get();
 
-                assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
+                assertThat(foundUser.isEmailVerified()).isTrue();
+                return foundUser;
+        }
+
+        @Test
+        @DisplayName("Should refresh auth token when refresh token is valid")
+        public void authController_refreshToken_successfullyRefreshesAuthToken() throws Exception {
+                User user = prepareVerifiedUser();
 
                 String refreshToken = jwtUtils.generateRefreshToken(user);
 
@@ -83,10 +89,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Test
         @DisplayName("Should return 401 when refresh cookie is not attached")
         public void authController_refreshToken_returns401WhenRefreshCookieIsNotAttached() throws Exception {
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-                assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
+                // User user = prepareVerifiedUser();
 
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.post("/api/v1/public/refresh-token"))
@@ -99,10 +102,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Test
         @DisplayName("Should return 401 when refresh token is expired")
         public void authController_refreshToken_returns401WhenRefreshTokenIsExpired() throws Exception {
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-                assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
+                User user = prepareVerifiedUser();
 
                 String refreshToken = jwtUtils.generateExpiredRefreshToken(user);
 
