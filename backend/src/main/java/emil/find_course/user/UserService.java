@@ -1,6 +1,5 @@
 package emil.find_course.user;
 
-import java.security.Principal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,8 +13,6 @@ import emil.find_course.user.entity.User;
 public interface UserService {
 
     public User findByEmail(String email);
-
-    public String getRoles(Principal principal);
 
     public User updateUser(User user, RequestUpdateUser requestUpdateUser, MultipartFile imageFile);
 

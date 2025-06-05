@@ -34,13 +34,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
-    @Transactional
-    @Override
-    public String getRoles(Principal principal) {
-        User user = findByEmail(principal.getName());
-        return user.getRoles().stream().map(role -> "ROLE_" + role.name()).toList().toString()
-                .replace(" ", "").replace(",", "|");
-    }
 
     @Override
     public User updateUser(User user, RequestUpdateUser requestUpdateUser, MultipartFile imageFile) {

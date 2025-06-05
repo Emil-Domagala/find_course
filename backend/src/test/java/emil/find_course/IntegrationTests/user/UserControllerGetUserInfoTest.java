@@ -1,7 +1,6 @@
 package emil.find_course.IntegrationTests.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +72,7 @@ public class UserControllerGetUserInfoTest extends IntegrationTestBase {
     @Test
     @DisplayName("Should return 403 when bad token passed")
     public void userController_getUserInfo_returns403WhenNBadTokenPassed() throws Exception {
-        User user = prepareUser();
+        // User user = prepareUser();
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/user").cookie(new Cookie(authCookieName, "badToken")))
