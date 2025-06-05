@@ -94,6 +94,22 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
                 return Map.of("email", user.getEmail(), "password", decodedPassword);
         }
 
+        private void assertAuthAndRefreshCookies(MvcResult result) {
+                List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
+                assertThat(setCookies).hasSize(2);
+
+                Map<String, CookieAttributes> cookies = setCookies.stream()
+                                .map(cookieHelper::parseSetCookie)
+                                .collect(Collectors.toMap(CookieAttributes::getName, ca -> ca));
+
+                // Assert auth token cookie
+                cookieHelper.testCookies(cookies.get(authCookieName), mockAuthToken, "/");
+
+                // Assert refresh token cookie
+                cookieHelper.testCookies(cookies.get(refreshCookieName), mockRefreshToken,
+                                "/api/v1/public/refresh-token");
+        }
+
         @Test
         @DisplayName("Should login user sucessfully")
         public void authController_login_sucessfullyLoginUser() throws Exception {
@@ -109,19 +125,7 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
                                 .contentType(MediaType.APPLICATION_JSON).content(json))
                                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-                List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
-                assertThat(setCookies).hasSize(2);
-
-                Map<String, CookieAttributes> cookies = setCookies.stream()
-                                .map(cookieHelper::parseSetCookie)
-                                .collect(Collectors.toMap(CookieAttributes::getName, ca -> ca));
-
-                // Assert auth token cookie
-                cookieHelper.testCookies(cookies.get(authCookieName), mockAuthToken, "/");
-
-                // Assert refresh token cookie
-                cookieHelper.testCookies(cookies.get(refreshCookieName), mockRefreshToken,
-                                "/api/v1/public/refresh-token");
+                assertAuthAndRefreshCookies(result);
 
                 verify(jwtUtils).generateToken(any(UserDetailsImpl.class));
                 verify(jwtUtils).generateRefreshToken(any(User.class));

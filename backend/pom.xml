@@ -179,7 +179,7 @@
 	</dependencies>
 
 	<build>
-		<!-- todo: uncomment b4 prod but comment when locally -->
+		<!-- TODO: uncomment b4 prod but comment when locally -->
 		<!-- <resources>
 			<resource>
 				<directory>src/main/resources</directory>
