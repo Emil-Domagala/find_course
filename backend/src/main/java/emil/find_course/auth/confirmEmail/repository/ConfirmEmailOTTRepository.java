@@ -1,4 +1,4 @@
-package emil.find_course.auth.emailVerification.repository;
+package emil.find_course.auth.confirmEmail.repository;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import emil.find_course.auth.emailVerification.entity.ConfirmEmailOTT;
+import emil.find_course.auth.confirmEmail.entity.ConfirmEmailOTT;
 import emil.find_course.user.entity.User;
 
 @Repository

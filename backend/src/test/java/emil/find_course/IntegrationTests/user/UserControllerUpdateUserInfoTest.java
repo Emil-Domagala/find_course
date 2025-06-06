@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,7 +45,6 @@ import jakarta.servlet.http.Cookie;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
@@ -55,7 +53,6 @@ import emil.find_course.common.service.FileStorageService;
 import emil.find_course.user.dto.UserDto;
 import emil.find_course.user.dto.request.RequestUpdateUser;
 import emil.find_course.user.entity.User;
-import emil.find_course.user.repository.UserRepository;
 import io.micrometer.common.lang.Nullable;
 
 @Transactional
@@ -78,10 +75,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         private ObjectMapper objectMapper;
 
         @Autowired
-        private PasswordEncoder passwordEncoder;
-
-        @Autowired
-        private UserRepository userRepository;
+        private PrepareUserUtil prepareUserUtil;
 
         @Autowired
         private CookieHelperTest cookieHelper;
@@ -100,29 +94,6 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                 when(fileStorageService.saveProcessedImage(any(), any(), any()))
                                 .thenReturn(dummyUrlReturned);
 
-        }
-
-        private User prepareUser() {
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-                User foundUser = userRepository.findByEmail(user.getEmail()).get();
-
-                assertThat(foundUser.isEmailVerified()).isTrue();
-                return foundUser;
-        }
-
-        private User prepareUserWithImage() {
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setImageUrl(
-                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIJaqLZ7xvly9FcECmO5keDCLm5sBk7SEa-w&s");
-                userRepository.save(user);
-                User foundUser = userRepository.findByEmail(user.getEmail()).get();
-
-                assertThat(foundUser.isEmailVerified()).isTrue();
-                assertThat(foundUser.getImageUrl()).isNotNull();
-                return foundUser;
         }
 
         private MockMultipartFile createUserDataPart(RequestUpdateUser requestUpdateUser) throws Exception {
@@ -172,7 +143,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         })
         public void userController_updateUserInfo_sucessfullyUpdateUserInfo(String username, String userLastname,
                         String password, Boolean deleteImage) throws Exception {
-                User user = prepareUserWithImage();
+                User user = prepareUserUtil.prepareVerifiedUserWithImage();
 
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser(username, userLastname, deleteImage,
                                 password);
@@ -219,7 +190,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         })
         public void userController_updateUserInfo_doNotUpdatePasswordIfInvalid(String username, String userLastname,
                         String password) throws Exception {
-                User user = prepareUser();
+                User user = prepareUserUtil.prepareVerifiedUser();
 
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser(username, userLastname, null, password);
 
@@ -246,7 +217,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         })
         public void userController_updateUserInfo_returns400WhenInvalidInput(String username, String userLastname)
                         throws Exception {
-                User user = prepareUser();
+                User user = prepareUserUtil.prepareVerifiedUser();
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser(username, userLastname,
                                 null, null);
 
@@ -290,7 +261,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         public void userController_updateUserInfo_updateImage(RequestUpdateUser requestUpdateUser,
                         MultipartFile imageFile) throws Exception {
 
-                User user = prepareUserWithImage();
+                User user = prepareUserUtil.prepareVerifiedUserWithImage();
                 String authToken = jwtUtils.generateToken(user);
 
                 MockMultipartFile userDataPart = createUserDataPart(requestUpdateUser);
@@ -337,7 +308,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         @Test
         @DisplayName("Shouldn't call deleteImage if user do not have prev and set new one")
         public void userController_updateUserInfo_shouldNotCallDeleteImage() throws Exception {
-                User user = prepareUser();
+                User user = prepareUserUtil.prepareVerifiedUser();
                 String authToken = jwtUtils.generateToken(user);
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser("John", "Doe",
                                 null, null);

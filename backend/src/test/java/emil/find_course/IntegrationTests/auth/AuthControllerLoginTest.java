@@ -32,9 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
+import emil.find_course.IntegrationTests.user.UserFactory;
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
@@ -85,7 +85,7 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
         }
 
         private Map<String, String> saveUser() {
-                User user = TestDataUtil.createVerifiedUser();
+                User user = UserFactory.createVerifiedUser();
                 String decodedPassword = user.getPassword();
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
                 userRepository.save(user);

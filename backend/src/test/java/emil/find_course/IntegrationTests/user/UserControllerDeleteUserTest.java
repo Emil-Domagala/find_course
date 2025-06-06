@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
@@ -47,7 +45,7 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     private MockMvc mockMvc;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PrepareUserUtil prepareUserUtil;
 
     @Autowired
     private UserRepository userRepository;
@@ -55,15 +53,7 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     @Autowired
     private CookieHelperTest cookieHelper;
 
-    private User prepareUser() {
-        User user = TestDataUtil.createVerifiedUser();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        User foundUser = userRepository.findByEmail(user.getEmail()).get();
 
-        assertThat(foundUser.isEmailVerified()).isTrue();
-        return foundUser;
-    }
 
     private void assertAuthAndRefreshCookies(MvcResult result) {
         List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
@@ -86,7 +76,7 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     @Test
     @DisplayName("Should delete user")
     public void userController_deleteUser_sucessfullyDeleteUser() throws Exception {
-        User user = prepareUser();
+        User user = prepareUserUtil.prepareVerifiedUser();
         String authToken = jwtUtils.generateToken(user);
 
         MvcResult result = mockMvc.perform(

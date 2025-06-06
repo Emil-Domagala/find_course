@@ -1,8 +1,8 @@
-package emil.find_course.auth.emailVerification;
+package emil.find_course.auth.confirmEmail;
 
 import emil.find_course.user.entity.User;
 
-public interface EmailVerificationService {
+public interface ConfirmEmailService {
 
     public void validateEmail(User user, String token);
 

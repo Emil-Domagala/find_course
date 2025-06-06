@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,12 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.user.dto.UserDto;
 import emil.find_course.user.entity.User;
-import emil.find_course.user.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 
 @Transactional
@@ -44,20 +41,7 @@ public class UserControllerGetUserInfoTest extends IntegrationTestBase {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    private User prepareUser() {
-        User user = TestDataUtil.createVerifiedUser();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        User foundUser = userRepository.findByEmail(user.getEmail()).get();
-
-        assertThat(foundUser.isEmailVerified()).isTrue();
-        return foundUser;
-    }
+    private PrepareUserUtil prepareUserUtil;
 
     // No cookie throws 403
     @Test
@@ -83,7 +67,7 @@ public class UserControllerGetUserInfoTest extends IntegrationTestBase {
     @Test
     @DisplayName("Should return UserDto")
     public void userController_getUserInfo_returnsUserDto() throws Exception {
-        User user = prepareUser();
+        User user = prepareUserUtil.prepareVerifiedUser();
         String authToken = jwtUtils.generateToken(user);
 
         MvcResult result = mockMvc.perform(

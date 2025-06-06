@@ -1,4 +1,4 @@
-package emil.find_course.auth.emailVerification.dto.request;
+package emil.find_course.auth.confirmEmail.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

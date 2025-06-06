@@ -1,4 +1,4 @@
-package emil.find_course.auth.emailVerification;
+package emil.find_course.auth.confirmEmail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import emil.find_course.auth.emailVerification.dto.request.RequestConfirmEmailOTT;
+import emil.find_course.auth.confirmEmail.dto.request.RequestConfirmEmailOTT;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.common.util.CookieHelper;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class EmailVerificationController {
+public class ConfirmEmailController {
 
     @Value("${cookie.auth.authToken.name}")
     private String authCookieName;
@@ -30,7 +30,7 @@ public class EmailVerificationController {
 
     private final CookieHelper cookieHelper;
     private final JwtUtils jwtUtils;
-    private final EmailVerificationService emailVerificationService;
+    private final ConfirmEmailService confirmEmailService;
 
     @PostMapping("/confirm-email")
     public ResponseEntity<Void> confirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -38,7 +38,7 @@ public class EmailVerificationController {
 
         final User user = userDetails.getUser();
 
-        emailVerificationService.validateEmail(user, token.getToken());
+        confirmEmailService.validateEmail(user, token.getToken());
         String authToken = jwtUtils.generateToken(user);
 
         ResponseCookie cookie = cookieHelper.setCookie(authCookieName, authToken, authExpiration, "/");
@@ -48,7 +48,7 @@ public class EmailVerificationController {
 
     @PostMapping("/confirm-email/resend")
     public ResponseEntity<Void> resendConfirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        emailVerificationService.sendVerificationEmail(userDetails.getUser());
+        confirmEmailService.sendVerificationEmail(userDetails.getUser());
 
         return ResponseEntity.noContent().build();
     }

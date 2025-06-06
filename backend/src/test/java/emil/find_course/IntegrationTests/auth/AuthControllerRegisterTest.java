@@ -31,11 +31,11 @@ import static org.mockito.ArgumentMatchers.any;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
+import emil.find_course.IntegrationTests.user.PrepareUserUtil;
+import emil.find_course.auth.confirmEmail.ConfirmEmailService;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
-import emil.find_course.auth.emailVerification.EmailVerificationService;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
@@ -58,11 +58,14 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         @Autowired
         private CookieHelperTest cookieHelper;
 
+        @Autowired
+        private PrepareUserUtil prepareUserUtil;
+
         @MockitoBean
         private JwtUtils jwtUtils;
 
         @MockitoBean
-        private EmailVerificationService emailVerificationService;
+        private ConfirmEmailService confirmEmailService;
 
         @Value("${cookie.auth.authToken.name}")
         private String authCookieName;
@@ -80,7 +83,7 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                 // Configure mocks
                 when(jwtUtils.generateToken(any(User.class))).thenReturn(mockAuthToken);
                 when(jwtUtils.generateRefreshToken(any(User.class))).thenReturn(mockRefreshToken);
-                doNothing().when(emailVerificationService).sendVerificationEmail(any(User.class));
+                doNothing().when(confirmEmailService).sendVerificationEmail(any(User.class));
         }
 
         @Test
@@ -113,7 +116,7 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                 assertThat(savedUser.isPresent());
                 assertThat(savedUser.get().getUsername()).isEqualTo(userRegisterRequest.getUsername());
                 assertThat(savedUser.get().getUserLastname()).isEqualTo(userRegisterRequest.getUserLastname());
-                verify(emailVerificationService).sendVerificationEmail(any(User.class));
+                verify(confirmEmailService).sendVerificationEmail(any(User.class));
                 verify(jwtUtils).generateToken(any(User.class));
                 verify(jwtUtils).generateRefreshToken(any(User.class));
         }
@@ -126,7 +129,8 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                         "test@test.com, John, , Password",
                         "test@test.com, John, Doe, "
         })
-        void authController_Register_Returns400WhenInvalidInputs(String email, String name, String lastname, String password)
+        void authController_Register_Returns400WhenInvalidInputs(String email, String name, String lastname,
+                        String password)
                         throws Exception {
                 UserRegisterRequest userRegisterRequest = AuthControllerUtils.createUserRegisterRequest(email, name,
                                 lastname, password);
@@ -145,10 +149,8 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         public void authController_Register_Returns400WhenEmailAlreadyExists() throws Exception {
                 UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils
                                 .createUserRegisterRequest("test@test.com");
-                User user = TestDataUtil.createVerifiedUser("test@test.com", "John");
-                userRepository.save(user);
 
-                assertThat(userRepository.findByEmail(user.getEmail()).isPresent());
+                prepareUserUtil.prepareVerifiedUser("test@test.com", "John");
 
                 String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
                 mockMvc.perform(

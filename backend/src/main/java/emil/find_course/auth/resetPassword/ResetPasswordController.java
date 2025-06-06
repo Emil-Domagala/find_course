@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import emil.find_course.auth.resetPassword.dto.request.EmailRequest;
-import emil.find_course.auth.resetPassword.dto.request.PasswordRequest;
+import emil.find_course.auth.resetPassword.dto.request.ResetPasswordEmailRequest;
+import emil.find_course.auth.resetPassword.dto.request.ResetPasswordPasswordRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,14 +20,14 @@ public class ResetPasswordController {
     private final ResetPasswordService resetPasswordService;
 
     @PostMapping("/public/forgot-password")
-    public ResponseEntity<Void> sendResetPasswordEmail(@Validated @RequestBody EmailRequest email) {
+    public ResponseEntity<Void> sendResetPasswordEmail(@Validated @RequestBody ResetPasswordEmailRequest email) {
         resetPasswordService.sendResetPasswordEmail(email.getEmail());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/public/reset-password")
     public ResponseEntity<Void> resetPassword(@RequestParam(required = false) String token,
-            @Validated @RequestBody PasswordRequest password) {
+            @Validated @RequestBody ResetPasswordPasswordRequest password) {
 
         resetPasswordService.resetPassword(token, password.getPassword());
         return ResponseEntity.noContent().build();

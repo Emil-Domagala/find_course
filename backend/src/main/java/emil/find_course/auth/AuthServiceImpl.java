@@ -9,10 +9,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import emil.find_course.auth.confirmEmail.ConfirmEmailService;
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
 import emil.find_course.auth.dto.response.AuthResponse;
-import emil.find_course.auth.emailVerification.EmailVerificationService;
 import emil.find_course.common.exception.FieldValidationException;
 import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.common.security.jwt.JwtUtils;
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
-    private final EmailVerificationService emailVerificationService;
+    private final ConfirmEmailService confirmEmailService;
 
     @Override
     public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
                 .userLastname(userRegisterRequest.getUserLastname().trim()).build();
 
         User newUser = userRepository.save(user);
-        emailVerificationService.sendVerificationEmail(newUser);
+        confirmEmailService.sendVerificationEmail(newUser);
         return newUser;
     }
 
@@ -93,5 +93,5 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Invalid refresh token", ex);
         }
     }
-    
+
 }

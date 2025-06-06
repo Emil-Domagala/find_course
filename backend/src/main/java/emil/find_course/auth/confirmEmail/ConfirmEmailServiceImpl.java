@@ -1,4 +1,4 @@
-package emil.find_course.auth.emailVerification;
+package emil.find_course.auth.confirmEmail;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import emil.find_course.auth.emailVerification.entity.ConfirmEmailOTT;
-import emil.find_course.auth.emailVerification.repository.ConfirmEmailOTTRepository;
+import emil.find_course.auth.confirmEmail.entity.ConfirmEmailOTT;
+import emil.find_course.auth.confirmEmail.repository.ConfirmEmailOTTRepository;
 import emil.find_course.common.service.EmailService;
 import emil.find_course.common.util.TokenGenerator;
 import emil.find_course.user.entity.User;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EmailVerificationServiceImpl implements EmailVerificationService {
+public class ConfirmEmailServiceImpl implements ConfirmEmailService {
 
     private final ConfirmEmailOTTRepository confirmEmailOTTRepository;
     private final UserRepository userRepository;

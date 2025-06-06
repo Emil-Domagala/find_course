@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,12 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.servlet.http.Cookie;
 
-import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
+import emil.find_course.IntegrationTests.user.PrepareUserUtil;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.user.entity.User;
-import emil.find_course.user.repository.UserRepository;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
@@ -41,12 +39,10 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         private int authExpiration;
 
         @Autowired
-        private PasswordEncoder passwordEncoder;
-        @Autowired
         private MockMvc mockMvc;
 
         @Autowired
-        private UserRepository userRepository;
+        private PrepareUserUtil prepareUserUtil;
 
         @Autowired
         private CookieHelperTest cookieHelperTest;
@@ -54,20 +50,10 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Autowired
         private JwtUtils jwtUtils;
 
-        private User prepareVerifiedUser(){
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
-                User foundUser = userRepository.findByEmail(user.getEmail()).get();
-
-                assertThat(foundUser.isEmailVerified()).isTrue();
-                return foundUser;
-        }
-
         @Test
         @DisplayName("Should refresh auth token when refresh token is valid")
         public void authController_refreshToken_successfullyRefreshesAuthToken() throws Exception {
-                User user = prepareVerifiedUser();
+                User user = prepareUserUtil.prepareVerifiedUser();
 
                 String refreshToken = jwtUtils.generateRefreshToken(user);
 
@@ -102,7 +88,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Test
         @DisplayName("Should return 401 when refresh token is expired")
         public void authController_refreshToken_returns401WhenRefreshTokenIsExpired() throws Exception {
-                User user = prepareVerifiedUser();
+                User user = prepareUserUtil.prepareVerifiedUser();
 
                 String refreshToken = jwtUtils.generateExpiredRefreshToken(user);
 
@@ -135,8 +121,8 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Test
         @DisplayName("Should return 401 when user not found")
         public void authController_refreshToken_returns401WhenUserNotFound() throws Exception {
-                User user = TestDataUtil.createVerifiedUser();
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                User user = User.builder().email("test@test.com").username("John").userLastname("Doe")
+                                .password("Password").isEmailVerified(true).build();
 
                 String refreshToken = jwtUtils.generateRefreshToken(user);
 

@@ -1,4 +1,4 @@
-package emil.find_course.auth.emailVerification.entity;
+package emil.find_course.auth.confirmEmail.entity;
 
 import java.time.Instant;
 import java.util.UUID;
