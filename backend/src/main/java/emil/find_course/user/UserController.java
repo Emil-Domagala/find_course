@@ -2,8 +2,6 @@ package emil.find_course.user;
 
 import org.springframework.http.HttpHeaders;
 
-import java.util.Optional;
-
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -13,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,9 +20,6 @@ import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.common.util.CookieHelper;
-import emil.find_course.user.becomeTeacher.dto.BecomeTeacherDto;
-import emil.find_course.user.becomeTeacher.entity.BecomeTeacher;
-import emil.find_course.user.becomeTeacher.mapper.BecomeTeacherMapper;
 import emil.find_course.user.dto.UserDto;
 import emil.find_course.user.dto.request.RequestUpdateUser;
 import emil.find_course.user.entity.User;
@@ -50,7 +44,6 @@ public class UserController {
         private final JwtUtils jwtUtils;
         private final UserService userService;
         private final UserMapper userMapper;
-        private final BecomeTeacherMapper becomeTeacherMapper;
 
         @GetMapping
         public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -93,26 +86,6 @@ public class UserController {
                 return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString(), deleteRefreshCookie.toString())
                                 .build();
-        }
-
-        @PostMapping("/become-teacher")
-        public ResponseEntity<Void> becomeTeacher(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-                final User user = userDetails.getUser();
-                userService.createBecomeTeacherRequest(user);
-                return ResponseEntity.noContent().build();
-        }
-
-        @GetMapping("/become-teacher")
-        public ResponseEntity<BecomeTeacherDto> getBecomeTeacherRequest(
-                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-                final User user = userDetails.getUser();
-                Optional<BecomeTeacher> becomeTeacherOpt = userService.getBecomeTeacherRequest(user);
-                BecomeTeacherDto becomeTeacherDto = becomeTeacherOpt.map(becomeTeacherMapper::toDto)
-                                .orElse(new BecomeTeacherDto());
-                return ResponseEntity.ok(becomeTeacherDto);
-
         }
 
 }

@@ -5,8 +5,8 @@ import java.time.Instant;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import emil.find_course.auth.email.repository.ConfirmEmailOTTRepository;
-import emil.find_course.auth.password.repository.ResetPasswordOTTRepository;
+import emil.find_course.auth.emailVerification.repository.ConfirmEmailOTTRepository;
+import emil.find_course.auth.resetPassword.repository.ResetPasswordOTTRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -35,7 +35,7 @@ import emil.find_course.TestDataUtil;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
-import emil.find_course.auth.email.EmailVerificationService;
+import emil.find_course.auth.emailVerification.EmailVerificationService;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;

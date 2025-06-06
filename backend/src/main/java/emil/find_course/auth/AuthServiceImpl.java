@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
 import emil.find_course.auth.dto.response.AuthResponse;
-import emil.find_course.auth.email.EmailVerificationService;
+import emil.find_course.auth.emailVerification.EmailVerificationService;
 import emil.find_course.common.exception.FieldValidationException;
 import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.common.security.jwt.JwtUtils;

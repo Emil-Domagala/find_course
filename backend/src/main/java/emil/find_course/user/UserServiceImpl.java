@@ -1,7 +1,6 @@
 package emil.find_course.user;
 
 import java.io.InputStream;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,8 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import emil.find_course.common.service.FileStorageService;
 import emil.find_course.course.entity.Course;
-import emil.find_course.user.becomeTeacher.entity.BecomeTeacher;
-import emil.find_course.user.becomeTeacher.repository.BecomeTeacherRepository;
 import emil.find_course.user.dto.request.RequestUpdateUser;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
@@ -24,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final BecomeTeacherRepository becomeTeacherRepository;
     private final FileStorageService fileStorageService;
 
     @Override
@@ -73,22 +69,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    @Override
-    public Optional<BecomeTeacher> getBecomeTeacherRequest(User user) {
-        return becomeTeacherRepository.findByUser(user);
-    }
-
-    @Override
-    public BecomeTeacher createBecomeTeacherRequest(User user) {
-        Optional<BecomeTeacher> becomeTeacherOpt = becomeTeacherRepository.findByUser(user);
-        if (becomeTeacherOpt.isPresent()) {
-            new IllegalArgumentException("You already sent become teacher request");
-        }
-        BecomeTeacher newBecomeTeacher = new BecomeTeacher();
-        newBecomeTeacher.setUser(user);
-        return becomeTeacherRepository.save(newBecomeTeacher);
-    }
-
+    // TODO: Move to Course service
     @Override
     public void grantAccessToCourse(User user, Set<Course> courses) {
         user.getEnrollmentCourses().addAll(courses);
