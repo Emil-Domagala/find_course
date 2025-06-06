@@ -21,4 +21,9 @@ public final class UserFactory {
                 .password("Password").build();
     }
 
+    public static User createNotVerifiedUser(String email, String name) {
+        return User.builder().email(email).username(name).userLastname("Doe")
+                .password("Password").build();
+    }
+
 }

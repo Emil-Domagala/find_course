@@ -57,4 +57,13 @@ public class PrepareUserUtil {
         assertThat(savedUser.isEmailVerified()).isFalse();
         return savedUser;
     }
+    public User prepareNotVerifiedUser(String email, String name) {
+        User user = UserFactory.createNotVerifiedUser( email,  name);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+
+        User savedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        assertThat(savedUser.isEmailVerified()).isFalse();
+        return savedUser;
+    }
 }

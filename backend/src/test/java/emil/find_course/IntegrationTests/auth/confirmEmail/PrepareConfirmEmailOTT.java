@@ -27,8 +27,23 @@ public class PrepareConfirmEmailOTT {
 
     }
 
+    public ConfirmEmailOTT createExpiredConfirmEmailOTT(User user) {
+        String newConfirmEmailToken = TokenGenerator.generateToken6NumCharToken();
+        Instant newExpiration = Instant.now().plusSeconds(0);
+        return ConfirmEmailOTT.builder().user(user).token(newConfirmEmailToken)
+                .expiration(newExpiration).build();
+    }
+
+    // PREPARED
     public ConfirmEmailOTT prepareConfirmEmailOTT(User user) {
         confirmEmailOTTRepository.save(createConfirmEmailOTT(user));
+        Optional<ConfirmEmailOTT> savedOTT = confirmEmailOTTRepository.findByUser(user);
+        assertThat(savedOTT).isPresent();
+        return savedOTT.get();
+    }
+
+    public ConfirmEmailOTT prepareExpiredConfirmEmailOTT(User user) {
+        confirmEmailOTTRepository.save(createExpiredConfirmEmailOTT(user));
         Optional<ConfirmEmailOTT> savedOTT = confirmEmailOTTRepository.findByUser(user);
         assertThat(savedOTT).isPresent();
         return savedOTT.get();

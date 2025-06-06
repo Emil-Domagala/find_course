@@ -19,7 +19,7 @@ import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/confirm-email")
 @RequiredArgsConstructor
 public class ConfirmEmailController {
 
@@ -32,7 +32,7 @@ public class ConfirmEmailController {
     private final JwtUtils jwtUtils;
     private final ConfirmEmailService confirmEmailService;
 
-    @PostMapping("/confirm-email")
+    @PostMapping
     public ResponseEntity<Void> confirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Validated @RequestBody RequestConfirmEmailOTT token) {
 
@@ -46,7 +46,7 @@ public class ConfirmEmailController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
-    @PostMapping("/confirm-email/resend")
+    @PostMapping("/resend")
     public ResponseEntity<Void> resendConfirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         confirmEmailService.sendVerificationEmail(userDetails.getUser());
 

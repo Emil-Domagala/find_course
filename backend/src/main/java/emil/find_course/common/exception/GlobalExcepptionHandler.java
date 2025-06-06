@@ -78,7 +78,7 @@ public class GlobalExcepptionHandler {
         }
 
         @ExceptionHandler({ IllegalStateException.class, IllegalArgumentException.class })
-        public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+        public ResponseEntity<ApiErrorResponse> handleIllegalStateException(Exception ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
