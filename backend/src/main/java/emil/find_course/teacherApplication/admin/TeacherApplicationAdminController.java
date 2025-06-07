@@ -21,7 +21,7 @@ import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/admin/teacher-application") //TODO: Change to teacher-request to teacher-application on frontend B4 deploying  
+@RequestMapping("/api/v1/admin/teacher-application") //TODO: Change teacher-request to teacher-application on frontend B4 deploying  
 @RequiredArgsConstructor
 public class TeacherApplicationAdminController {
 

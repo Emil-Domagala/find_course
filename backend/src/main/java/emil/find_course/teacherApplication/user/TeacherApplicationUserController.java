@@ -17,7 +17,7 @@ import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/user/become-teacher") // TODO: Change to teacher-application
+@RequestMapping("/api/v1/user/teacher-application") // TODO: Change to teacher-application on frontend
 @RequiredArgsConstructor
 public class TeacherApplicationUserController {
 

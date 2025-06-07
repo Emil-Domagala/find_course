@@ -60,8 +60,8 @@ public class GlobalExcepptionHandler {
 
         }
 
-        @ExceptionHandler({ EmailConfirmException.class, UnauthorizedException.class })
-        public ResponseEntity<ApiErrorResponse> handleEmailConfirmException(Exception ex) {
+        @ExceptionHandler({ EmailFilterException.class, UnauthorizedException.class })
+        public ResponseEntity<ApiErrorResponse> handleEmailFilterException(Exception ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
                                 .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);

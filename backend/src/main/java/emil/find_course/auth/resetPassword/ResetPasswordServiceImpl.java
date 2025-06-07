@@ -41,9 +41,6 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             resetPasswordOTTRepository.delete(resetPasswordOTT);
             throw new IllegalArgumentException("Token has expired");
         }
-        if (!resetPasswordOTT.getToken().equals(token)) {
-            throw new IllegalArgumentException("Invalid token");
-        }
         User user = resetPasswordOTT.getUser();
         if (user.isEmailVerified() == false) {
             throw new IllegalArgumentException("Email is not verified");
@@ -59,7 +56,8 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public void sendResetPasswordEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Couldn't find user"));
+        
         if (user.isEmailVerified() == false) {
             throw new IllegalArgumentException("Email is not verified");
         }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import emil.find_course.common.exception.EmailConfirmException;
+import emil.find_course.common.exception.EmailFilterException;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,9 +40,9 @@ public class EmailVerificationFilter extends OncePerRequestFilter {
                     .getContext().getAuthentication().getPrincipal();
 
             if (!userDetailsImpl.isEmailVerified()) {
-                throw new EmailConfirmException("Email is not verified. Please verify your email to proceed.");
+                throw new EmailFilterException("Email is not verified. Please verify your email to proceed.");
             }
-        } catch (EmailConfirmException e) {
+        } catch (EmailFilterException e) {
             exceptionResolver.resolveException(request, response, null, e);
             return;
         } catch (Exception e) {
