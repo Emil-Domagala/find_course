@@ -23,6 +23,7 @@ import jakarta.servlet.http.Cookie;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
+import emil.find_course.IntegrationTests.user.UserFactory;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.user.entity.User;
 
@@ -121,8 +122,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         @Test
         @DisplayName("Should return 401 when user not found")
         public void authController_refreshToken_returns401WhenUserNotFound() throws Exception {
-                User user = User.builder().email("test@test.com").username("John").userLastname("Doe")
-                                .password("Password").isEmailVerified(true).build();
+                User user = UserFactory.createNotVerifiedUser();
 
                 String refreshToken = jwtUtils.generateRefreshToken(user);
 

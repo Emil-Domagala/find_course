@@ -39,6 +39,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import jakarta.servlet.http.Cookie;
@@ -67,6 +68,8 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
 
         @Autowired
         private JwtUtils jwtUtils;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
         @Autowired
         private MockMvc mockMvc;
@@ -166,6 +169,9 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                         assertThat(userDto.getImageUrl()).isNull();
                 } else {
                         assertThat(userDto.getImageUrl()).isNotNull();
+                }
+                if (password != null) {
+                        assertThat(passwordEncoder.matches(password, user.getPassword())).isTrue();
                 }
 
                 if (user.getImageUrl() != null && Boolean.TRUE.equals(deleteImage)) {

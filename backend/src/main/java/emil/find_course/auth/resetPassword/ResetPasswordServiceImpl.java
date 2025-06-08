@@ -15,6 +15,7 @@ import emil.find_course.common.service.EmailService;
 import emil.find_course.common.util.TokenGenerator;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public void resetPassword(String token, String password) {
+      
         ResetPasswordOTT resetPasswordOTT = resetPasswordOTTRepository.findByToken(token)
                 .orElseThrow(() -> new EntityNotFoundException("Couldn't find token"));
 
@@ -56,8 +58,9 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public void sendResetPasswordEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Couldn't find user"));
-        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Couldn't find user"));
+
         if (user.isEmailVerified() == false) {
             throw new IllegalArgumentException("Email is not verified");
         }

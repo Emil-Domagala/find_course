@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
+import emil.find_course.IntegrationTests.user.UserFactory;
 import emil.find_course.auth.confirmEmail.ConfirmEmailService;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
 import emil.find_course.common.security.jwt.JwtUtils;
@@ -148,9 +149,9 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         @DisplayName("Should return 400 when email already exists")
         public void authController_Register_Returns400WhenEmailAlreadyExists() throws Exception {
                 UserRegisterRequest userRegisterRequestInvalid = AuthControllerUtils
-                                .createUserRegisterRequest("test@test.com");
+                                .createUserRegisterRequest(UserFactory.BASE_EMAIL);
 
-                prepareUserUtil.prepareVerifiedUser("test@test.com", "John");
+                prepareUserUtil.prepareVerifiedUser();
 
                 String userRegisterRequestJson = objectMapper.writeValueAsString(userRegisterRequestInvalid);
                 mockMvc.perform(

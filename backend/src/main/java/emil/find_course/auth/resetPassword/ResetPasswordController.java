@@ -28,6 +28,9 @@ public class ResetPasswordController {
     @PostMapping("/public/reset-password")
     public ResponseEntity<Void> resetPassword(@RequestParam(required = false) String token,
             @Validated @RequestBody ResetPasswordPasswordRequest password) {
+        if (token == null) {
+            throw new IllegalArgumentException("Token cannot be null");
+        }
 
         resetPasswordService.resetPassword(token, password.getPassword());
         return ResponseEntity.noContent().build();

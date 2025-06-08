@@ -4,7 +4,7 @@ import emil.find_course.user.entity.User;
 
 public interface ResetPasswordService {
 
-    public void resetPassword(String token, String password);
+    public void resetPassword( String token, String password);
 
     public void sendResetPasswordEmail(String email);
 
