@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.common.exception.UnauthorizedException;
+import emil.find_course.common.exception.ForbiddenException;
 import emil.find_course.common.pagination.PaginationRequest;
 import emil.find_course.common.pagination.PaginationUtils;
 import emil.find_course.common.pagination.PagingResult;
@@ -101,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
     public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user) {
         Course course = getById(courseId);
         if (course.getTeacher().getId() != user.getId()) {
-            throw new UnauthorizedException("You are not the teacher of this course");
+            throw new ForbiddenException("You are not the teacher of this course");
         }
 
         if (courseRequest.getTitle() != null) {
@@ -205,7 +205,6 @@ public class CourseServiceImpl implements CourseService {
                         CourseIdChapterIdProjection::getCourseId,
                         CourseIdChapterIdProjection::getChapterId,
                         (existing, replacement) -> existing));
-
 
         List<CourseDtoWithFirstChapter> dtosWithChapter = courseList.stream().map(course -> {
             CourseDto baseDto = courseMapping.toDto(course);

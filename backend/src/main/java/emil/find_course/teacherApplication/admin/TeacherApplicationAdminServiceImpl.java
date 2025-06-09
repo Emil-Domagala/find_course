@@ -71,6 +71,10 @@ public class TeacherApplicationAdminServiceImpl implements TeacherApplicationAdm
         List<User> listOfAcceptedUsers = new ArrayList<>();
 
         for (TeacherApplication entity : listOfEntities) {
+            if (entity.getStatus().equals(TeacherApplicationStatus.ACCEPTED)) {
+                continue;
+            }
+
             TeacherApplicationUpdateRequest update = updateMap.get(entity.getId());
             if (update.getStatus() != null) {
                 entity.setStatus(update.getStatus());

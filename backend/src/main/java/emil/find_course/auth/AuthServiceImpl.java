@@ -14,7 +14,8 @@ import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
 import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.exception.FieldValidationException;
-import emil.find_course.common.exception.UnauthorizedException;
+import emil.find_course.common.exception.InvalidRefreshTokenException;
+import emil.find_course.common.exception.JwtAuthException;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.user.entity.User;
@@ -72,11 +73,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String refreshAuthToken(String recivedRefreshToken) {
         if (recivedRefreshToken == null) {
-            throw new UnauthorizedException("Didn't recive refresh token");
+            throw new InvalidRefreshTokenException("Didn't recive refresh token");
         }
         try {
             if (!jwtUtils.validateRefreshToken(recivedRefreshToken)) {
-                throw new UnauthorizedException("Invalid refresh token");
+                throw new InvalidRefreshTokenException("Invalid refresh token");
             }
             String email = jwtUtils.getUserEmailFromJwtToken(recivedRefreshToken);
             User user = userRepository.findByEmail(email)
@@ -85,12 +86,15 @@ public class AuthServiceImpl implements AuthService {
             String newAuthToken = jwtUtils.generateToken(user);
             return newAuthToken;
 
-        } catch (UnauthorizedException ex) {
-            throw new UnauthorizedException(ex.getMessage());
-        } catch (EntityNotFoundException ex) {
-            throw new UnauthorizedException(ex.getMessage());
+        } catch (InvalidRefreshTokenException ex) {
+            throw new InvalidRefreshTokenException(ex.getMessage());
+        } catch (JwtAuthException ex) {
+            throw new InvalidRefreshTokenException(ex.getMessage());
+        } 
+        catch (EntityNotFoundException ex) {
+            throw new InvalidRefreshTokenException(ex.getMessage());
         } catch (Exception ex) {
-            throw new UnauthorizedException("Invalid refresh token", ex);
+            throw new InvalidRefreshTokenException("Invalid refresh token", ex);
         }
     }
 

@@ -12,10 +12,10 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   credentials: 'include',
 });
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
+  // TODO: change to !== 440 
   if (result?.error?.status === 403) {
     const refreshResult = await baseQuery(
       {

@@ -74,21 +74,21 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         }
 
         @Test
-        @DisplayName("Should return 401 when refresh cookie is not attached")
-        public void authController_refreshToken_returns401WhenRefreshCookieIsNotAttached() throws Exception {
+        @DisplayName("Should return 440 when refresh cookie is not attached")
+        public void authController_refreshToken_returns440WhenRefreshCookieIsNotAttached() throws Exception {
                 // User user = prepareVerifiedUser();
 
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.post("/api/v1/public/refresh-token"))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                                .andExpect(MockMvcResultMatchers.status().is(440))
                                 .andReturn();
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
                 assertThat(setCookies).hasSize(0);
         }
 
         @Test
-        @DisplayName("Should return 401 when refresh token is expired")
-        public void authController_refreshToken_returns401WhenRefreshTokenIsExpired() throws Exception {
+        @DisplayName("Should return 440 when refresh token is expired")
+        public void authController_refreshToken_returns440WhenRefreshTokenIsExpired() throws Exception {
                 User user = prepareUserUtil.prepareVerifiedUser();
 
                 String refreshToken = jwtUtils.generateExpiredRefreshToken(user);
@@ -96,7 +96,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.post("/api/v1/public/refresh-token")
                                                 .cookie(new Cookie(refreshCookieName, refreshToken)))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                                .andExpect(MockMvcResultMatchers.status().is(440))
                                 .andReturn();
 
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
@@ -104,15 +104,15 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         }
 
         @Test
-        @DisplayName("Should return 401 when refresh token is invalid")
-        public void authController_refreshToken_returns401WhenRefreshTokenIsInvalid() throws Exception {
+        @DisplayName("Should return 440 when refresh token is invalid")
+        public void authController_refreshToken_returns440WhenRefreshTokenIsInvalid() throws Exception {
 
                 String refreshToken = "SomeNotValidTokenXDDDD";
 
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.post("/api/v1/public/refresh-token")
                                                 .cookie(new Cookie(refreshCookieName, refreshToken)))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                                .andExpect(MockMvcResultMatchers.status().is(440))
                                 .andReturn();
 
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
@@ -120,8 +120,8 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
         }
 
         @Test
-        @DisplayName("Should return 401 when user not found")
-        public void authController_refreshToken_returns401WhenUserNotFound() throws Exception {
+        @DisplayName("Should return 440 when user not found")
+        public void authController_refreshToken_returns440WhenUserNotFound() throws Exception {
                 User user = UserFactory.createNotVerifiedUser();
 
                 String refreshToken = jwtUtils.generateRefreshToken(user);
@@ -129,7 +129,7 @@ public class AuthControllerRefreshCookieTest extends IntegrationTestBase {
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.post("/api/v1/public/refresh-token")
                                                 .cookie(new Cookie(refreshCookieName, refreshToken)))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                                .andExpect(MockMvcResultMatchers.status().is(440))
                                 .andReturn();
 
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);

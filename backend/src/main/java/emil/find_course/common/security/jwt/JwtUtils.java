@@ -9,8 +9,8 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import emil.find_course.common.exception.InvalidRefreshTokenException;
 import emil.find_course.common.exception.JwtAuthException;
-import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.user.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -128,9 +128,9 @@ public class JwtUtils {
                     .build().parseSignedClaims(refreshToken);
             return true;
         } catch (ExpiredJwtException e) {
-            throw new UnauthorizedException("Refresh token expired");
+            throw new InvalidRefreshTokenException("Refresh token expired");
         } catch (Exception e) {
-            throw new UnauthorizedException("Invalid refresh token", e);
+            throw new InvalidRefreshTokenException("Invalid refresh token", e);
         }
     }
 }

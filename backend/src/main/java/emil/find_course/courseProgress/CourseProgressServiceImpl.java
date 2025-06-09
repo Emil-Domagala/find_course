@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import emil.find_course.common.exception.UnauthorizedException;
+import emil.find_course.common.exception.ForbiddenException;
 import emil.find_course.course.chapter.entity.Chapter;
 import emil.find_course.course.entity.Course;
 import emil.find_course.course.repository.CourseRepository;
@@ -64,7 +64,7 @@ public class CourseProgressServiceImpl implements CourseProgressService {
                 .findUpdatedAtByCourseIdAndUserId(courseId, user.getId());
 
         if (!courseRepository.isEnrolled(courseId, user)) {
-            throw new UnauthorizedException("User is not enrolled in this course");
+            throw new ForbiddenException("User is not enrolled in this course");
         }
 
         CourseProgressDto courseProgressDto;

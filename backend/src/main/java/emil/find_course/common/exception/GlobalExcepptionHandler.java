@@ -44,6 +44,14 @@ public class GlobalExcepptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
 
+        @ExceptionHandler(InvalidRefreshTokenException.class)
+        public ResponseEntity<Object> handleInvalidRefreshTokenException(InvalidRefreshTokenException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(440).message(ex.getMessage()).build();
+
+                return ResponseEntity.status(440).body(error);
+        }
+
         @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
         public ResponseEntity<ApiErrorResponse> handAuthException(RuntimeException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
@@ -52,19 +60,19 @@ public class GlobalExcepptionHandler {
 
         }
 
-        @ExceptionHandler(AccessDeniedException.class)
+        @ExceptionHandler({ AccessDeniedException.class, ForbiddenException.class })
         public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
                                 .message("Access Denied").build();
-                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 
         }
 
-        @ExceptionHandler({ EmailFilterException.class, UnauthorizedException.class })
+        @ExceptionHandler({ EmailFilterException.class })
         public ResponseEntity<ApiErrorResponse> handleEmailFilterException(Exception ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.UNAUTHORIZED.value())
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
                                 .message(ex.getMessage()).build();
-                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 
         }
 

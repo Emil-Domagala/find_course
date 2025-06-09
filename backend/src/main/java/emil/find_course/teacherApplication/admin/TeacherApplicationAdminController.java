@@ -18,6 +18,7 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.teacherApplication.admin.dto.request.TeacherApplicationUpdateRequest;
 import emil.find_course.teacherApplication.dto.TeacherApplicationDto;
 import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -62,7 +63,7 @@ public class TeacherApplicationAdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping
-    public ResponseEntity<Void> patchTeacherApplications(@RequestBody List<TeacherApplicationUpdateRequest> requests) {
+    public ResponseEntity<Void> patchTeacherApplications(@Valid @RequestBody List<TeacherApplicationUpdateRequest> requests) {
 
         adminService.patchTeacherRequests(requests);
 

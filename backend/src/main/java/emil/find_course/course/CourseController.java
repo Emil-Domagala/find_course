@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.common.exception.UnauthorizedException;
+import emil.find_course.common.exception.ForbiddenException;
 import emil.find_course.common.pagination.PaginationRequest;
 import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
@@ -124,7 +124,7 @@ public class CourseController {
 
         final CourseDetailsProtectedDto course = courseMapper.toProtectedDto(courseService.getById(courseId));
         if (course.getTeacher().getId() != userDetails.getUser().getId()) {
-            throw new UnauthorizedException("You are not the teacher of this course");
+            throw new ForbiddenException("You are not the teacher of this course");
         }
         return ResponseEntity.ok(course);
     }
