@@ -12,11 +12,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import emil.find_course.common.exception.dto.ApiErrorResponse;
 import emil.find_course.payment.stripe.exception.CustomStripeException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -92,6 +94,33 @@ public class GlobalExcepptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(
+                        HttpMessageNotReadableException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        // 404
+        @ExceptionHandler(NoResourceFoundException.class)
+        public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(
+                        NoResourceFoundException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.NOT_FOUND.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+
+        // Payment
+        @ExceptionHandler(CustomStripeException.class)
+        public ResponseEntity<ApiErrorResponse> handleCustomStripeException(
+                        CustomStripeException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Params Validation
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(
                         MethodArgumentNotValidException ex) {
@@ -120,30 +149,20 @@ public class GlobalExcepptionHandler {
                 return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
-        @ExceptionHandler(HttpMessageNotReadableException.class)
-        public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadableException(
-                        HttpMessageNotReadableException ex) {
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatchException(
+                        MethodArgumentTypeMismatchException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-                                .message(ex.getMessage()).build();
+                                .message("Invalid type for parameter: " + ex.getName()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
-        // 404
-        @ExceptionHandler(NoResourceFoundException.class)
-        public ResponseEntity<ApiErrorResponse> handleNoResourceFoundException(
-                        NoResourceFoundException ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.NOT_FOUND.value())
-                                .message(ex.getMessage()).build();
-                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-        }
-
-        // Payment
-        @ExceptionHandler(CustomStripeException.class)
-        public ResponseEntity<ApiErrorResponse> handleCustomStripeException(
-                        CustomStripeException ex) {
-                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                                .message(ex.getMessage()).build();
-                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<ApiErrorResponse> handleConstraintViolationException(
+                        ConstraintViolationException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message("Validation failed: " + ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 
 }

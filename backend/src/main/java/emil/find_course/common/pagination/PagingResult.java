@@ -25,4 +25,6 @@ public class PagingResult<T> {
         this.page = page + 1;
         this.empty = empty;
     }
+
+    
 }

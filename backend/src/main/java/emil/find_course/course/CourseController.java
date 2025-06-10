@@ -54,9 +54,7 @@ public class CourseController {
             @RequestParam(required = false) Sort.Direction direction,
             @RequestParam(required = false) CourseCategory category,
             @RequestParam(required = false) String keyword) {
-        if (size > 100) {
-            size = 100;
-        }
+
         if (sortField == null) {
             sortField = "createdAt";
         }
@@ -102,9 +100,7 @@ public class CourseController {
             @RequestParam(required = false) Sort.Direction direction,
             @RequestParam(required = false) CourseCategory category,
             @RequestParam(required = false) String keyword) {
-        if (size > 100) {
-            size = 100;
-        }
+
         if (sortField == null) {
             sortField = "createdAt";
         }
@@ -164,9 +160,7 @@ public class CourseController {
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction) {
-        if (size > 100) {
-            size = 100;
-        }
+
         if (sortField == null) {
             sortField = "createdAt";
         }

@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -28,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional
@@ -78,14 +78,15 @@ public class TeacherApplicationAdminControllerGetCountedNewTeacherApplicationsTe
                 var authToken = jwtUtils.generateToken(admin);
                 prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(newR);
                 prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(seen, true);
-                // var allApplications = newR + seen;
 
                 MvcResult result = mockMvc
                                 .perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application/notifications")
                                                 .cookie(new Cookie(authCookieName, authToken)))
                                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-                Map<String, Integer> res = objectMapper.readValue(result.getResponse().getContentAsString(), Map.class);
+                Map<String, Integer> res = objectMapper.readValue(result.getResponse().getContentAsString(),
+                                new TypeReference<Map<String, Integer>>() {
+                                });
 
                 assertThat(res.get("newRequests")).isEqualTo(newR);
         }

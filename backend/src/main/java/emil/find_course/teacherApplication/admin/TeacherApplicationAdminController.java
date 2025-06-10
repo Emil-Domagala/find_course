@@ -22,7 +22,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/admin/teacher-application") //TODO: Change teacher-request to teacher-application on frontend B4 deploying  
+@RequestMapping("/api/v1/admin/teacher-application") // TODO: Change teacher-request to teacher-application on frontend
+                                                     // B4 deploying
 @RequiredArgsConstructor
 public class TeacherApplicationAdminController {
 
@@ -34,15 +35,11 @@ public class TeacherApplicationAdminController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
-            @RequestParam(required = false) Sort.Direction direction,
-            @RequestParam(required = false) TeacherApplicationStatus status,
-            @RequestParam(required = false) Boolean seenByAdmin) {
+            @Valid @RequestParam(required = false) Sort.Direction direction,
+            @Valid @RequestParam(required = false) TeacherApplicationStatus status,
+            @Valid @RequestParam(required = false) Boolean seenByAdmin) {
 
-        if (size > 100) {
-            size = 100;
-        }
-
-        if (sortField == null) {
+        if (sortField == null || !TeacherApplicationDto.ALLOWED_SORT_FIELDS.contains(sortField)) {
             sortField = "createdAt";
         }
 
@@ -55,7 +52,7 @@ public class TeacherApplicationAdminController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/notifications") //TODO: Fix path on frontend
+    @GetMapping("/notifications") // TODO: Fix path on frontend
     public ResponseEntity<Map<String, Integer>> getCountedNewTeacherApplications() {
         Map<String, Integer> result = adminService.getCountedNewTeacherApplications();
         return ResponseEntity.ok(result);
@@ -63,7 +60,8 @@ public class TeacherApplicationAdminController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping
-    public ResponseEntity<Void> patchTeacherApplications(@Valid @RequestBody List<TeacherApplicationUpdateRequest> requests) {
+    public ResponseEntity<Void> patchTeacherApplications(
+            @Valid @RequestBody List<TeacherApplicationUpdateRequest> requests) {
 
         adminService.patchTeacherRequests(requests);
 
