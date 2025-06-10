@@ -30,7 +30,21 @@ public class PrepareTeacherUtil {
         assertThat(savedUser.getRoles().contains(Role.TEACHER));
         assertThat(savedUser.getRoles().contains(Role.USER));
         return savedUser;
-
     }
+
+    public User prepareUniqueTeacher(){
+        User user = UserFactory.createUniqueVerifiedUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.USER, Role.TEACHER));
+        userRepository.save(user);
+
+        User savedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        assertThat(savedUser.isEmailVerified()).isTrue();
+        assertThat(savedUser.getRoles().contains(Role.TEACHER));
+        assertThat(savedUser.getRoles().contains(Role.USER));
+        return savedUser;
+    }
+
+
 
 }

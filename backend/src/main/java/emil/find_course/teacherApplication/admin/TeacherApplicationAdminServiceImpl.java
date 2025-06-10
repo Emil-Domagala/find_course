@@ -66,6 +66,7 @@ public class TeacherApplicationAdminServiceImpl implements TeacherApplicationAdm
     public void patchTeacherRequests(List<TeacherApplicationUpdateRequest> updates) {
         Map<UUID, TeacherApplicationUpdateRequest> updateMap = updates.stream()
                 .collect(Collectors.toMap(TeacherApplicationUpdateRequest::getId, Function.identity()));
+
         List<TeacherApplication> listOfEntities = teacherApplicationRepository.findAllById(updateMap.keySet());
 
         List<User> listOfAcceptedUsers = new ArrayList<>();
@@ -78,11 +79,12 @@ public class TeacherApplicationAdminServiceImpl implements TeacherApplicationAdm
             TeacherApplicationUpdateRequest update = updateMap.get(entity.getId());
             if (update.getStatus() != null) {
                 entity.setStatus(update.getStatus());
-            }
-            if (update.getStatus().equals(TeacherApplicationStatus.ACCEPTED)) {
-                User changedUser = entity.getUser();
-                changedUser.getRoles().add(Role.TEACHER);
-                listOfAcceptedUsers.add(changedUser);
+
+                if (update.getStatus().equals(TeacherApplicationStatus.ACCEPTED)) {
+                    User changedUser = entity.getUser();
+                    changedUser.getRoles().add(Role.TEACHER);
+                    listOfAcceptedUsers.add(changedUser);
+                }
             }
             entity.setSeenByAdmin(true);
         }

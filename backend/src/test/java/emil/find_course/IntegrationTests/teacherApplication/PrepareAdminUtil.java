@@ -31,6 +31,19 @@ public class PrepareAdminUtil {
         assertThat(savedUser.getRoles().contains(Role.ADMIN));
         assertThat(savedUser.getRoles().contains(Role.USER));
         return savedUser;
+    }
 
+    public User prepareUniqueAdmin() {
+        User user = UserFactory.createUniqueVerifiedUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of(Role.USER, Role.TEACHER, Role.ADMIN));
+        userRepository.save(user);
+
+        User savedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        assertThat(savedUser.isEmailVerified()).isTrue();
+        assertThat(savedUser.getRoles().contains(Role.TEACHER));
+        assertThat(savedUser.getRoles().contains(Role.ADMIN));
+        assertThat(savedUser.getRoles().contains(Role.USER));
+        return savedUser;
     }
 }

@@ -9,6 +9,7 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.teacherApplication.dto.TeacherApplicationDto;
 import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
+import emil.find_course.user.entity.User;
 import jakarta.servlet.http.Cookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,6 +61,18 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
     @Autowired
     private ObjectMapper objectMapper;
 
+    User admin;
+    String authToken;
+
+
+
+    @BeforeEach
+    public void setUp() {
+        admin = prepareAdminUtil.prepareUniqueAdmin();
+        authToken = jwtUtils.generateToken(admin);
+    }
+
+
     private List<TeacherApplicationDto> extractContent(MvcResult res) throws Exception {
         JavaType type = objectMapper.getTypeFactory().constructParametricType(PagingResult.class,
                 TeacherApplicationDto.class);
@@ -74,8 +88,6 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
     public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnTop100Elements() throws Exception {
         int size = 150;
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(150);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", String.valueOf(size))
                 .cookie(new Cookie(authCookieName, authToken)))
@@ -97,8 +109,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(count / 6);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(count / 6);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(count / 6);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -127,8 +138,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
     public void teacherApplicationAdminControlle_getTeacherApplications_paginationWorks(String size, String totEle,
             String currPage) throws Exception {
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(Integer.parseInt(totEle));
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("page", currPage)
                 .param("size", size)
@@ -149,8 +159,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         int halfElem = totalElem / 2;
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem, true);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem, false);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", Integer.toString(totalElem))
@@ -183,8 +192,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
                 TeacherApplicationStatus.ACCEPTED);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(thirdEl, true,
                 TeacherApplicationStatus.DENIED);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", Integer.toString(totalElem))
@@ -216,8 +224,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         int halfElem = totalElem / 2;
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", Integer.toString(totalElem))
@@ -254,8 +261,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         int halfElem = totalElem / 2;
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem, true);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(halfElem, false);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", Integer.toString(totalElem))
@@ -298,8 +304,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
                 TeacherApplicationStatus.ACCEPTED);
         prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(thirdEl, true,
                 TeacherApplicationStatus.DENIED);
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("size", Integer.toString(totalElem))
@@ -328,8 +333,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
     @DisplayName("Should return empty TeacherApplicationDto if db empty")
     public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnEmptyTeacherApplicationDtoIfDbEmpty()
             throws Exception {
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -343,8 +347,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
     public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturn200ForInvalidInputsThatGetsToDefault()
             throws Exception {
 
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("page", "-1")
@@ -379,8 +382,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
             String status,
             String seenByAdmin) throws Exception {
 
-        var admin = prepareAdminUtil.prepareAdmin();
-        var authToken = jwtUtils.generateToken(admin);
+
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                 .param("direction", direction)

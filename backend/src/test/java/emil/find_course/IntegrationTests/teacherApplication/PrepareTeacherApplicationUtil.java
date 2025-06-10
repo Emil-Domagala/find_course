@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import emil.find_course.IntegrationTests.user.PrepareUserUtil;
 import emil.find_course.IntegrationTests.user.UserFactory;
 import emil.find_course.teacherApplication.entity.TeacherApplication;
 import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
@@ -24,6 +25,7 @@ public class PrepareTeacherApplicationUtil {
 
     private final TeacherApplicationRepository teacherApplicationRepository;
     private final UserRepository userRepository;
+    private final PrepareUserUtil prepareUserUtil;
 
     private void validateUser(User user) {
         if (user.getRoles().contains(Role.TEACHER)) {
@@ -32,6 +34,15 @@ public class PrepareTeacherApplicationUtil {
         if (!user.isEmailVerified()) {
             throw new RuntimeException("User must be verified");
         }
+    }
+
+    public TeacherApplication praparUniqueTeacherApplication() {
+        String uniqueSuffix = UUID.randomUUID().toString().substring(0, 15);
+        var user = prepareUserUtil.prepareVerifiedUser(uniqueSuffix + "@gmail.com", uniqueSuffix);
+        var savedApp = repo.save(TeacherApplicationFactory.createTeacherApplication(user));
+        assertThat(savedApp);
+
+        return savedApp;
     }
 
     public TeacherApplication praparTeacherApplication(User user) {

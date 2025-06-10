@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +20,14 @@ import emil.find_course.teacherApplication.admin.dto.request.TeacherApplicationU
 import emil.find_course.teacherApplication.dto.TeacherApplicationDto;
 import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/admin/teacher-application") // TODO: Change teacher-request to teacher-application on frontend
-                                                     // B4 deploying
+                                                     // // B4 deploying
 @RequiredArgsConstructor
 public class TeacherApplicationAdminController {
 
@@ -61,7 +65,7 @@ public class TeacherApplicationAdminController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> patchTeacherApplications(
-            @Valid @RequestBody List<TeacherApplicationUpdateRequest> requests) {
+            @NotNull @Size(min = 1, message = "List must not be empty") @RequestBody List<@NotNull @Valid TeacherApplicationUpdateRequest> requests) {
 
         adminService.patchTeacherRequests(requests);
 

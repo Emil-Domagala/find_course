@@ -16,6 +16,16 @@ public class PrepareUserUtil {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public User prepareUniqueVerifiedUse() {
+        User user = UserFactory.createUniqueVerifiedUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+
+        User savedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        assertThat(savedUser.isEmailVerified()).isTrue();
+        return savedUser;
+    }
+
     public User prepareVerifiedUser() {
         User user = UserFactory.createVerifiedUser();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,8 +67,9 @@ public class PrepareUserUtil {
         assertThat(savedUser.isEmailVerified()).isFalse();
         return savedUser;
     }
+
     public User prepareNotVerifiedUser(String email, String name) {
-        User user = UserFactory.createNotVerifiedUser( email,  name);
+        User user = UserFactory.createNotVerifiedUser(email, name);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
