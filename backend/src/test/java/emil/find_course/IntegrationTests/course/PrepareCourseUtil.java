@@ -2,6 +2,7 @@ package emil.find_course.IntegrationTests.course;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -49,6 +50,18 @@ public class PrepareCourseUtil {
         var savedCourse = courseRepository.save(CourseFactory.createPublishedCourse(teacher));
         assertThat(courseRepository.count()).isEqualTo(1);
         return savedCourse;
+    }
+
+    public List<Course> prepareCourses(int count) {
+        List<Course> courses = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            User teacher = prepareTeacherUtil.prepareUniqueTeacher();
+            var savedCourse = courseRepository.save(CourseFactory.createPublishedCourse(teacher));
+            courses.add(savedCourse);
+        }
+
+        assertThat(courseRepository.count()).isEqualTo(count);
+        return courses;
     }
 
     public Course prepareCourseWithSectionsAndChapters(int count) {

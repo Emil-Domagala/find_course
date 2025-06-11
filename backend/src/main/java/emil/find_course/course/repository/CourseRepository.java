@@ -27,7 +27,7 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
 
         @Query("SELECT c FROM Course c WHERE " +
                         "c.status = :status AND (" +
-                        "LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')) AND " +
+                        "(LOWER(c.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR :keyword IS NULL) AND " +
                         "(COALESCE(:category, NULL) IS NULL OR c.category = :category))")
         Page<Course> searchCourses(
                         @Param("keyword") String keyword,
