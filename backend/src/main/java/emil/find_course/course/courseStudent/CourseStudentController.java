@@ -14,9 +14,11 @@ import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.dto.CourseDtoWithFirstChapter;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/student") // TODO: Fix route on frontend
 @RequiredArgsConstructor
 public class CourseStudentController {
     private final CourseStudentService courseStudentService;
@@ -30,11 +32,12 @@ public class CourseStudentController {
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction) {
 
-        if (sortField == null) {
+        if (sortField == null || !CourseDtoWithFirstChapter.ALLOWED_SORT_FIELDS.contains(sortField)) {
             sortField = "createdAt";
         }
 
         final User user = userDetails.getUser();
+        log.info("logged User: {}", user.toString());
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 

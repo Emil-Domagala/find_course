@@ -1,5 +1,6 @@
 package emil.find_course.course.courseStudent;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,60 +24,61 @@ import emil.find_course.course.mapper.CourseMapping;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 public class CourseStudentServiceImpl implements CourseStudentService {
         private final ChapterRepository chapterRepository;
-    private final CourseRepository courseRepository;
-    private final CourseMapping courseMapping;
+        private final CourseRepository courseRepository;
+        private final CourseMapping courseMapping;
 
+        @Override
+        public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request) {
+                final Pageable pageable = PaginationUtils.getPageable(request);
 
-    @Override
-    public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request) {
-        final Pageable pageable = PaginationUtils.getPageable(request);
+                final Page<Course> coursesPage = courseRepository.findAllByStudents(student, pageable);
+                List<Course> courseList = coursesPage.getContent();
 
-        final Page<Course> coursesPage = courseRepository.findAllByStudents(student, pageable);
-        List<Course> courseList = coursesPage.getContent();
+                if (courseList.isEmpty()) {
+                        return new PagingResult<>(
+                                        Collections.emptyList(),
+                                        coursesPage.getTotalPages(),
+                                        coursesPage.getTotalElements(),
+                                        coursesPage.getSize(),
+                                        coursesPage.getNumber(),
+                                        true);
+                }
 
-        if (courseList.isEmpty()) {
-            return new PagingResult<>(
-                    Collections.emptyList(),
-                    coursesPage.getTotalPages(),
-                    coursesPage.getTotalElements(),
-                    coursesPage.getSize(),
-                    coursesPage.getNumber(),
-                    true);
+                List<UUID> courseIds = courseList.stream()
+                                .map(Course::getId)
+                                .collect(Collectors.toList());
+                                
+
+                List<CourseIdChapterIdProjection> chapterIdResults = chapterRepository
+                                .findFirstChapterIdsForCourses(courseIds);
+
+                Map<UUID, UUID> firstChapterMap = chapterIdResults.stream()
+                                .collect(Collectors.toMap(
+                                                CourseIdChapterIdProjection::getCourseId,
+                                                CourseIdChapterIdProjection::getChapterId,
+                                                (existing, replacement) -> existing));
+
+                List<CourseDtoWithFirstChapter> dtosWithChapter = courseList.stream().map(course -> {
+                        CourseDto baseDto = courseMapping.toDto(course);
+                        CourseDtoWithFirstChapter dtoWithChapter = new CourseDtoWithFirstChapter();
+                        BeanUtils.copyProperties(baseDto, dtoWithChapter);
+                        dtoWithChapter.setFirstChapter(firstChapterMap.get(course.getId()));
+                        return dtoWithChapter;
+                }).collect(Collectors.toList());
+
+                return new PagingResult<>(
+                                dtosWithChapter,
+                                coursesPage.getTotalPages(),
+                                coursesPage.getTotalElements(),
+                                coursesPage.getSize(),
+                                coursesPage.getNumber(),
+                                coursesPage.isEmpty());
         }
-
-        List<UUID> courseIds = courseList.stream()
-                .map(Course::getId)
-                .collect(Collectors.toList());
-
-        List<CourseIdChapterIdProjection> chapterIdResults = chapterRepository
-                .findFirstChapterIdsForCourses(courseIds);
-
-        Map<UUID, UUID> firstChapterMap = chapterIdResults.stream()
-                .collect(Collectors.toMap(
-                        CourseIdChapterIdProjection::getCourseId,
-                        CourseIdChapterIdProjection::getChapterId,
-                        (existing, replacement) -> existing));
-
-        List<CourseDtoWithFirstChapter> dtosWithChapter = courseList.stream().map(course -> {
-            CourseDto baseDto = courseMapping.toDto(course);
-            CourseDtoWithFirstChapter dtoWithChapter = new CourseDtoWithFirstChapter();
-            BeanUtils.copyProperties(baseDto, dtoWithChapter);
-            dtoWithChapter.setFirstChapter(firstChapterMap.get(course.getId()));
-            return dtoWithChapter;
-        }).collect(Collectors.toList());
-
-        return new PagingResult<>(
-                dtosWithChapter,
-                coursesPage.getTotalPages(),
-                coursesPage.getTotalElements(),
-                coursesPage.getSize(),
-                coursesPage.getNumber(),
-                coursesPage.isEmpty());
-    }
 
 }

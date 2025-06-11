@@ -1,4 +1,4 @@
-package emil.find_course.IntegrationTests.course.courseStudent;
+package emil.find_course.IntegrationTests.course.courseTeacher;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +10,6 @@ import jakarta.transaction.Transactional;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase{
+public class CourseTeacherControllerGetTeacherCoursesTest extends IntegrationTestBase{
     
 }
