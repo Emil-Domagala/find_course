@@ -62,7 +62,6 @@ public class SectionServiceImpl implements SectionService {
                 sectionRequest.getDescription() == null ? "Default Description" : sectionRequest.getDescription());
         sectionToProcess.setCourse(course);
         sectionToProcess.setChapters(new ArrayList<>());
-
     }
 
     private void updateSection(SectionRequest sectionRequest, Section sectionToProcess, Course course) {

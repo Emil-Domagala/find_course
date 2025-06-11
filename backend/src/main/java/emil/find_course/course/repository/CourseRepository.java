@@ -1,5 +1,6 @@
 package emil.find_course.course.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -44,7 +45,7 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
                         @Param("teacherId") UUID teacherId,
                         Pageable pageable);
 
-        Course findByIdAndStatus(UUID id, CourseStatus status);
+        Optional<Course> findByIdAndStatus(UUID id, CourseStatus status);
 
         @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Course c WHERE c.id = :courseId AND :user MEMBER OF c.students")
         boolean isEnrolled(@Param("courseId") UUID courseId, @Param("user") User user);

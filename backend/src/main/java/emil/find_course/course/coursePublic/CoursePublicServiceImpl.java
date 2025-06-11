@@ -16,6 +16,7 @@ import emil.find_course.course.enums.CourseCategory;
 import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.course.mapper.CourseMapping;
 import emil.find_course.course.repository.CourseRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +28,8 @@ public class CoursePublicServiceImpl implements CoursePublicService {
 
     @Override
     public Course getPublishedCourse(UUID id) {
-        return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED);
+        return courseRepository.findByIdAndStatus(id, CourseStatus.PUBLISHED)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
     }
 
     @Override
