@@ -334,11 +334,11 @@ public class CourseStudentControllerGetUserEnrolledCourseTest extends Integratio
     }
 
     @Test
-    @DisplayName("Should return 403 if user not logged in")
-    public void courseStudentController_getUserEnrolledCourses_shouldReturn403IfUserNotLoggedIn() throws Exception {
+    @DisplayName("Should return 401 if user not logged in")
+    public void courseStudentController_getUserEnrolledCourses_shouldReturn401IfUserNotLoggedIn() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/student/courses"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andReturn();
     }
 
     // ERROR: direction

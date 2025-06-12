@@ -22,6 +22,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -80,7 +81,8 @@ public class Course {
     @Builder.Default
     private List<Section> sections = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "enrollmentCourses")
+    @ManyToMany
+    @JoinTable(name = "user_course", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
     @Builder.Default
     private Set<User> students = new HashSet<>();
 

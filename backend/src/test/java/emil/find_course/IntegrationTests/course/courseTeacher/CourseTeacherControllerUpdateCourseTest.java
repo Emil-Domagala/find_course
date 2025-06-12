@@ -12,4 +12,10 @@ import jakarta.transaction.Transactional;
 @AutoConfigureMockMvc
 public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase{
     
+// Happy path 
+// Cant update if not mine course 
+// invalid payload
+
+
+
 }

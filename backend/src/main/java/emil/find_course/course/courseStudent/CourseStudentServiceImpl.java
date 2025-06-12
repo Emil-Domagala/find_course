@@ -1,6 +1,5 @@
 package emil.find_course.course.courseStudent;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import emil.find_course.course.mapper.CourseMapping;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

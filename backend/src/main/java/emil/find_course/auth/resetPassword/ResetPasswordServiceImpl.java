@@ -15,7 +15,6 @@ import emil.find_course.common.service.EmailService;
 import emil.find_course.common.util.TokenGenerator;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

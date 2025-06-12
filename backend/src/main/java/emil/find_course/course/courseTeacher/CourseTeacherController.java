@@ -105,6 +105,7 @@ public class CourseTeacherController {
     }
 
     // Delete course
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     @DeleteMapping("/courses/{courseId}")
     public ResponseEntity<?> deleteCourse(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {

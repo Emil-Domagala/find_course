@@ -38,12 +38,38 @@ public class GlobalExcepptionHandler {
 
         // Auth
 
+        @ExceptionHandler(UnauthorizedException.class)
+        public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(HttpStatus.UNAUTHORIZED.value()).message(ex.getMessage()).build();
+
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        }
+
+        // TODO: Add support for 498 and 499
         @ExceptionHandler(JwtAuthException.class)
         public ResponseEntity<Object> handleJwtAuthException(JwtAuthException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder()
                                 .status(HttpStatus.FORBIDDEN.value()).message(ex.getMessage()).build();
 
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
+        @ExceptionHandler(JwtInvalidTokenException.class)
+        public ResponseEntity<Object> handleJwtInvalidTokenException(JwtInvalidTokenException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(498).message(ex.getMessage()).build();
+
+                return ResponseEntity.status(498).body(error);
+        }
+
+        @ExceptionHandler(JwtTokenRequiredException.class)
+        public ResponseEntity<Object> handleJwtTokenRequiredException(JwtTokenRequiredException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(499).message(ex.getMessage()).build();
+
+                return ResponseEntity.status(499).body(error);
         }
 
         @ExceptionHandler(InvalidRefreshTokenException.class)
@@ -63,7 +89,7 @@ public class GlobalExcepptionHandler {
         }
 
         @ExceptionHandler({ AccessDeniedException.class, ForbiddenException.class })
-        public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
+        public ResponseEntity<ApiErrorResponse> handAccesDenied(Exception ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
                                 .message("Access Denied").build();
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);

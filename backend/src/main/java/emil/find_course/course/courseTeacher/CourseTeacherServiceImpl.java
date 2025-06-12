@@ -26,6 +26,7 @@ import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.course.section.SectionService;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.enums.Role;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -122,10 +123,12 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Override
     public UUID deleteCourse(UUID id, UUID teacherId) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         if (!course.getTeacher().getId().equals(teacherId)) {
             throw new IllegalArgumentException("You are not the teacher of this course");
         }
+        course.getTeacher().getTeachingCourses().remove(course);
+        course.getStudents().clear();
         courseRepository.delete(course);
 
         return id;

@@ -16,19 +16,20 @@ import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/student") // TODO: Change path on frontend
 @RequiredArgsConstructor
 public class ChapterController {
 
     private final ChapterMapping chapterMapping;
     private final ChapterService chapterService;
 
-    @GetMapping("/user/courses/{courseId}/chapters/{chapterId}")
+    @GetMapping("/courses/{courseId}/chapters/{chapterId}")
     public ResponseEntity<ChapterProtectedDto> getChapter(@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID courseId,
             @PathVariable UUID chapterId) {
         final User user = userDetails.getUser();
         final ChapterProtectedDto chapter = chapterMapping
-                .toProtectedDto(chapterService.getChapterIfStudentEnrolled(chapterId, user));
+                .toProtectedDto(chapterService.getChapterIfStudentEnrolled(courseId, chapterId, user));
         return ResponseEntity.ok(chapter);
     }
 

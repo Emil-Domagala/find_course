@@ -14,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import emil.find_course.common.exception.JwtAuthException;
+import emil.find_course.common.exception.JwtTokenRequiredException;
+import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
@@ -59,24 +61,27 @@ public class JwtFilter extends OncePerRequestFilter {
                         break;
                     }
                 }
-            }
-
-            if (token != null && jwtUtils.validateToken(token)) {
-                String email = jwtUtils.getUserEmailFromJwtToken(token);
-                UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
-
-                if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
             } else {
-
-                throw new JwtAuthException("Invalid or expired token.");
+                throw new JwtTokenRequiredException("No cookie provided");
             }
+
+            if (token == null) {
+                throw new JwtTokenRequiredException("No token provided");
+            }
+            jwtUtils.validateToken(token); // throws exception
+
+            String email = jwtUtils.getUserEmailFromJwtToken(token);
+            UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(email);
+
+            if (userDetails != null) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
         } catch (JwtAuthException e) {
             exceptionResolver.resolveException(request, response, null, e);
             return;

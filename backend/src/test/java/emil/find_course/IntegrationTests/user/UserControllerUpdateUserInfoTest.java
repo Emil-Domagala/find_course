@@ -344,7 +344,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         }
 
         @Test
-        @DisplayName("Should return 403 when no cookie set")
+        @DisplayName("Should return 401 when no cookie set")
         public void userController_updateUserInfo_returns403WhenNoCookieSet() throws Exception {
 
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser("John", "Doe",
@@ -355,7 +355,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.multipart(HttpMethod.PATCH, "/api/v1/user")
                                                 .file(userDataPart))
-                                .andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andReturn();
 
         }
 

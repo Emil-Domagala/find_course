@@ -16,7 +16,7 @@ import emil.find_course.cart.dto.CartDto;
 import emil.find_course.cart.entity.Cart;
 import emil.find_course.cart.mapper.CartMapping;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
-import emil.find_course.course.CourseService;
+import emil.find_course.course.coursePublic.CoursePublicService;
 import emil.find_course.course.entity.Course;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class CartController {
 
     private final CartService cartService;
     private final CartMapping cartMapping;
-    private final CourseService courseService;
+    private final CoursePublicService coursePublicService;
 
     @PostMapping("/cart/{courseId}")
     public ResponseEntity<CartDto> addCourseToCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
         final User user = userDetails.getUser();
-        Course course = courseService.getPublishedCourse(courseId);
+        Course course = coursePublicService.getPublishedCourse(courseId);
         CartDto cart = cartMapping.toDto(cartService.addCourseToCart(user, course));
         return ResponseEntity.ok(cart);
     }
@@ -43,7 +43,7 @@ public class CartController {
     public ResponseEntity<CartDto> removeCourseFromCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
         final User user = userDetails.getUser();
-        Course course = courseService.getPublishedCourse(courseId);
+        Course course = coursePublicService.getPublishedCourse(courseId);
         Cart cart = cartService.removeCourseFromCart(user, course);
         if (cart == null) {
             return ResponseEntity.ok(new CartDto());

@@ -24,8 +24,9 @@ public class ChapterServiceImpl implements ChapterService {
     private final ChapterRepository chapterRepository;
 
     @Override
-    public Chapter getChapterIfStudentEnrolled(UUID chapterId, User user) {
-        Chapter chapter = chapterRepository.findChapterByIdIfUserEnrolled(chapterId, user)
+    public Chapter getChapterIfStudentEnrolled(UUID courseId, UUID chapterId, User user) {
+        Chapter chapter = chapterRepository.findChapterByIdIfUserEnrolled(
+                courseId, chapterId, user)
                 .orElseThrow(() -> new EntityNotFoundException("Chapter not found or user is not enrolled"));
         return chapter;
     }

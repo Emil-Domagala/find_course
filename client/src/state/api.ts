@@ -15,7 +15,7 @@ const baseQuery = fetchBaseQuery({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const baseQueryWithReauth: typeof baseQuery = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
-  // TODO: change to !== 440 
+  // TODO: [498,499].contains(result?.error?.status)
   if (result?.error?.status === 403) {
     const refreshResult = await baseQuery(
       {
@@ -198,7 +198,10 @@ export const api = createApi({
 
       providesTags: (result, error, arg) =>
         result
-          ? [...result?.content.map((course) => ({ type: 'TeachedCourseDtos' as const, id: course.id })), { type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` }]
+          ? [
+              ...result?.content.map((course) => ({ type: 'TeachedCourseDtos' as const, id: course.id })),
+              { type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` },
+            ]
           : [{ type: 'TeachedCourseDtos' as const, id: `LIST-${arg.page}` }],
     }),
 
@@ -221,7 +224,13 @@ export const api = createApi({
 
         if (!subscriptions || !queries) return;
         for (const key in queries) {
-          if (!key.startsWith('getCoursesTeacher-{') || queries[key]?.status !== 'fulfilled' || !subscriptions[key] || Object.keys(subscriptions[key]).length === 0) return;
+          if (
+            !key.startsWith('getCoursesTeacher-{') ||
+            queries[key]?.status !== 'fulfilled' ||
+            !subscriptions[key] ||
+            Object.keys(subscriptions[key]).length === 0
+          )
+            return;
 
           const cacheEntry = queries[key];
           const queryArgs = cacheEntry.originalArgs;
@@ -266,9 +275,10 @@ export const api = createApi({
 
     getTeacherCourseById: build.query<CourseDetailsPublicDto, string>({ query: (courseId) => ({ url: `teacher/courses/${courseId}` }) }),
 
-    updateCourse:build.mutation<void,{courseId:string,courseData:FormData}>({
-      query:({courseData,courseId})=>({url:`teacher/courses/${courseId}`,method:'PATCH',body:courseData}),
-      invalidatesTags:['TeachedCourseDtos']}),
+    updateCourse: build.mutation<void, { courseId: string; courseData: FormData }>({
+      query: ({ courseData, courseId }) => ({ url: `teacher/courses/${courseId}`, method: 'PATCH', body: courseData }),
+      invalidatesTags: ['TeachedCourseDtos'],
+    }),
     // ****************
     // ------Cart------
     // ****************
@@ -431,7 +441,7 @@ export const api = createApi({
         url: `/user/courses/${courseId}/chapters/${chapterId}`,
         method: 'GET',
       }),
-      keepUnusedDataFor:600,
+      keepUnusedDataFor: 600,
       providesTags: ['Chapter'],
     }),
   }),
@@ -480,5 +490,5 @@ export const {
   useUpdateCourseChapterProgressMutation,
   // Chapter
   useGetChapterEnrolledStudentQuery,
-  usePrefetch
+  usePrefetch,
 } = api;

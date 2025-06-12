@@ -43,12 +43,12 @@ public class UserControllerGetUserInfoTest extends IntegrationTestBase {
     @Autowired
     private PrepareUserUtil prepareUserUtil;
 
-    // No cookie throws 403
+    // No cookie throws 401
     @Test
-    @DisplayName("Should return 403 when no cookie set")
-    public void userController_getUserInfo_returns403WhenNoCookieSet() throws Exception {
+    @DisplayName("Should return 401 when no cookie set")
+    public void userController_getUserInfo_returns401WhenNoCookieSet() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/v1/user")).andExpect(MockMvcResultMatchers.status().isForbidden())
+                MockMvcRequestBuilders.get("/api/v1/user")).andExpect(MockMvcResultMatchers.status().isUnauthorized())
                 .andReturn();
     }
 

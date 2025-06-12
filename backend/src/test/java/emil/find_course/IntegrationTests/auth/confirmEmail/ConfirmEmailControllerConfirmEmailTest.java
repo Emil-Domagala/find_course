@@ -39,159 +39,172 @@ import jakarta.transaction.Transactional;
 @AutoConfigureMockMvc
 public class ConfirmEmailControllerConfirmEmailTest extends IntegrationTestBase {
 
-    @Value("${cookie.auth.authToken.name}")
-    private String authCookieName;
+        @Value("${cookie.auth.authToken.name}")
+        private String authCookieName;
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ConfirmEmailOTTRepository confirmEmailOTTRepository;
+        @Autowired
+        private UserRepository userRepository;
+        @Autowired
+        private ConfirmEmailOTTRepository confirmEmailOTTRepository;
 
-    @Autowired
-    private CookieHelperTest cookieHelper;
+        @Autowired
+        private CookieHelperTest cookieHelper;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+        @Autowired
+        private JwtUtils jwtUtils;
 
-    @Autowired
-    private PrepareConfirmEmailOTT prepareConfirmEmailOTT;
+        @Autowired
+        private PrepareConfirmEmailOTT prepareConfirmEmailOTT;
 
-    @Autowired
-    private PrepareUserUtil prepareUserUtil;
+        @Autowired
+        private PrepareUserUtil prepareUserUtil;
 
-    @Test
-    @DisplayName("Should confirm email successfully")
-    public void confirmEmailController_confirmEmail_sucessfullyConfirmsEmail() throws Exception {
-        User user = prepareUserUtil.prepareNotVerifiedUser();
-        String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(user);
+        @Test
+        @DisplayName("Should confirm email successfully")
+        public void confirmEmailController_confirmEmail_sucessfullyConfirmsEmail() throws Exception {
+                User user = prepareUserUtil.prepareNotVerifiedUser();
+                String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(user);
 
-        MvcResult result = mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+                MvcResult result = mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andReturn();
 
-        assertThat(confirmEmailOTTRepository.findByUser(user)).isEmpty();
-        assertThat(userRepository.findByEmail(user.getEmail()).get().isEmailVerified()).isTrue();
-        String cookieStr = result.getResponse().getHeader(HttpHeaders.SET_COOKIE);
-        CookieAttributes cookie = cookieHelper.parseSetCookie(cookieStr);
-        cookieHelper.testCookies(cookie, "/");
-    }
+                assertThat(confirmEmailOTTRepository.findByUser(user)).isEmpty();
+                assertThat(userRepository.findByEmail(user.getEmail()).get().isEmailVerified()).isTrue();
+                String cookieStr = result.getResponse().getHeader(HttpHeaders.SET_COOKIE);
+                CookieAttributes cookie = cookieHelper.parseSetCookie(cookieStr);
+                cookieHelper.testCookies(cookie, "/");
+        }
 
-    // Invalid passed OTT
+        // Invalid passed OTT
 
-    @ParameterizedTest(name = "Invalid passed OTT => token: {0}")
-    @CsvSource({ "1", "123456789", "aaaaaa" })
-    @DisplayName("Should return 400 when invalid passed OTT")
-    public void confirmEmailController_confirmEmail_returns400WhenInvalidPassedOTT(String token) throws Exception {
-        User user = prepareUserUtil.prepareNotVerifiedUser();
-        prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(user);
+        @ParameterizedTest(name = "Invalid passed OTT => token: {0}")
+        @CsvSource({ "1", "123456789", "aaaaaa" })
+        @DisplayName("Should return 400 when invalid passed OTT")
+        public void confirmEmailController_confirmEmail_returns400WhenInvalidPassedOTT(String token) throws Exception {
+                User user = prepareUserUtil.prepareNotVerifiedUser();
+                prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(user);
 
-        mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
+                mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                                .andReturn();
 
-    }
+        }
 
-    @Test
-    @DisplayName("Should return 404 when didnt found OTT")
-    public void confirmEmailController_confirmEmail_returns404WhenDidntFoundOTT() throws Exception {
-        User user = prepareUserUtil.prepareNotVerifiedUser();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT("aaaaaa");
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(user);
+        @Test
+        @DisplayName("Should return 404 when didnt found OTT")
+        public void confirmEmailController_confirmEmail_returns404WhenDidntFoundOTT() throws Exception {
+                User user = prepareUserUtil.prepareNotVerifiedUser();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT("aaaaaa");
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(user);
 
-        mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andReturn();
+                mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                                .andReturn();
 
-    }
+        }
 
-    // OTT expired
-    @Test
-    @DisplayName("Should return 400 when OTT Expired")
-    public void confirmEmailController_confirmEmail_returns400WhenOTTExpired() throws Exception {
-        User user = prepareUserUtil.prepareNotVerifiedUser();
-        String token = prepareConfirmEmailOTT.prepareExpiredConfirmEmailOTT(user).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(user);
+        // OTT expired
+        @Test
+        @DisplayName("Should return 400 when OTT Expired")
+        public void confirmEmailController_confirmEmail_returns400WhenOTTExpired() throws Exception {
+                User user = prepareUserUtil.prepareNotVerifiedUser();
+                String token = prepareConfirmEmailOTT.prepareExpiredConfirmEmailOTT(user).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(user);
 
-        mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
+                mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                                .andReturn();
 
-    }
+        }
 
-    // Didnt found OTT
-    @Test
-    @DisplayName("Should return 404 when token not found")
-    public void confirmEmailController_confirmEmail_returns404WhenOTTNotFound() throws Exception {
-        User userToken = prepareUserUtil.prepareNotVerifiedUser(UUID.randomUUID() + "@example.com", "John");
-        User userLogin = prepareUserUtil.prepareNotVerifiedUser();
-        String token = prepareConfirmEmailOTT.prepareExpiredConfirmEmailOTT(userToken).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(userLogin);
+        // Didnt found OTT
+        @Test
+        @DisplayName("Should return 404 when token not found")
+        public void confirmEmailController_confirmEmail_returns404WhenOTTNotFound() throws Exception {
+                User userToken = prepareUserUtil.prepareNotVerifiedUser(UUID.randomUUID() + "@example.com", "John");
+                User userLogin = prepareUserUtil.prepareNotVerifiedUser();
+                String token = prepareConfirmEmailOTT.prepareExpiredConfirmEmailOTT(userToken).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(userLogin);
 
-        mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andReturn();
+                mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                                .andReturn();
 
-    }
+        }
 
-    // Verified user tries to verifie again
-    @Test
-    @DisplayName("Should return 400 when verified user tries to verifie again")
-    public void confirmEmailController_confirmEmail_returns400WhenVerifiedUserTriesToVerifieAgain() throws Exception {
-        User user = prepareUserUtil.prepareVerifiedUser();
-        String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
-        String authToken = jwtUtils.generateToken(user);
+        // Verified user tries to verifie again
+        @Test
+        @DisplayName("Should return 400 when verified user tries to verifie again")
+        public void confirmEmailController_confirmEmail_returns400WhenVerifiedUserTriesToVerifieAgain()
+                        throws Exception {
+                User user = prepareUserUtil.prepareVerifiedUser();
+                String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+                String authToken = jwtUtils.generateToken(user);
 
-        mockMvc
-                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                        authToken)).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
-    }
+                mockMvc
+                                .perform(MockMvcRequestBuilders.post("/api/v1/confirm-email")
+                                                .cookie(new Cookie(authCookieName,
+                                                                authToken))
+                                                .content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                                .andReturn();
+        }
 
-    // No cookie or bad token
-    @Test
-    @DisplayName("Should return 403 when no cookie set or bad token passed")
-    public void confirmEmailController_confirmEmail_returns403WhenNoCookieSetOrBadTokenPassed() throws Exception {
-        User user = prepareUserUtil.prepareNotVerifiedUser();
-        String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
-        RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
-        String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
+        // No cookie or bad token
+        @Test
+        @DisplayName("Should return 401 when no cookie set or bad token passed")
+        public void confirmEmailController_confirmEmail_returns401WhenNoCookieSetOrBadTokenPassed() throws Exception {
+                User user = prepareUserUtil.prepareNotVerifiedUser();
+                String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
+                RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
+                String json = objectMapper.writeValueAsString(requestConfirmEmailOTT);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
-                "Bad token")).content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
+                                "Bad token")).content(json).contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isForbidden());
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").content(json)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
 
-    }
+        }
 }
