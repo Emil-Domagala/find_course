@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import emil.find_course.common.exception.dto.ApiErrorResponse;
@@ -188,6 +189,14 @@ public class GlobalExcepptionHandler {
                         ConstraintViolationException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message("Validation failed: " + ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(MissingServletRequestPartException.class)
+        public ResponseEntity<ApiErrorResponse> handleMissingServletRequestPartException(
+                        MissingServletRequestPartException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message("Missing request part: " + ex.getRequestPartName()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 

@@ -219,9 +219,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort id,
         @ParameterizedTest
-        @CsvSource({
-                        "ASC", "DESC"
-        })
+        @CsvSource({"ASC", "DESC"})
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByID(
                         String direction) throws Exception {
                 int totalElem = 20;
@@ -255,9 +253,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort seenByAdmin
         @ParameterizedTest
-        @CsvSource({
-                        "ASC", "DESC"
-        })
+        @CsvSource({ "ASC", "DESC"})
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByseenByAdmin(
                         String direction) throws Exception {
                 int totalElem = 20;
@@ -293,9 +289,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort by status works
         @ParameterizedTest
-        @CsvSource({
-                        "ASC", "DESC"
-        })
+        @CsvSource({"ASC", "DESC"})
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByStatus(
                         String direction) throws Exception {
                 int totalElem = 30;

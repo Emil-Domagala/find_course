@@ -48,4 +48,13 @@ public final class SectionFactory {
         return sections;
     }
 
+    public static List<Section> createSections(Course course, int count) {
+        List<Section> sections = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Section section = createSection(course, i);
+            sections.add(section);
+        }
+        return sections;
+    }
+
 }

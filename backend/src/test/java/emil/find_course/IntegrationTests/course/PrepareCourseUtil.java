@@ -75,4 +75,15 @@ public class PrepareCourseUtil {
         assertThat(chapterRepository.count()).isEqualTo(count * count);
         return savedCourse;
     }
+
+    public Course prepareCourseWithSections(int count) {
+        User teacher = prepareTeacherUtil.prepareUniqueTeacher();
+        Course course = CourseFactory.createPublishedCourse(teacher);
+        List<Section> sections = SectionFactory.createSections(course, count);
+        course.setSections(sections);
+        var savedCourse = courseRepository.save(course);
+        assertThat(savedCourse);
+        assertThat(sectionRepository.count()).isEqualTo(count);
+        return savedCourse;
+    }
 }

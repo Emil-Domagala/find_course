@@ -60,7 +60,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Transactional
     public void updateCourse(UUID courseId, CourseRequest courseRequest, MultipartFile image, User user) {
         Course course = courseService.getById(courseId);
-        if (course.getTeacher().getId() != user.getId()) {
+        if (!course.getTeacher().getId().equals(user.getId())) {
             throw new ForbiddenException("You are not the teacher of this course");
         }
 
@@ -95,7 +95,8 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
         if (courseRequest.getSections() != null) {
             sectionService.syncSections(course, courseRequest.getSections());
-
+        } else {
+            course.getSections().clear();
         }
 
         courseRepository.save(course);

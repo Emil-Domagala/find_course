@@ -45,7 +45,7 @@ public class ChapterServiceImpl implements ChapterService {
             if (chapterRequest.getId() != null) {
                 chapterToProcess = oldChaptersMap.get(chapterRequest.getId());
                 if (chapterToProcess == null) {
-                    throw new IllegalArgumentException("Chapter not found");
+                    throw new EntityNotFoundException("Chapter with id " + chapterRequest.getId() + " not found");
                 }
                 updateChapter(chapterRequest, chapterToProcess, section);
                 finalChapters.add(chapterToProcess);

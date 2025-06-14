@@ -9,11 +9,18 @@ import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.course.enums.Level;
 import emil.find_course.course.section.dto.request.SectionRequest;
 import io.micrometer.common.lang.Nullable;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CourseRequest {
 
     private UUID id;
@@ -27,7 +34,8 @@ public class CourseRequest {
     private String description;
 
     @Nullable
-    @ValidEnum(enumClass = CourseCategory.class, message = "Invalid course category value")
+    // @ValidEnum(enumClass = CourseCategory.class, message = "Invalid course
+    // category value")
     private CourseCategory category;
 
     @Nullable
@@ -35,14 +43,16 @@ public class CourseRequest {
     private Integer price;
 
     @Nullable
-    @ValidEnum(enumClass = Level.class, message = "Invalid level value")
+    // @ValidEnum(enumClass = Level.class, message = "Invalid level value")
     private Level level;
 
     @Nullable
-    @ValidEnum(enumClass = CourseStatus.class, message = "Invalid course status value")
+    // @ValidEnum(enumClass = CourseStatus.class, message = "Invalid course status
+    // value")
     private CourseStatus status;
 
     @Nullable
+    @Valid
     private List<SectionRequest> sections;
 
 }
