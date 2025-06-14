@@ -11,5 +11,5 @@ import emil.find_course.user.entity.User;
 public interface ChapterService {
     public void syncChapter(Section section, List<ChapterRequest> chapterRequest);
 
-    public Chapter getChapterIfStudentEnrolled(UUID chapterId, User user);
+    public Chapter getChapterIfStudentEnrolled(UUID courseId, UUID chapterId, User user);
 }

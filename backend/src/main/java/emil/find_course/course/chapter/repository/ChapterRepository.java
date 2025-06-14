@@ -25,7 +25,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, UUID> {
         @Query("SELECT ch FROM Chapter ch " +
                         "JOIN ch.section s " +
                         "JOIN s.course c " +
-                        "WHERE ch.id = :chapterId AND :user MEMBER OF c.students")
-        Optional<Chapter> findChapterByIdIfUserEnrolled(UUID chapterId, User user);
+                        "WHERE ch.id = :chapterId AND :user MEMBER OF c.students AND c.id = :courseId")
+        Optional<Chapter> findChapterByIdIfUserEnrolled(UUID courseId,UUID chapterId, User user);
 
 }

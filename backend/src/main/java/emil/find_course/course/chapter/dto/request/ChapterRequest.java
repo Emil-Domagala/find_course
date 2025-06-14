@@ -4,12 +4,16 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.URL;
 
+import emil.find_course.course.chapter.dto.request.validator.ValidChapterRequest;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
+@ValidChapterRequest
 @Data
+@Builder(toBuilder = true)
 public class ChapterRequest {
 
     @Nullable
@@ -30,12 +34,16 @@ public class ChapterRequest {
     @URL(message = "Invalid video URL")
     private String videoUrl;
 
-    @Valid
-    private boolean isValid() {
-        if (id == null && tempId == null) {
-            return false;
-        }
-        return true;
-    }
+    // @Valid
+    // private boolean isValid() {
+    // if (id == null && tempId == null) {
+    // return false;
+    // }
+    // if (tempId != null && (title == null || (content == null && videoUrl ==
+    // null))) {
+    // return false;
+    // }
+    // return true;
+    // }
 
 }

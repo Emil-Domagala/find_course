@@ -53,8 +53,6 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     @Autowired
     private CookieHelperTest cookieHelper;
 
-
-
     private void assertAuthAndRefreshCookies(MvcResult result) {
         List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
         assertThat(setCookies).hasSize(2);

@@ -66,7 +66,7 @@ public class CourseTeacherController {
             @RequestParam(required = false) CourseCategory category,
             @RequestParam(required = false) String keyword) {
 
-        if (sortField == null) {
+        if (sortField == null || !CourseDto.ALLOWED_SORT_FIELDS.contains(sortField)) {
             sortField = "createdAt";
         }
 
@@ -97,6 +97,9 @@ public class CourseTeacherController {
             @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable UUID courseId,
             @RequestPart("courseData") @Validated CourseRequest courseRequest,
             @RequestPart(required = false) MultipartFile image) {
+        if (!courseRequest.getId().equals(courseId)) {
+            throw new IllegalArgumentException("Mistmach beetwen request course id and path variable id");
+        }
 
         final User user = userDetails.getUser();
         courseTeacherService.updateCourse(courseId, courseRequest, image, user);
@@ -105,6 +108,7 @@ public class CourseTeacherController {
     }
 
     // Delete course
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
     @DeleteMapping("/courses/{courseId}")
     public ResponseEntity<?> deleteCourse(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {

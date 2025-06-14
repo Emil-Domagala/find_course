@@ -59,7 +59,7 @@ public class Chapter {
 
     @PrePersist
     @PreUpdate
-    private void onCreate() {
+    private void onSave() {
         if (videoUrl != null && !videoUrl.isBlank()) {
             type = ChapterType.VIDEO;
         } else {

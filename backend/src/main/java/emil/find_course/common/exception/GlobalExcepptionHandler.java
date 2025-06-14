@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import emil.find_course.common.exception.dto.ApiErrorResponse;
@@ -38,12 +39,38 @@ public class GlobalExcepptionHandler {
 
         // Auth
 
+        @ExceptionHandler(UnauthorizedException.class)
+        public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(HttpStatus.UNAUTHORIZED.value()).message(ex.getMessage()).build();
+
+                return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        }
+
+        // TODO: Add support for 498 and 499
         @ExceptionHandler(JwtAuthException.class)
         public ResponseEntity<Object> handleJwtAuthException(JwtAuthException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder()
                                 .status(HttpStatus.FORBIDDEN.value()).message(ex.getMessage()).build();
 
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
+        @ExceptionHandler(JwtInvalidTokenException.class)
+        public ResponseEntity<Object> handleJwtInvalidTokenException(JwtInvalidTokenException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(498).message(ex.getMessage()).build();
+
+                return ResponseEntity.status(498).body(error);
+        }
+
+        @ExceptionHandler(JwtTokenRequiredException.class)
+        public ResponseEntity<Object> handleJwtTokenRequiredException(JwtTokenRequiredException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder()
+                                .status(499).message(ex.getMessage()).build();
+
+                return ResponseEntity.status(499).body(error);
         }
 
         @ExceptionHandler(InvalidRefreshTokenException.class)
@@ -63,7 +90,7 @@ public class GlobalExcepptionHandler {
         }
 
         @ExceptionHandler({ AccessDeniedException.class, ForbiddenException.class })
-        public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
+        public ResponseEntity<ApiErrorResponse> handAccesDenied(Exception ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
                                 .message("Access Denied").build();
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
@@ -162,6 +189,14 @@ public class GlobalExcepptionHandler {
                         ConstraintViolationException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
                                 .message("Validation failed: " + ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(MissingServletRequestPartException.class)
+        public ResponseEntity<ApiErrorResponse> handleMissingServletRequestPartException(
+                        MissingServletRequestPartException ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+                                .message("Missing request part: " + ex.getRequestPartName()).build();
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 

@@ -13,6 +13,7 @@ import emil.find_course.course.chapter.ChapterService;
 import emil.find_course.course.entity.Course;
 import emil.find_course.course.section.dto.request.SectionRequest;
 import emil.find_course.course.section.entity.Section;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,7 +34,7 @@ public class SectionServiceImpl implements SectionService {
             if (sectionRequest.getId() != null) {
                 sectionToProcess = oldSectionsMap.get(sectionRequest.getId());
                 if (sectionToProcess == null) {
-                    throw new IllegalArgumentException("Section not found");
+                    throw new EntityNotFoundException("Section with id " + sectionRequest.getId() + " not found");
                 }
 
                 updateSection(sectionRequest, sectionToProcess, course);
@@ -45,7 +46,11 @@ public class SectionServiceImpl implements SectionService {
                 finalSections.add(sectionToProcess);
 
             }
-            chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters());
+            if (sectionRequest.getChapters() != null) {
+                chapterService.syncChapter(sectionToProcess, sectionRequest.getChapters());
+            } else {
+                sectionToProcess.getChapters().clear();
+            }
         }
 
         for (int i = 0; i < finalSections.size(); i++) {
@@ -62,7 +67,6 @@ public class SectionServiceImpl implements SectionService {
                 sectionRequest.getDescription() == null ? "Default Description" : sectionRequest.getDescription());
         sectionToProcess.setCourse(course);
         sectionToProcess.setChapters(new ArrayList<>());
-
     }
 
     private void updateSection(SectionRequest sectionRequest, Section sectionToProcess, Course course) {

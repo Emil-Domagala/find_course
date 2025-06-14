@@ -1,6 +1,7 @@
 package emil.find_course.user;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +28,6 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
-
 
     @Override
     public User updateUser(User user, RequestUpdateUser requestUpdateUser, MultipartFile imageFile) {
@@ -66,10 +66,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(User user) {
+        List<Course> courses = user.getEnrollmentCourses().stream().toList();
+        for (Course course : courses) {
+            course.getStudents().remove(user);
+        }
+
+        user.getEnrollmentCourses().clear();
+        user.getTeachingCourses().clear();
+
         userRepository.delete(user);
     }
 
-    // TODO: Move to Course service
     @Override
     public void grantAccessToCourse(User user, Set<Course> courses) {
         user.getEnrollmentCourses().addAll(courses);
