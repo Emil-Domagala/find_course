@@ -24,6 +24,11 @@ public class PrepareCourseUtil {
     private final ChapterRepository chapterRepository;
     private final PrepareTeacherUtil prepareTeacherUtil;
 
+    public Course prepareDraftCourse(User teacher) {
+        var savedCourse = courseRepository.save(CourseFactory.createCourse(teacher));
+        return savedCourse;
+    }
+
     public Course prepareDraftCourse() {
         User teacher = prepareTeacherUtil.prepareUniqueTeacher();
         var savedCourse = courseRepository.save(CourseFactory.createCourse(teacher));
@@ -44,6 +49,11 @@ public class PrepareCourseUtil {
     }
 
     // Published
+
+    public Course prepareCourse(User teacher) {
+        var savedCourse = courseRepository.save(CourseFactory.createPublishedCourse(teacher));
+        return savedCourse;
+    }
 
     public Course prepareCourse() {
         User teacher = prepareTeacherUtil.prepareUniqueTeacher();

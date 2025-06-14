@@ -66,7 +66,7 @@ public class CourseTeacherController {
             @RequestParam(required = false) CourseCategory category,
             @RequestParam(required = false) String keyword) {
 
-        if (sortField == null) {
+        if (sortField == null || !CourseDto.ALLOWED_SORT_FIELDS.contains(sortField)) {
             sortField = "createdAt";
         }
 
