@@ -28,7 +28,7 @@ import emil.find_course.course.dto.CourseDto;
 import emil.find_course.course.dto.prot.CourseDetailsProtectedDto;
 import emil.find_course.course.dto.request.CourseRequest;
 import emil.find_course.course.enums.CourseCategory;
-import emil.find_course.course.mapper.CourseMapping;
+import emil.find_course.course.mapper.CourseMapper;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +39,7 @@ public class CourseTeacherController {
 
     private final CourseService courseService;
     private final CourseTeacherService courseTeacherService;
-    private final CourseMapping courseMapper;
+    private final CourseMapper courseMapper;
 
     // Create empty course
     @PreAuthorize("hasRole('ROLE_TEACHER')")

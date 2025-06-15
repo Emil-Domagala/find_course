@@ -8,6 +8,6 @@ import emil.find_course.payment.transaction.entity.Transaction;
 import emil.find_course.user.mapper.UserMapper;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { UserMapper.class })
-public interface TransactioMapping {
+public interface TransactionMapper {
     TransactionDto toDto(Transaction transaction);
 }

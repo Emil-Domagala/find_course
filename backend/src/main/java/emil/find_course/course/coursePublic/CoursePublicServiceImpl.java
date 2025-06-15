@@ -14,7 +14,7 @@ import emil.find_course.course.dto.CourseDto;
 import emil.find_course.course.entity.Course;
 import emil.find_course.course.enums.CourseCategory;
 import emil.find_course.course.enums.CourseStatus;
-import emil.find_course.course.mapper.CourseMapping;
+import emil.find_course.course.mapper.CourseMapper;
 import emil.find_course.course.repository.CourseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class CoursePublicServiceImpl implements CoursePublicService {
 
     private final CourseRepository courseRepository;
-    private final CourseMapping courseMapping;
+    private final CourseMapper courseMapper;
 
     @Override
     public Course getPublishedCourse(UUID id) {
@@ -38,7 +38,7 @@ public class CoursePublicServiceImpl implements CoursePublicService {
 
         final Page<Course> courses = courseRepository.searchCourses(keyword, CourseStatus.PUBLISHED, category,
                 pageable);
-        final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
+        final List<CourseDto> coursesDto = courses.stream().map(courseMapper::toDto).toList();
 
         return new PagingResult<CourseDto>(
                 coursesDto,

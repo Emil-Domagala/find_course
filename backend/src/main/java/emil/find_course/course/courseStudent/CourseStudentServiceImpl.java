@@ -19,7 +19,7 @@ import emil.find_course.course.chapter.repository.projection.CourseIdChapterIdPr
 import emil.find_course.course.dto.CourseDto;
 import emil.find_course.course.dto.CourseDtoWithFirstChapter;
 import emil.find_course.course.entity.Course;
-import emil.find_course.course.mapper.CourseMapping;
+import emil.find_course.course.mapper.CourseMapper;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class CourseStudentServiceImpl implements CourseStudentService {
         private final ChapterRepository chapterRepository;
         private final CourseRepository courseRepository;
-        private final CourseMapping courseMapping;
+        private final CourseMapper courseMapper;
 
         @Override
         public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request) {
@@ -63,7 +63,7 @@ public class CourseStudentServiceImpl implements CourseStudentService {
                                                 (existing, replacement) -> existing));
 
                 List<CourseDtoWithFirstChapter> dtosWithChapter = courseList.stream().map(course -> {
-                        CourseDto baseDto = courseMapping.toDto(course);
+                        CourseDto baseDto = courseMapper.toDto(course);
                         CourseDtoWithFirstChapter dtoWithChapter = new CourseDtoWithFirstChapter();
                         BeanUtils.copyProperties(baseDto, dtoWithChapter);
                         dtoWithChapter.setFirstChapter(firstChapterMap.get(course.getId()));

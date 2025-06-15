@@ -21,7 +21,7 @@ import emil.find_course.course.entity.Course;
 import emil.find_course.course.enums.CourseCategory;
 import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.course.enums.Level;
-import emil.find_course.course.mapper.CourseMapping;
+import emil.find_course.course.mapper.CourseMapper;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.course.section.SectionService;
 import emil.find_course.user.entity.User;
@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     private final CourseRepository courseRepository;
-    private final CourseMapping courseMapping;
+    private final CourseMapper courseMapper;
     private final SectionService sectionService;
     private final FileStorageService fileStorageService;
     private final CourseService courseService;
@@ -109,7 +109,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         final Pageable pageable = PaginationUtils.getPageable(request);
         final Page<Course> courses = courseRepository.searchTeacherCourses(keyword, category,
                 teacher.getId(), pageable);
-        final List<CourseDto> coursesDto = courses.stream().map(courseMapping::toDto).toList();
+        final List<CourseDto> coursesDto = courses.stream().map(courseMapper::toDto).toList();
 
         return new PagingResult<CourseDto>(
                 coursesDto,

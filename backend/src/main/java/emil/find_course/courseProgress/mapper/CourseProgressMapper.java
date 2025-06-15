@@ -7,18 +7,18 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import emil.find_course.course.chapter.mapper.ChapterMapping;
-import emil.find_course.course.mapper.CourseMapping;
-import emil.find_course.course.section.mapper.SectionMapping;
+import emil.find_course.course.chapter.mapper.ChapterMapper;
+import emil.find_course.course.mapper.CourseMapper;
+import emil.find_course.course.section.mapper.SectionMapper;
 import emil.find_course.courseProgress.dto.CourseProgressDto;
 import emil.find_course.courseProgress.entity.ChapterProgress;
 import emil.find_course.courseProgress.entity.CourseProgress;
 import emil.find_course.courseProgress.entity.SectionProgress;
 import emil.find_course.courseProgress.repository.projection.CourseProgressProjection;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { CourseMapping.class,
-        SectionMapping.class,
-        ChapterMapping.class })
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { CourseMapper.class,
+        SectionMapper.class,
+        ChapterMapper.class })
 public interface CourseProgressMapper {
 
     @Mapping(target = "overallProgress", source = "sections", qualifiedByName = "calculateOverallProgress")

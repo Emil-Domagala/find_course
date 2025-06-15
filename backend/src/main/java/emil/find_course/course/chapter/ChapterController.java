@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.chapter.dto.prot.ChapterProtectedDto;
-import emil.find_course.course.chapter.mapper.ChapterMapping;
+import emil.find_course.course.chapter.mapper.ChapterMapper;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChapterController {
 
-    private final ChapterMapping chapterMapping;
+    private final ChapterMapper chapterMapper;
     private final ChapterService chapterService;
 
     @GetMapping("/courses/{courseId}/chapters/{chapterId}")
@@ -28,7 +28,7 @@ public class ChapterController {
             @PathVariable UUID courseId,
             @PathVariable UUID chapterId) {
         final User user = userDetails.getUser();
-        final ChapterProtectedDto chapter = chapterMapping
+        final ChapterProtectedDto chapter = chapterMapper
                 .toProtectedDto(chapterService.getChapterIfStudentEnrolled(courseId, chapterId, user));
         return ResponseEntity.ok(chapter);
     }

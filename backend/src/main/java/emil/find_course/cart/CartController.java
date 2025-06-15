@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.cart.dto.CartDto;
 import emil.find_course.cart.entity.Cart;
-import emil.find_course.cart.mapper.CartMapping;
+import emil.find_course.cart.mapper.CartMapper;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.coursePublic.CoursePublicService;
 import emil.find_course.course.entity.Course;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class CartController {
 
     private final CartService cartService;
-    private final CartMapping cartMapping;
+    private final CartMapper cartMapper;
     private final CoursePublicService coursePublicService;
 
     @PostMapping("/cart/{courseId}")
@@ -35,7 +35,7 @@ public class CartController {
             @PathVariable UUID courseId) {
         final User user = userDetails.getUser();
         Course course = coursePublicService.getPublishedCourse(courseId);
-        CartDto cart = cartMapping.toDto(cartService.addCourseToCart(user, course));
+        CartDto cart = cartMapper.toDto(cartService.addCourseToCart(user, course));
         return ResponseEntity.ok(cart);
     }
 
@@ -48,7 +48,7 @@ public class CartController {
         if (cart == null) {
             return ResponseEntity.ok(new CartDto());
         }
-        return ResponseEntity.ok(cartMapping.toDto(cart));
+        return ResponseEntity.ok(cartMapper.toDto(cart));
     }
 
     @GetMapping("/cart")
@@ -56,7 +56,7 @@ public class CartController {
         final User user = userDetails.getUser();
         Optional<Cart> cartOpt = cartService.getCart(user);
 
-        CartDto cartDto = cartOpt.map(cartMapping::toDto).orElse(new CartDto());
+        CartDto cartDto = cartOpt.map(cartMapper::toDto).orElse(new CartDto());
 
         return ResponseEntity.ok(cartDto);
 

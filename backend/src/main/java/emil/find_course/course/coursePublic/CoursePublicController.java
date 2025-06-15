@@ -15,7 +15,7 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.course.dto.CourseDto;
 import emil.find_course.course.dto.pub.CourseDetailsPublicDto;
 import emil.find_course.course.enums.CourseCategory;
-import emil.find_course.course.mapper.CourseMapping;
+import emil.find_course.course.mapper.CourseMapper;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class CoursePublicController {
 
     private final CoursePublicService coursePublicService;
-    private final CourseMapping courseMapper;
+    private final CourseMapper courseMapper;
 
     // Find published courses
     @GetMapping("/courses")

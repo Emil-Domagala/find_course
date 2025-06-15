@@ -10,7 +10,7 @@ import emil.find_course.course.section.entity.Section;
 import emil.find_course.courseProgress.dto.SectionStructure;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SectionMapping {
+public interface SectionMapper {
 
     SectionDto toDto(Section section);
 

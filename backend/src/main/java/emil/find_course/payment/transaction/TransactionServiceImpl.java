@@ -15,7 +15,7 @@ import emil.find_course.common.pagination.PaginationUtils;
 import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.payment.transaction.dto.TransactionDto;
 import emil.find_course.payment.transaction.entity.Transaction;
-import emil.find_course.payment.transaction.mapper.TransactioMapping;
+import emil.find_course.payment.transaction.mapper.TransactionMapper;
 import emil.find_course.payment.transaction.repository.TransactionRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final TransactioMapping transactionMapping;
+    private final TransactionMapper transactionMapper;
 
     @Override
     public Transaction createTransaction(User user, PaymentIntent paymentIntent, Cart cart) {
@@ -44,7 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
         final Pageable pageable = PaginationUtils.getPageable(request);
 
         final Page<Transaction> transactions = transactionRepository.findAllByUser(user, pageable);
-        final List<TransactionDto> transactionsDto = transactions.stream().map(transactionMapping::toDto).toList();
+        final List<TransactionDto> transactionsDto = transactions.stream().map(transactionMapper::toDto).toList();
 
         return new PagingResult<TransactionDto>(
                 transactionsDto,
