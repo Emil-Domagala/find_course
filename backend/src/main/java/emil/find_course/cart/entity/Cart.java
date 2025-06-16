@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import emil.find_course.course.entity.Course;
 import emil.find_course.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,21 +39,14 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "cart_course", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
+    // Null availble bc i wanna allow teacher to delete course, in prod soft
+    // deletion
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinTable(name = "cart_cartItem", joinColumns = @JoinColumn(name = "cart_id"), inverseJoinColumns = @JoinColumn(name = "cartItem_id"))
     @Builder.Default
-    private Set<Course> courses = new HashSet<>();
-
-    @Column(nullable = false)
-    private int totalPrice;
+    private Set<CartItem> cartItems = new HashSet<>();
 
     @Column(nullable = false)
     private Instant expiration;
-
-    @Override
-    public String toString() {
-        return "Cart [id=" + id + ", user=" + user + ", courses=" + courses + ", totalPrice=" + totalPrice
-                + ", expiration=" + expiration + "]";
-    }
 
 }

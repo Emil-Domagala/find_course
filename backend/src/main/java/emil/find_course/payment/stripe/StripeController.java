@@ -32,8 +32,9 @@ public class StripeController {
     public ResponseEntity<Map<String, String>> createPaymentIntent(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();
-        Cart cart = cartService.getCartByUser(user);
+        Cart cart = cartService.findByUserWithItemsAndCourses(user);
 
+        // TODO: If some courses were deleted from cart inform user
         PaymentIntent intent = stripeService.createPaymentIntent(cart, user);
         Map<String, String> response = Map.of("clientSecret", intent.getClientSecret());
         return ResponseEntity.ok(response);

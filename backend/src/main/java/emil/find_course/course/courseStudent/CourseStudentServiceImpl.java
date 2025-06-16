@@ -34,7 +34,8 @@ public class CourseStudentServiceImpl implements CourseStudentService {
         @Override
         public PagingResult<CourseDtoWithFirstChapter> getUserEnrolledCourses(User student, PaginationRequest request) {
                 final Pageable pageable = PaginationUtils.getPageable(request);
-
+                // TODO: Test that students can access course even if course is DRAFT and later
+                // soft deletion;
                 final Page<Course> coursesPage = courseRepository.findAllByStudents(student, pageable);
                 List<Course> courseList = coursesPage.getContent();
 
@@ -51,7 +52,6 @@ public class CourseStudentServiceImpl implements CourseStudentService {
                 List<UUID> courseIds = courseList.stream()
                                 .map(Course::getId)
                                 .collect(Collectors.toList());
-                                
 
                 List<CourseIdChapterIdProjection> chapterIdResults = chapterRepository
                                 .findFirstChapterIdsForCourses(courseIds);

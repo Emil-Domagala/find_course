@@ -50,6 +50,12 @@ public class PrepareCourseUtil {
 
     // Published
 
+    public Course prepareCourse(int price) {
+        User teacher = prepareTeacherUtil.prepareUniqueTeacher();
+        var savedCourse = courseRepository.save(CourseFactory.createPublishedCourse(teacher, price));
+        return savedCourse;
+    }
+
     public Course prepareCourse(User teacher) {
         var savedCourse = courseRepository.save(CourseFactory.createPublishedCourse(teacher));
         return savedCourse;

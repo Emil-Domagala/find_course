@@ -21,6 +21,13 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
         // :TODO:Optimize Course lookup. Do not look for course id you later gonna
         // change it to CourseDto. Uneffective. Count enrollments on db querry
 
+        @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Course c WHERE c = :course AND c.teacher = :user")
+        boolean isUserTeacher(User user, Course course);
+
+
+        @Query("SELECT size(c.students) FROM Course c WHERE c = :course")
+        int countStudentsByCourse(@Param("course") Course course);
+
         Page<Course> findAllByStatus(CourseStatus status, Pageable pageable);
 
         Page<Course> findAllByStudents(User students, Pageable pageable);

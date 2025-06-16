@@ -33,7 +33,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .user(user)
                 .amount((int) (paymentIntent.getAmount() / 1))
                 .paymentIntentId(paymentIntent.getId())
-                .courses(Set.copyOf(cart.getCourses()))
+                .courses(Set.copyOf(cart.getCartItems().stream().map(item -> item.getCourse()).toList()))
                 .build();
 
         return transactionRepository.save(transaction);

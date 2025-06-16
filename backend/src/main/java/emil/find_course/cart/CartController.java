@@ -1,6 +1,5 @@
 package emil.find_course.cart;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.cart.dto.CartDto;
-import emil.find_course.cart.entity.Cart;
+import emil.find_course.cart.dto.response.CartResponse;
+import emil.find_course.cart.entity.CartItem;
 import emil.find_course.cart.mapper.CartMapper;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.coursePublic.CoursePublicService;
@@ -29,6 +29,7 @@ public class CartController {
     private final CartService cartService;
     private final CartMapper cartMapper;
     private final CoursePublicService coursePublicService;
+    private final CartItemService cartItemService;
 
     @PostMapping("/cart/{courseId}")
     public ResponseEntity<CartDto> addCourseToCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -40,25 +41,22 @@ public class CartController {
     }
 
     @DeleteMapping("/cart/{courseId}")
-    public ResponseEntity<CartDto> removeCourseFromCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<CartResponse> removeCourseFromCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
         final User user = userDetails.getUser();
-        Course course = coursePublicService.getPublishedCourse(courseId);
-        Cart cart = cartService.removeCourseFromCart(user, course);
-        if (cart == null) {
-            return ResponseEntity.ok(new CartDto());
-        }
-        return ResponseEntity.ok(cartMapper.toDto(cart));
+        CartItem cartItem = cartItemService.getCartItemByUserAndCourseId(user, courseId);
+
+        var res = cartService.removeCourseFromCart(user, cartItem);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<CartDto> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<CartResponse> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();
-        Optional<Cart> cartOpt = cartService.getCart(user);
+        var res = cartService.getValidCart(user);
 
-        CartDto cartDto = cartOpt.map(cartMapper::toDto).orElse(new CartDto());
 
-        return ResponseEntity.ok(cartDto);
+        return ResponseEntity.ok(res);
 
     }
 

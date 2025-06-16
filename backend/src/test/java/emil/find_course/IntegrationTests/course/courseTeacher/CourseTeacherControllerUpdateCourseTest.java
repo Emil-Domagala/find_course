@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.course.PrepareCourseUtil;
+import emil.find_course.IntegrationTests.course.courseStudent.PrepareCourseWithStudentUtil;
 import emil.find_course.IntegrationTests.teacherApplication.PrepareTeacherUtil;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
 import emil.find_course.common.security.jwt.JwtUtils;
@@ -71,6 +72,8 @@ public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase
         private PrepareUserUtil prepareUserUtil;
         @Autowired
         private PrepareCourseUtil prepareCourseUtil;
+        @Autowired
+        private PrepareCourseWithStudentUtil prepareCourseWithStudentUtil;
         @Autowired
         private ObjectMapper objectMapper;
         @Autowired
@@ -795,5 +798,26 @@ public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase
                                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
         }
 
+        @Test
+        @DisplayName("shouldn't update course status to draft if at least one user enrolled")
+        public void courseTeacherController_updateCourse_shouldnt_UpdateCourseStatusToDraftIfAtLeastOneUserEnrolled()
+                        throws Exception {
+                var student = prepareUserUtil.prepareVerifiedUser();
+                var course = prepareCourseWithStudentUtil.prepareCourse(student, 2);
+
+                var cR = CourseRequest.builder().id(course.getId()).status(CourseStatus.DRAFT).build();
+                var authToken = jwtUtils.generateToken(course.getTeacher());
+
+                var req = createCourseDataPart(cR);
+
+                mockMvc.perform(MockMvcRequestBuilders
+                                .multipart(HttpMethod.PATCH, "/api/v1/teacher/courses/{courseId}",
+                                                course.getId())
+                                .file(req).cookie(new Cookie(authCookieName, authToken)))
+                                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+                var foundCourse = courseRepository.findById(course.getId()).get();
+                assertThat(foundCourse.getStatus()).isEqualTo(CourseStatus.PUBLISHED);
+        }
 
 }

@@ -1,9 +1,9 @@
 package emil.find_course.payment.stripe;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,10 @@ import com.stripe.param.PaymentIntentCreateParams;
 
 import emil.find_course.cart.CartService;
 import emil.find_course.cart.entity.Cart;
+import emil.find_course.cart.entity.CartItem;
 import emil.find_course.common.service.EmailService;
+import emil.find_course.course.entity.Course;
+import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.payment.stripe.exception.CustomStripeException;
 import emil.find_course.payment.transaction.TransactionService;
 import emil.find_course.payment.transaction.entity.Transaction;
@@ -48,17 +51,28 @@ public class StripeServiceImpl implements StripeService {
 
     @Override
     public PaymentIntent createPaymentIntent(Cart cart, User user) {
-        if (cart.getTotalPrice() <= 0) {
+
+        // Get valid courses
+
+        int totalPrice = 0;
+        Set<CartItem> validItems = new HashSet<>();
+        Set<String> courseIds = new HashSet<>();
+
+        for (CartItem item : cart.getCartItems()) {
+            if (item.getCourse() != null && item.getCourse().getStatus().equals(CourseStatus.PUBLISHED)) {
+                validItems.add(item);
+                courseIds.add(item.getCourse().getId().toString());
+                totalPrice += item.getPriceAtAddition();
+            }
+        }
+
+        if (totalPrice <= 0) {
             throw new IllegalArgumentException("Cart total price must be positive.");
         }
 
-        Set<String> courseIds = cart.getCourses().stream()
-                .map(course -> course.getId().toString())
-                .collect(Collectors.toSet());
-
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setReceiptEmail(user.getEmail())
-                .setAmount((long) cart.getTotalPrice())
+                .setAmount(((long) totalPrice))
                 .setCurrency("usd")
                 .setAutomaticPaymentMethods(
                         PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build())
@@ -140,21 +154,31 @@ public class StripeServiceImpl implements StripeService {
                 log.warn("Webhook warning: PaymentIntent {} already processed.", paymentIntent.getId());
                 return;
             }
-            Cart cart = cartService.getCartByUser(user);
-            if (cart == null || cart.getCourses().isEmpty()) {
+            Cart cart = cartService.findByUserWithItemsAndCourses(user);
+            if (cart == null || cart.getCartItems().isEmpty()) {
                 log.error("Webhook error: Cart not found or empty for user {} during fulfillment for PaymentIntent {}",
                         paymentIntent.getId());
                 return;
             }
 
-            if (paymentIntent.getAmount() != (long) cart.getTotalPrice()) {
+            Set<Course> courses = new HashSet<>();
+            int totalPrice = 0;
+            for (CartItem item : cart.getCartItems()) {
+                if (item.getCourse() == null) {
+                    continue;
+                }
+                courses.add(item.getCourse());
+                totalPrice += item.getPriceAtAddition();
+            }
+
+            if (paymentIntent.getAmount() != (long) totalPrice) {
                 log.error("Webhook error: Amount mismatch for PaymentIntent {}. Expected: {}, Actual: {}",
-                        paymentIntent.getId(), cart.getTotalPrice(), paymentIntent.getAmount());
+                        paymentIntent.getId(), totalPrice, paymentIntent.getAmount());
                 return;
             }
 
             // !!!!!!!!!!!
-            userService.grantAccessToCourse(user, cart.getCourses());
+            userService.grantAccessToCourse(user, courses);
             Transaction savedTransaction = transactionService.createTransaction(user, paymentIntent, cart);
             sendPurchasedEmail(user, cart, savedTransaction);
             cartService.deleteCart(cart);

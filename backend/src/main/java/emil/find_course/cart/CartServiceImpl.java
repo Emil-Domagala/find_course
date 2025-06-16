@@ -1,15 +1,20 @@
 package emil.find_course.cart;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import emil.find_course.cart.dto.CartDto;
+import emil.find_course.cart.dto.response.CartResponse;
 import emil.find_course.cart.entity.Cart;
+import emil.find_course.cart.entity.CartItem;
+import emil.find_course.cart.mapper.CartMapper;
 import emil.find_course.cart.repository.CartRepository;
 import emil.find_course.course.entity.Course;
+import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.user.entity.User;
+import emil.find_course.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -17,23 +22,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
+    private final CourseRepository courseRepository;
     private final CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final CartItemService cartItemService;
+    private final CartMapper cartMapper;
 
     @Override
     @Transactional
-    public Cart removeCourseFromCart(User user, Course course) {
-        Cart cart = cartRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException("Cart not found"));
+    public CartResponse removeCourseFromCart(User user, CartItem cartItemForDelete) {
+        Cart cart = cartRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        CartResponse cartResponse = cartItemService.filterNullCourses(cart);
 
-        if (!cart.getCourses().contains(course)) {
-            return null;
+        if (!cart.getCartItems().contains(cartItemForDelete)) {
+            CartDto cartDto = cartMapper.toDto(cart);
+            cartResponse.setCartDto(cartDto);
+            return cartResponse;
         }
-        if (cart.getCourses().size() == 1) {
+        if (cart.getCartItems().size() == 1) {
             cartRepository.delete(cart);
-            return null;
+            cartResponse.setCartDto(new CartDto());
+            return cartResponse;
         }
-        cart.setTotalPrice(cart.getTotalPrice() - course.getPrice());
-        cart.getCourses().remove(course);
-        return cartRepository.save(cart);
+
+        cart.getCartItems().remove(cartItemForDelete);
+        var savedCart = cartRepository.save(cart);
+        cartResponse.setCartDto(cartMapper.toDto(savedCart));
+        return cartResponse;
+
     }
 
     @Override
@@ -41,18 +57,15 @@ public class CartServiceImpl implements CartService {
     public Cart addCourseToCart(User user, Course course) {
         Cart cart = cartRepository.findByUser(user).orElse(new Cart());
 
-        if (course.getTeacher().equals(user)) {
+        if (courseRepository.isUserTeacher(user, course)) {
             throw new IllegalArgumentException("You cannot add your own course to cart");
         }
 
-        // TODO: Optimize this. Do not load whole enrolled courses write smth like
-        // boolean isUserEnrolled(@Param("userId") UUID userId, @Param("courseId") UUID
-        // courseId);
-        if (cart.getCourses().contains(course)) {
+        if (cartItemService.isCourseInCart(course, cart)) {
             throw new IllegalArgumentException("You already have this course in your cart");
         }
 
-        if (user.getEnrollmentCourses().contains(course)) {
+        if (userRepository.isUserEnrolledInCourse(user, course)) {
             throw new IllegalArgumentException("You already have this course in your enrollment");
         }
 
@@ -61,22 +74,28 @@ public class CartServiceImpl implements CartService {
             cart.setExpiration(Instant.now().plusSeconds(60 * 60 * 24 * 7));
         }
 
-        cart.getCourses().add(course);
-
-        cart.setTotalPrice(cart.getTotalPrice() + course.getPrice());
+        cartItemService.addCourseToCart(course, cart);
 
         return cartRepository.save(cart);
-
     }
 
     @Override
-    public Optional<Cart> getCart(User user) {
-        return cartRepository.findByUser(user);
+    // Get valid cart no null and no draft status
+    public CartResponse getValidCart(User user) {
+        Cart cart = cartRepository.findByUserWithItemsAndCourses(user).orElse(new Cart());
+        var cartRes = cartItemService.filterInvalidCourses(cart);
+
+        if (cartRes.getWarnings() != null && cartRes.getWarnings().size() > 0) {
+            cartRepository.save(cart);
+        }
+
+        return cartRes;
     }
 
     @Override
-    public Cart getCartByUser(User user) {
-        return cartRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+    public Cart findByUserWithItemsAndCourses(User user) {
+        return cartRepository.findByUserWithItemsAndCourses(user)
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
     @Override

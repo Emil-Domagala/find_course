@@ -55,6 +55,19 @@ public final class CourseFactory {
                 .build();
     }
 
+    public static Course createPublishedCourse(User teacher, int price) {
+        String suffix = UUID.randomUUID().toString().substring(0, 15).toString();
+        return Course.builder()
+                .teacher(teacher)
+                .title(suffix)
+                .description(suffix)
+                .category(CourseCategory.PROGRAMMING)
+                .imageUrl("https://placehold.co/600x400")
+                .price(price)
+                .level(Level.BEGINNER).status(CourseStatus.PUBLISHED)
+                .build();
+    }
+
     public static Course createPublishedCourse(User teacher, List<Section> sections) {
         String suffix = UUID.randomUUID().toString().substring(0, 15).toString();
         return Course.builder()

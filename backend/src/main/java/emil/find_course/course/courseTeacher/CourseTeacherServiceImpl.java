@@ -80,7 +80,13 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             course.setLevel(courseRequest.getLevel());
         }
         if (courseRequest.getStatus() != null) {
-            course.setStatus(courseRequest.getStatus());
+            if (courseRequest.getStatus() == CourseStatus.DRAFT) {
+                if (courseRepository.countStudentsByCourse(course) == 0) {
+                    course.setStatus(courseRequest.getStatus());
+                }
+            } else {
+                course.setStatus(courseRequest.getStatus());
+            }
         }
 
         String oldImageUrl = course.getImageUrl();
@@ -127,6 +133,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         if (!course.getTeacher().getId().equals(teacherId)) {
             throw new IllegalArgumentException("You are not the teacher of this course");
+        }
+        // TODO: test this
+        if (courseRepository.countStudentsByCourse(course) > 0) {
+            throw new IllegalArgumentException("You cannot delete this course because it has students enrolled");
         }
         course.getTeacher().getTeachingCourses().remove(course);
         course.getStudents().clear();
