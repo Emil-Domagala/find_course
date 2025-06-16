@@ -67,7 +67,7 @@ public class Course {
     private String imageUrl;
 
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

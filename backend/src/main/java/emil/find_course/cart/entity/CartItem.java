@@ -3,6 +3,9 @@ package emil.find_course.cart.entity;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import emil.find_course.course.entity.Course;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -35,6 +38,7 @@ public class CartItem {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Cart cart;
 
+    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Course course;
@@ -48,5 +52,7 @@ public class CartItem {
     @PrePersist
     protected void onSave() {
         this.addedAt = Instant.now();
+        this.priceAtAddition = this.course.getPrice();
     }
+
 }

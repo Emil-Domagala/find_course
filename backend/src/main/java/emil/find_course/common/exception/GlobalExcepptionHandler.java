@@ -32,7 +32,7 @@ public class GlobalExcepptionHandler {
         public ResponseEntity<ApiErrorResponse> handResponse(Exception ex) {
                 log.error("Caught exception", ex);
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                                .message("An unexpected error occured").build();
+                                .message("An unexpected error occured:" + ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
@@ -48,7 +48,6 @@ public class GlobalExcepptionHandler {
                 return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
         }
 
-        // TODO: Add support for 498 and 499
         @ExceptionHandler(JwtAuthException.class)
         public ResponseEntity<Object> handleJwtAuthException(JwtAuthException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder()

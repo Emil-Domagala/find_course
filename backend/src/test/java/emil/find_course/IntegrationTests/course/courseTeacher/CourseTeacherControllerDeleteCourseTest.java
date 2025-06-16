@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-
 import emil.find_course.IntegrationTests.IntegrationTestBase;
+import emil.find_course.IntegrationTests.course.PrepareCourseUtil;
 import emil.find_course.IntegrationTests.course.courseStudent.PrepareCourseWithStudentUtil;
 import emil.find_course.IntegrationTests.teacherApplication.PrepareTeacherUtil;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
@@ -58,7 +58,8 @@ public class CourseTeacherControllerDeleteCourseTest extends IntegrationTestBase
         private SectionRepository sectionRepository;
         @Autowired
         private EntityManager entityManager;
-
+        @Autowired
+        private PrepareCourseUtil prepareCourseUtil;
         @Autowired
         private PrepareCourseWithStudentUtil prepareCourseWithStudentUtil;
 
@@ -75,23 +76,41 @@ public class CourseTeacherControllerDeleteCourseTest extends IntegrationTestBase
                 authToken = jwtUtils.generateToken(teacher);
         }
 
-        @DisplayName("Should delete course and cleanup all references")
+        @DisplayName("Should not delete course with students")
         @Test
-        public void shouldDeleteCourseAndCleanupReferences() throws Exception {
+        public void shouldNotDeleteCourseWithStudents() throws Exception {
                 UUID courseId = course.getId();
-                User teacher = course.getTeacher();
 
                 courseRepository.flush();
                 userRepository.flush();
-                entityManager.clear(); 
+                entityManager.clear();
+
+                mockMvc.perform(MockMvcRequestBuilders
+                                .delete("/api/v1/teacher/courses/{courseId}", courseId)
+                                .cookie(new Cookie(authCookieName, authToken)))
+                                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        }
+
+        @DisplayName("Should delete course and cleanup all references")
+        @Test
+        public void shouldDeleteCourseAndCleanupReferences() throws Exception {
+                courseRepository.delete(course);
+                assertThat(courseRepository.count()).isZero();
+
+                var courseToDelete = prepareCourseUtil.prepareCourse();
+                UUID courseId = courseToDelete.getId();
+                User teacher = courseToDelete.getTeacher();
+                String authToken = jwtUtils.generateToken(teacher);
+
+                courseRepository.flush();
+                userRepository.flush();
+                entityManager.clear();
 
                 mockMvc.perform(MockMvcRequestBuilders
                                 .delete("/api/v1/teacher/courses/{courseId}", courseId)
                                 .cookie(new Cookie(authCookieName, authToken)))
                                 .andExpect(MockMvcResultMatchers.status().isNoContent());
-
-                entityManager.flush();
-                entityManager.clear();
 
                 assertThat(courseRepository.findById(courseId)).isEmpty();
 
@@ -153,11 +172,11 @@ public class CourseTeacherControllerDeleteCourseTest extends IntegrationTestBase
         }
 
         @Test
-        @DisplayName("Should return 401 if cookie not added")
-        public void courseTeacherController_deleteCourse_shouldReturn401IfCookieNotAdded() throws Exception {
+        @DisplayName("Should return 499 if cookie not added")
+        public void courseTeacherController_deleteCourse_shouldReturn499IfCookieNotAdded() throws Exception {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.delete("/api/v1/teacher/courses/{courseId}", course.getId()))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().is(499)).andReturn();
         }
 
 }

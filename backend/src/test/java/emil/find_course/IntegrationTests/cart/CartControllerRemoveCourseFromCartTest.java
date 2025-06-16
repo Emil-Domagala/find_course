@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import emil.find_course.IntegrationTests.IntegrationTestBase;
 import emil.find_course.IntegrationTests.course.PrepareCourseUtil;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
-import emil.find_course.cart.dto.CartDto;
+import emil.find_course.cart.dto.response.CartResponse;
 import emil.find_course.cart.entity.Cart;
 import emil.find_course.cart.repository.CartRepository;
 import emil.find_course.common.security.jwt.JwtUtils;
@@ -68,6 +68,11 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
     // - Then: Response status 200 OK, and returned cart no longer includes that
     // course
     // - calculate correct price
+
+    private CartResponse extractResponse(MvcResult res) throws Exception {
+        return objectMapper.readValue(res.getResponse().getContentAsString(), CartResponse.class);
+    }
+
     @Test
     @DisplayName("Successfully remove course from cart with multiple courses")
     public void cartController_RemoveCourseFromCart_shouldRemoveCourseFromCart() throws Exception {
@@ -82,9 +87,12 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        CartDto cartDto = objectMapper.readValue(res.getResponse().getContentAsString(), CartDto.class);
-        assertThat(cartDto.getCourses().size()).isEqualTo(1);
-        assertThat(cartDto.getTotalPrice()).isEqualTo(20);
+        var response = extractResponse(res);
+        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(20);
+
+        entityManager.flush();
+        entityManager.clear();
 
         Cart foundCart = cartRepository.findByUser(user).orElseThrow();
         assertThat(foundCart.getCartItems().size()).isEqualTo(1);
@@ -100,18 +108,17 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
         prepareCart.prepareCart(user, Set.of(c1));
         var authToken = jwtUtils.generateToken(user);
 
-        MvcResult res = mockMvc.perform(MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders
                 .delete("/api/v1/cart/{courseId}", c1.getId())
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        CartDto cartDto = objectMapper.readValue(res.getResponse().getContentAsString(), CartDto.class);
-        assertThat(cartDto.getId()).isNull();
+        assertThat(cartRepository.findByUser(user)).isEmpty();
         assertThat(cartRepository.findByUser(user)).isEmpty();
     }
 
     // Exceptions
-    // Try to remove course not in cart - ok and cart without this course
+
     @Test
     @DisplayName("Should not throw error if Removed course not in cart")
     public void cartController_RemoveCourseFromCart_shouldNotThrowErrorIfRemovedCourseNotInCart() throws Exception {
@@ -121,14 +128,14 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
         prepareCart.prepareCart(user, Set.of(c1));
         var authToken = jwtUtils.generateToken(user);
 
-        MvcResult res = mockMvc.perform(MockMvcRequestBuilders
+        var res = mockMvc.perform(MockMvcRequestBuilders
                 .delete("/api/v1/cart/{courseId}", c2.getId())
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        CartDto cartDto = objectMapper.readValue(res.getResponse().getContentAsString(), CartDto.class);
-        assertThat(cartDto.getCourses().size()).isEqualTo(1);
-        assertThat(cartDto.getTotalPrice()).isEqualTo(10);
+        var response = extractResponse(res);
+        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(10);
 
         Cart foundCart = cartRepository.findByUser(user).orElseThrow();
         assertThat(foundCart.getCartItems().size()).isEqualTo(1);
@@ -165,8 +172,6 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
 
         var cart = prepareCart.prepareCart(user, Set.of(c1, c2));
         var authToken = jwtUtils.generateToken(user);
-        entityManager.flush();
-        entityManager.clear();
         // change price
         int totalPrice = cart.getCartItems().stream().mapToInt(item -> item.getPriceAtAddition()).sum();
         assertThat(totalPrice).isEqualTo(expectedPrice + oldPrice);
@@ -183,19 +188,43 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
                 .cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-        CartDto cartDto = objectMapper.readValue(res.getResponse().getContentAsString(), CartDto.class);
-        assertThat(cartDto.getCourses().size()).isEqualTo(1);
-        assertThat(cartDto.getTotalPrice()).isEqualTo(expectedPrice);
+        var response = extractResponse(res);
+        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(expectedPrice);
 
         assertThat(courseRepository.findById(c2.getId()).get().getPrice()).isEqualTo(newPrice);
-        Cart foundCart = cartRepository.findByUser(user).orElseThrow();
-
-        int newTotalPrice = cart.getCartItems().stream().mapToInt(item -> item.getPriceAtAddition()).sum();
-
-        assertThat(foundCart.getCartItems().size()).isEqualTo(1);
-        assertThat(newTotalPrice).isEqualTo(expectedPrice);
+        assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(1);
     }
 
     // Should delete course Item if course deleted
+
+    @Test
+    @DisplayName("Should filter invalid course and remove requested course from cart")
+    public void cartController_RemoveCourseFromCart_shouldFilterInvalidCoursesAndRemoveRequested()
+            throws Exception {
+        var user = prepareUserUtil.prepareUniqueVerifiedUse();
+        var c1 = prepareCourseUtil.prepareCourse(10);
+        var c2 = prepareCourseUtil.prepareCourse(20);
+        var c3 = prepareCourseUtil.prepareCourse(30);
+        var cart = prepareCart.prepareCart(user, Set.of(c1, c2, c3));
+
+        var authToken = jwtUtils.generateToken(user);
+        assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(3);
+        courseRepository.deleteById(c3.getId());
+        entityManager.detach(cart);
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(3);
+        var res = mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/v1/cart/{courseId}", c2.getId())
+                .cookie(new Cookie(authCookieName, authToken)))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        var response = extractResponse(res);
+        assertThat(response.getWarnings().size()).isEqualTo(1);
+        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
+
+        assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(1);
+    }
 
 }

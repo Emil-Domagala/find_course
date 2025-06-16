@@ -9,13 +9,10 @@ import emil.find_course.course.entity.Course;
 import emil.find_course.user.entity.User;
 
 public interface CartItemService {
-    boolean isCourseInCart(Course course, Cart cart);
 
     CartItem addCourseToCart(Course course, Cart cart);
 
     CartResponse filterInvalidCourses(Cart cart);
-
-    CartResponse filterNullCourses(Cart cart);
 
     CartItem getCartItemByUserAndCourseId(User user, UUID courseId);
 }

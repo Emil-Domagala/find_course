@@ -1,5 +1,6 @@
 package emil.find_course.cart;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import emil.find_course.cart.dto.CartDto;
 import emil.find_course.cart.dto.response.CartResponse;
 import emil.find_course.cart.entity.CartItem;
 import emil.find_course.cart.mapper.CartMapper;
+import emil.find_course.cart.repository.CartItemRepository;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.coursePublic.CoursePublicService;
 import emil.find_course.course.entity.Course;
@@ -29,7 +31,7 @@ public class CartController {
     private final CartService cartService;
     private final CartMapper cartMapper;
     private final CoursePublicService coursePublicService;
-    private final CartItemService cartItemService;
+    private final CartItemRepository cartItemRepository;
 
     @PostMapping("/cart/{courseId}")
     public ResponseEntity<CartDto> addCourseToCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -44,7 +46,7 @@ public class CartController {
     public ResponseEntity<CartResponse> removeCourseFromCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
         final User user = userDetails.getUser();
-        CartItem cartItem = cartItemService.getCartItemByUserAndCourseId(user, courseId);
+        Optional<CartItem> cartItem = cartItemRepository.findByUserAndCourseId(user.getId(), courseId);
 
         var res = cartService.removeCourseFromCart(user, cartItem);
         return ResponseEntity.ok(res);
@@ -54,7 +56,6 @@ public class CartController {
     public ResponseEntity<CartResponse> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();
         var res = cartService.getValidCart(user);
-
 
         return ResponseEntity.ok(res);
 

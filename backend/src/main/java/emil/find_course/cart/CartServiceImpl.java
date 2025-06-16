@@ -1,6 +1,8 @@
 package emil.find_course.cart;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,9 @@ import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
@@ -30,28 +34,40 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartResponse removeCourseFromCart(User user, CartItem cartItemForDelete) {
-        Cart cart = cartRepository.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-        CartResponse cartResponse = cartItemService.filterNullCourses(cart);
+    public CartResponse removeCourseFromCart(User user, Optional<CartItem> cartItemForDelete) {
+        Cart cart = cartRepository.findByUserWithItemsAndCourses(user)
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        CartResponse cartResponse = cartItemService.filterInvalidCourses(cart);
 
-        if (!cart.getCartItems().contains(cartItemForDelete)) {
+        log.info("after filterInvalidCourses");
+        if (!cartItemForDelete.isPresent()) {
+            cartResponse.setCartDto(cartMapper.toDto(cart));
+            return cartResponse;
+        }
+        var itemForDelete = cartItemForDelete.get();
+        if (!cart.getCartItems().contains(itemForDelete)) {
+            log.info("Item not found in cart");
             CartDto cartDto = cartMapper.toDto(cart);
             cartResponse.setCartDto(cartDto);
             return cartResponse;
         }
         if (cart.getCartItems().size() == 1) {
+            log.info("Deleting cart");
             cartRepository.delete(cart);
-            cartResponse.setCartDto(new CartDto());
             return cartResponse;
         }
-
-        cart.getCartItems().remove(cartItemForDelete);
+        log.info("Deleting item from cart");
+        cart.getCartItems().remove(itemForDelete);
+        log.info("Saving cart");
         var savedCart = cartRepository.save(cart);
+        log.info("Cart saved");
         cartResponse.setCartDto(cartMapper.toDto(savedCart));
+        log.info("Returning cart response");
         return cartResponse;
 
     }
 
+    // TODO: Optimize. Just add eager course.
     @Override
     @Transactional
     public Cart addCourseToCart(User user, Course course) {
@@ -61,7 +77,7 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("You cannot add your own course to cart");
         }
 
-        if (cartItemService.isCourseInCart(course, cart)) {
+        if (cart.getCartItems().stream().anyMatch(item -> item.getCourse().getId().equals(course.getId()))) {
             throw new IllegalArgumentException("You already have this course in your cart");
         }
 
@@ -71,7 +87,7 @@ public class CartServiceImpl implements CartService {
 
         if (cart.getUser() == null) {
             cart.setUser(user);
-            cart.setExpiration(Instant.now().plusSeconds(60 * 60 * 24 * 7));
+            cart.setExpiration(Instant.now().plusSeconds(60 * 60 * 24));
         }
 
         cartItemService.addCourseToCart(course, cart);
@@ -82,12 +98,28 @@ public class CartServiceImpl implements CartService {
     @Override
     // Get valid cart no null and no draft status
     public CartResponse getValidCart(User user) {
+        log.info("Getting valid cart");
         Cart cart = cartRepository.findByUserWithItemsAndCourses(user).orElse(new Cart());
+        log.info("Cart found");
+        if (cart.getUser() == null) {
+            log.info("Cart not found");
+            var cartRes = CartResponse.builder().build();
+            return cartRes;
+        }
+
+        if (cart.getExpiration().isBefore(Instant.now())) {
+            log.info("Cart expired");
+            cartRepository.delete(cart);
+            var cartRes = CartResponse.builder().warnings(List.of("Your cart has expired")).build();
+            return cartRes;
+        }
         var cartRes = cartItemService.filterInvalidCourses(cart);
 
         if (cartRes.getWarnings() != null && cartRes.getWarnings().size() > 0) {
+            log.info("Cart has invalid courses");
             cartRepository.save(cart);
         }
+        cartRes.setCartDto(cartMapper.toDto(cart));
 
         return cartRes;
     }

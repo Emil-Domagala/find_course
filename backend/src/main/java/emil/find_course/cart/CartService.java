@@ -1,5 +1,7 @@
 package emil.find_course.cart;
 
+import java.util.Optional;
+
 import emil.find_course.cart.dto.response.CartResponse;
 import emil.find_course.cart.entity.Cart;
 import emil.find_course.cart.entity.CartItem;
@@ -8,7 +10,7 @@ import emil.find_course.user.entity.User;
 
 public interface CartService {
 
-    public CartResponse removeCourseFromCart(User user, CartItem cartItem);
+    public CartResponse removeCourseFromCart(User user, Optional<CartItem> cartItem);
 
     public Cart addCourseToCart(User user, Course course);
 
@@ -19,5 +21,3 @@ public interface CartService {
     public void deleteCart(Cart cart);
 
 }
-
-// TODO: removeCourseFromCart and getValidCart
