@@ -43,7 +43,7 @@ public class CourseProgressController {
         final User user = userDetails.getUser();
         courseProgressService.updateChapterProgress(courseId, user, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }

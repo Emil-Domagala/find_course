@@ -1,6 +1,6 @@
 package emil.find_course.payment.transaction.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class TransactionDto {
     private UUID id;
     private String paymentIntentId;
     private int amount;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     private Set<CourseDto> courses;
 
 }

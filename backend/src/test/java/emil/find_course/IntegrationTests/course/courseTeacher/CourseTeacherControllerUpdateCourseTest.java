@@ -120,11 +120,9 @@ public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase
                 var authToken = jwtUtils.generateToken(course.getTeacher());
                 var req = createCourseDataPart(request);
 
-                mockMvc.perform(
-                                MockMvcRequestBuilders
-                                                .multipart(HttpMethod.PATCH, "/api/v1/teacher/courses/{courseId}",
-                                                                course.getId())
-                                                .file(req).cookie(new Cookie(authCookieName, authToken)))
+                mockMvc.perform(MockMvcRequestBuilders
+                                .multipart(HttpMethod.PATCH, "/api/v1/teacher/courses/{courseId}", course.getId())
+                                .file(req).cookie(new Cookie(authCookieName, authToken)))
                                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
                 var updatedCourse = courseRepository.findById(course.getId()).get();
@@ -161,11 +159,9 @@ public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase
                 CourseRequest request = CourseRequest.builder().id(course.getId()).build();
                 var req = createCourseDataPart(request);
 
-                mockMvc.perform(
-                                MockMvcRequestBuilders
-                                                .multipart(HttpMethod.PATCH, "/api/v1/teacher/courses/{courseId}",
-                                                                course.getId())
-                                                .file(req).cookie(new Cookie(authCookieName, authToken)))
+                mockMvc.perform(MockMvcRequestBuilders
+                                .multipart(HttpMethod.PATCH, "/api/v1/teacher/courses/{courseId}", course.getId())
+                                .file(req).cookie(new Cookie(authCookieName, authToken)))
                                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
                 entityManager.flush();

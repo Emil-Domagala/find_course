@@ -1,6 +1,6 @@
 package emil.find_course.courseProgress.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,8 +21,8 @@ public interface CourseProgressRepository extends JpaRepository<CourseProgress, 
 
     Optional<CourseProgress> findByCourseIdAndUserId(UUID courseId, UUID userId);
 
-@Query("SELECT cp.updatedAt FROM CourseProgress cp WHERE cp.course.id = :courseId AND cp.user.id = :userId")
-    Optional<LocalDateTime> findUpdatedAtByCourseIdAndUserId(
+    @Query("SELECT cp.updatedAt FROM CourseProgress cp WHERE cp.course.id = :courseId AND cp.user.id = :userId")
+    Optional<Instant> findUpdatedAtByCourseIdAndUserId(
             @Param("courseId") UUID courseId,
             @Param("userId") UUID userId);
 

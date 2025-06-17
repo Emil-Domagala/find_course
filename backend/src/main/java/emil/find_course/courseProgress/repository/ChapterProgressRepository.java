@@ -12,17 +12,16 @@ import emil.find_course.courseProgress.entity.ChapterProgress;
 
 @Repository
 public interface ChapterProgressRepository extends JpaRepository<ChapterProgress, UUID> {
-    
 
         @Query("SELECT cp FROM ChapterProgress cp " +
-           "JOIN cp.sectionProgress sp " +
-           "JOIN sp.courseProgress cpr " +
-           "WHERE cpr.user.id = :userId " +
-           "AND cpr.course.id = :courseId " +
-           "AND cp.id = :chapterProgresId")
-    Optional<ChapterProgress> findByUserCourseAndOriginalChapter(
-            @Param("userId") UUID userId,
-            @Param("courseId") UUID courseId,
-            @Param("chapterProgresId") UUID chapterProgresId);
+                        "JOIN cp.sectionProgress sp " +
+                        "JOIN sp.courseProgress cpr " +
+                        "WHERE cpr.user.id = :userId " +
+                        "AND cpr.course.id = :courseId " +
+                        "AND cp.id = :chapterProgresId")
+        Optional<ChapterProgress> findByUserCourseAndOriginalChapter(
+                        @Param("userId") UUID userId,
+                        @Param("courseId") UUID courseId,
+                        @Param("chapterProgresId") UUID chapterProgresId);
 
 }

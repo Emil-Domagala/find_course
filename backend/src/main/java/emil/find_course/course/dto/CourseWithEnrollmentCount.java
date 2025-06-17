@@ -1,6 +1,6 @@
 package emil.find_course.course.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class CourseWithEnrollmentCount {
     private Level level;
     private CourseStatus status;
     private long studentsCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
 }

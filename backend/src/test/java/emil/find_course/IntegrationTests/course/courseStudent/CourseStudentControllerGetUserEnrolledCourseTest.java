@@ -2,7 +2,7 @@ package emil.find_course.IntegrationTests.course.courseStudent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -219,8 +219,8 @@ public class CourseStudentControllerGetUserEnrolledCourseTest extends Integratio
 
         // is ASC and createdAt
         for (int i = 0; i < numberOfCourses - 1; i++) {
-            LocalDateTime current = courses.get(i).getCreatedAt();
-            LocalDateTime next = courses.get(i + 1).getCreatedAt();
+            Instant current = courses.get(i).getCreatedAt();
+            Instant next = courses.get(i + 1).getCreatedAt();
             assertThat(current.isBefore(next)).isTrue();
         }
 
@@ -248,8 +248,8 @@ public class CourseStudentControllerGetUserEnrolledCourseTest extends Integratio
 
         // is ASC and createdAt
         for (int i = 0; i < numberOfCourses - 1; i++) {
-            LocalDateTime current = courses.get(i).getCreatedAt();
-            LocalDateTime next = courses.get(i + 1).getCreatedAt();
+            Instant current = courses.get(i).getCreatedAt();
+            Instant next = courses.get(i + 1).getCreatedAt();
             assertThat(current.isBefore(next)).isTrue();
         }
 

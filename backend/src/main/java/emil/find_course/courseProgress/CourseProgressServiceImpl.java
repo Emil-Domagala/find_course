@@ -1,7 +1,8 @@
 package emil.find_course.courseProgress;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +30,9 @@ import emil.find_course.courseProgress.repository.projection.CourseProgressProje
 import emil.find_course.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseProgressServiceImpl implements CourseProgressService {
@@ -60,26 +63,26 @@ public class CourseProgressServiceImpl implements CourseProgressService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-        Optional<LocalDateTime> courseProgressUpdatedAt = courseProgressRepository
-                .findUpdatedAtByCourseIdAndUserId(courseId, user.getId());
-
         if (!courseRepository.isEnrolled(courseId, user)) {
             throw new ForbiddenException("User is not enrolled in this course");
         }
+
+        Optional<Instant> courseProgressUpdatedAt = courseProgressRepository
+                .findUpdatedAtByCourseIdAndUserId(courseId, user.getId());
 
         CourseProgressDto courseProgressDto;
         if (courseProgressUpdatedAt.isEmpty()) {
             // This means that the CourseUpdata was not created yet. So i needt to create
             // new Entity.
-            System.out.println("Course progress not found");
+            log.info("Course progress not found");
             courseProgressDto = courseProgressMapper.toDto(createCourseProject(course, user));
         } else if (course.getUpdatedAt().isAfter(courseProgressUpdatedAt.get())) {
             // Course progress might be unsync
-            System.out.println("Course progress might be unsync");
+            log.info("Course progress might be unsync");
             courseProgressDto = courseProgressMapper.toDto(updateCourseProgress(course, user));
         } else {
             // Course progress is sync
-            System.out.println("Course progress found");
+            log.info("Course progress found");
             CourseProgressProjection courseProgressProjection = courseProgressRepository
                     .findProjectedByCourseIdAndUserId(courseId, user.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Course progress not found"));
@@ -96,10 +99,22 @@ public class CourseProgressServiceImpl implements CourseProgressService {
         CourseProgress courseProgress = courseProgressRepository.findByCourseIdAndUserId(course.getId(), user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course progress not found"));
 
-        Map<UUID, SectionProgress> sectionProgressMapByOriginalSectionId = courseProgress.getSections().stream()
-                .collect(Collectors.toMap(sp -> sp.getOriginalSection().getId(), Function.identity()));
+        Map<UUID, SectionProgress> sectionProgressMapByOriginalSectionId = new HashMap<>();
 
+        List<SectionProgress> invalidSectionsProgress = new ArrayList<>();
         List<SectionProgress> sectionsProgressFinall = new ArrayList<>();
+
+        for (SectionProgress sectionProgress : courseProgress.getSections()) {
+            if (sectionProgress.getOriginalSection() == null) {
+                invalidSectionsProgress.add(sectionProgress);
+            } else {
+                sectionProgressMapByOriginalSectionId.put(sectionProgress.getOriginalSection().getId(),
+                        sectionProgress);
+            }
+
+        }
+        log.debug("null oryginal sections size: {}", invalidSectionsProgress.size());
+
         for (Section section : course.getSections()) {
             SectionProgress sectionProgress = sectionProgressMapByOriginalSectionId.get(section.getId());
             if (sectionProgress == null) {
@@ -125,11 +140,20 @@ public class CourseProgressServiceImpl implements CourseProgressService {
     // Section exists
     private void updateSectionProgress(Section section, SectionProgress sectionProgressToProceed) {
         sectionProgressToProceed.setPosition(section.getPosition());
-        Map<UUID, ChapterProgress> chapterProgressMapByOriginalChapterId = sectionProgressToProceed.getChapters()
-                .stream()
-                .collect(Collectors.toMap(cp -> cp.getOriginalChapter().getId(), Function.identity()));
+        Map<UUID, ChapterProgress> chapterProgressMapByOriginalChapterId = new HashMap<>();
 
+        List<ChapterProgress> invalidChaptersProgress = new ArrayList<>();
         List<ChapterProgress> chaptersProgressFinall = new ArrayList<>();
+
+        for (ChapterProgress chapterProgress : sectionProgressToProceed.getChapters()) {
+            if (chapterProgress.getOriginalChapter() == null) {
+                invalidChaptersProgress.add(chapterProgress);
+            } else {
+                chapterProgressMapByOriginalChapterId.put(chapterProgress.getOriginalChapter().getId(),
+                        chapterProgress);
+            }
+        }
+        log.debug("null oryginal chapters size: {}", invalidChaptersProgress.size());
 
         for (Chapter chapter : section.getChapters()) {
             ChapterProgress chapterProgress = chapterProgressMapByOriginalChapterId.get(chapter.getId());
@@ -163,7 +187,7 @@ public class CourseProgressServiceImpl implements CourseProgressService {
         List<SectionProgress> sectionsProgressFinall = new ArrayList<>();
         for (Section section : course.getSections()) {
             SectionProgress sectionProgressToProceed = new SectionProgress();
-            ;
+
             createSectionProgress(courseProgress, section, sectionProgressToProceed);
             sectionsProgressFinall.add(sectionProgressToProceed);
         }

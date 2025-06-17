@@ -1,6 +1,6 @@
 package emil.find_course.teacherApplication.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public class TeacherApplicationDto {
     private UserDto user;
     private TeacherApplicationStatus status;
     private boolean seenByAdmin;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
             "createdAt", "status", "seenByAdmin", "id");

@@ -3,7 +3,7 @@ package emil.find_course.IntegrationTests.course.coursePublic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -243,8 +243,8 @@ public class CoursePublicControllerGetCourseTest extends IntegrationTestBase {
 
                 // is ASC and createdAt
                 for (int i = 0; i < count - 1; i++) {
-                        LocalDateTime current = courses.get(i).getCreatedAt();
-                        LocalDateTime next = courses.get(i + 1).getCreatedAt();
+                        Instant current = courses.get(i).getCreatedAt();
+                        Instant next = courses.get(i + 1).getCreatedAt();
                         if ("ASC".equals(direction)) {
                                 assertThat(current.isBefore(next)).isTrue();
                         } else {
@@ -299,8 +299,8 @@ public class CoursePublicControllerGetCourseTest extends IntegrationTestBase {
 
                 // is ASC and createdAt
                 for (int i = 0; i < count - 1; i++) {
-                        LocalDateTime current = courses.get(i).getCreatedAt();
-                        LocalDateTime next = courses.get(i + 1).getCreatedAt();
+                        Instant current = courses.get(i).getCreatedAt();
+                        Instant next = courses.get(i + 1).getCreatedAt();
                         assertThat(current.isBefore(next)).isTrue();
                 }
 
@@ -328,8 +328,8 @@ public class CoursePublicControllerGetCourseTest extends IntegrationTestBase {
 
                 // is ASC and createdAt
                 for (int i = 0; i < count - 1; i++) {
-                        LocalDateTime current = courses.get(i).getCreatedAt();
-                        LocalDateTime next = courses.get(i + 1).getCreatedAt();
+                        Instant current = courses.get(i).getCreatedAt();
+                        Instant next = courses.get(i + 1).getCreatedAt();
                         assertThat(current.isBefore(next)).isTrue();
                 }
 

@@ -20,9 +20,11 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -30,6 +32,8 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = { "course", "chapters" })
+@EqualsAndHashCode(callSuper = false, of = "id")
 @Table(name = "sections")
 public class Section {
 
@@ -54,11 +58,5 @@ public class Section {
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Chapter> chapters = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "Section [id=" + id + ", position=" + position + ", title=" + title + ", description=" + description +
-                "]";
-    }
 
 }

@@ -2,7 +2,7 @@ package emil.find_course.IntegrationTests.course.courseTeacher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,6 @@ public class CourseTeacherControllerGetTeacherCoursesTest extends IntegrationTes
     private CourseRepository courseRepository;
     @Autowired
     private PrepareTeacherUtil prepareTeacherUtil;
-
 
     private PagingResult<CourseDto> extractContent(MvcResult res) throws Exception {
         JavaType type = objectMapper.getTypeFactory().constructParametricType(PagingResult.class,
@@ -193,8 +192,8 @@ public class CourseTeacherControllerGetTeacherCoursesTest extends IntegrationTes
 
         // is ASC and createdAt
         for (int i = 0; i < numberOfCourses - 1; i++) {
-            LocalDateTime current = courses.get(i).getCreatedAt();
-            LocalDateTime next = courses.get(i + 1).getCreatedAt();
+            Instant current = courses.get(i).getCreatedAt();
+            Instant next = courses.get(i + 1).getCreatedAt();
             assertThat(current.isBefore(next)).isTrue();
         }
 
@@ -229,8 +228,8 @@ public class CourseTeacherControllerGetTeacherCoursesTest extends IntegrationTes
 
         // is ASC and createdAt
         for (int i = 0; i < numberOfCourses - 1; i++) {
-            LocalDateTime current = courses.get(i).getCreatedAt();
-            LocalDateTime next = courses.get(i + 1).getCreatedAt();
+            Instant current = courses.get(i).getCreatedAt();
+            Instant next = courses.get(i + 1).getCreatedAt();
             assertThat(current.isBefore(next)).isTrue();
         }
 

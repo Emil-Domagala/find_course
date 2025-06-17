@@ -15,7 +15,7 @@ import jakarta.servlet.http.Cookie;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -124,8 +124,8 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
                 List<TeacherApplicationDto> content = extractContent(res);
 
                 for (int i = 0; i < content.size() - 1; i++) {
-                        LocalDateTime current = content.get(i).getCreatedAt();
-                        LocalDateTime next = content.get(i + 1).getCreatedAt();
+                        Instant current = content.get(i).getCreatedAt();
+                        Instant next = content.get(i + 1).getCreatedAt();
                         assertTrue(current.isBefore(next));
                 }
 
@@ -219,7 +219,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort id,
         @ParameterizedTest
-        @CsvSource({"ASC", "DESC"})
+        @CsvSource({ "ASC", "DESC" })
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByID(
                         String direction) throws Exception {
                 int totalElem = 20;
@@ -253,7 +253,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort seenByAdmin
         @ParameterizedTest
-        @CsvSource({ "ASC", "DESC"})
+        @CsvSource({ "ASC", "DESC" })
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByseenByAdmin(
                         String direction) throws Exception {
                 int totalElem = 20;
@@ -289,7 +289,7 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
 
         // sort by status works
         @ParameterizedTest
-        @CsvSource({"ASC", "DESC"})
+        @CsvSource({ "ASC", "DESC" })
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnAllEntitiesButSortedByStatus(
                         String direction) throws Exception {
                 int totalElem = 30;
@@ -359,8 +359,8 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
                 List<TeacherApplicationDto> content = extractContent(res);
 
                 for (int i = 0; i < content.size() - 1; i++) {
-                        LocalDateTime current = content.get(i).getCreatedAt();
-                        LocalDateTime next = content.get(i + 1).getCreatedAt();
+                        Instant current = content.get(i).getCreatedAt();
+                        Instant next = content.get(i + 1).getCreatedAt();
                         assertTrue(current.isBefore(next));
                 }
 

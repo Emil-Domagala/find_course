@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -45,7 +45,6 @@ public class FileStorageImpl implements FileStorageService {
 
     @Override
     public String saveProcessedImage(InputStream inputStream, String identifier, String originalFilenameBase) {
-        final DateTimeFormatter FILENAME_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
         Objects.requireNonNull(inputStream, "InputStream cannot be null.");
         Objects.requireNonNull(identifier, "Identifier cannot be null or blank.");
         Objects.requireNonNull(originalFilenameBase, "Original filename base cannot be null.");
@@ -56,7 +55,7 @@ public class FileStorageImpl implements FileStorageService {
 
         String sanitizedIdentifier = identifier.replaceAll("[^a-zA-Z0-9_\\-]", "_");
         String cleanedBaseName = originalFilenameBase.replaceAll("[^a-zA-Z0-9_\\-]", "_");
-        String timestamp = LocalDateTime.now().format(FILENAME_DATE_FORMATTER);
+        Instant timestamp = Instant.now();
 
         String objectKey = String.format("%s_%s_%s.%s",
                 sanitizedIdentifier,

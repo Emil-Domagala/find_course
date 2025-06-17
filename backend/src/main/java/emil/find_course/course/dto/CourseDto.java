@@ -1,6 +1,6 @@
 package emil.find_course.course.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,8 +29,8 @@ public class CourseDto {
     private Level level;
     private CourseStatus status;
     private long studentsCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
             "createdAt", "updatedAt", "title", "price", "id");

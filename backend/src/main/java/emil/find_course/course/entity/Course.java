@@ -1,6 +1,6 @@
 package emil.find_course.course.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +32,11 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -42,6 +44,8 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = { "students" })
+@EqualsAndHashCode(callSuper = false, of = "id")
 @Table(name = "courses")
 public class Course {
 
@@ -87,29 +91,21 @@ public class Course {
     private Set<User> students = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @Override
-    public String toString() {
-        return "Course [id=" + id + ", teacher=" + teacher + ", title=" + title + ", description=" + description
-                + ", category=" + category + ", imageUrl=" + imageUrl + ", price=" + price + ", level=" + level
-                + ", status=" + status + ", sections=" + sections + ", students=" + students + ", createdAt="
-                + createdAt + ", updatedAt=" + updatedAt + "]";
+        this.updatedAt = Instant.now();
     }
 
 }

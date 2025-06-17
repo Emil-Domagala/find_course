@@ -1,6 +1,6 @@
 package emil.find_course.courseProgress.repository.projection;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,9 +9,9 @@ import emil.find_course.course.chapter.enums.ChapterType;
 public interface CourseProgressProjection {
     UUID getId();
 
-    LocalDateTime getCreatedAt();
+    Instant getCreatedAt();
 
-    LocalDateTime getUpdatedAt();
+    Instant getUpdatedAt();
 
     CourseInfo getCourse();
 
