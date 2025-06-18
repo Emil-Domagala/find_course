@@ -25,13 +25,15 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping("transaction")
-    public ResponseEntity<PagingResult<TransactionDto>> getTransactions(@RequestParam(required = false) Integer page,
+    public ResponseEntity<PagingResult<TransactionDto>> getTransactions(
+            @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
             @RequestParam(required = false) Sort.Direction direction,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (size > 100) {
-            size = 100;
+
+        if (sortField == null || !TransactionDto.ALLOWED_SORT_FIELDS.contains(sortField)) {
+            sortField = "createdAt";
         }
         final User user = userDetails.getUser();
 

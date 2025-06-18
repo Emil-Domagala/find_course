@@ -85,8 +85,8 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         @DisplayName("Should return top 100 elements")
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnTop100Elements()
                         throws Exception {
-                int size = 150;
-                prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(150);
+                int size = 102;
+                prepareTeacherApplicationUtil.createAndPersistUniqueUserAndTeacherApplications(size);
                 mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
                                 .param("size", String.valueOf(size))
                                 .cookie(new Cookie(authCookieName, authToken)))

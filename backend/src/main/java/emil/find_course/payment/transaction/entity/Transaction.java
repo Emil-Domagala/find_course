@@ -51,7 +51,7 @@ public class Transaction {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "transaction_course", joinColumns = @JoinColumn(name = "transaction_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
     @Builder.Default
     private Set<Course> courses = new HashSet<>();

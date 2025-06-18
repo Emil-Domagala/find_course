@@ -799,7 +799,7 @@ public class CourseTeacherControllerUpdateCourseTest extends IntegrationTestBase
         public void courseTeacherController_updateCourse_shouldnt_UpdateCourseStatusToDraftIfAtLeastOneUserEnrolled()
                         throws Exception {
                 var student = prepareUserUtil.prepareVerifiedUser();
-                var course = prepareCourseWithStudentUtil.prepareCourse(student, 2);
+                var course = prepareCourseWithStudentUtil.prepareCourse(student);
 
                 var cR = CourseRequest.builder().id(course.getId()).status(CourseStatus.DRAFT).build();
                 var authToken = jwtUtils.generateToken(course.getTeacher());

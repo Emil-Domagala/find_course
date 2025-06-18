@@ -154,8 +154,8 @@ public class ChapterControllerGetChapterTest extends IntegrationTestBase {
 
         // not logged in
         @Test
-        @DisplayName("Should return 401 if not loggedIn")
-        public void chapterController_getChapter_shouldReturn401IfNotLoggedIn() throws Exception {
+        @DisplayName("Should return 499 if not loggedIn")
+        public void chapterController_getChapter_shouldReturn499IfNotLoggedIn() throws Exception {
                 var course = prepareCourseWithStudentUtil.prepareCourseWithChapters(user, 2);
                 var chapter = course.getSections().get(0).getChapters().get(0);
                 UUID chapterId = chapter.getId();
@@ -163,7 +163,7 @@ public class ChapterControllerGetChapterTest extends IntegrationTestBase {
 
                 mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses/{courseId}/chapters/{chapterId}",
                                 courseId, chapterId))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().is(499)).andReturn();
         }
 
 }

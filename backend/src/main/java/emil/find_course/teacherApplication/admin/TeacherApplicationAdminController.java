@@ -39,9 +39,9 @@ public class TeacherApplicationAdminController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) String sortField,
-            @Valid @RequestParam(required = false) Sort.Direction direction,
-            @Valid @RequestParam(required = false) TeacherApplicationStatus status,
-            @Valid @RequestParam(required = false) Boolean seenByAdmin) {
+            @RequestParam(required = false) Sort.Direction direction,
+            @RequestParam(required = false) TeacherApplicationStatus status,
+            @RequestParam(required = false) Boolean seenByAdmin) {
 
         if (sortField == null || !TeacherApplicationDto.ALLOWED_SORT_FIELDS.contains(sortField)) {
             sortField = "createdAt";

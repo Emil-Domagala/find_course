@@ -43,24 +43,22 @@ public class UserControllerGetUserInfoTest extends IntegrationTestBase {
     @Autowired
     private PrepareUserUtil prepareUserUtil;
 
-    // No cookie throws 401
     @Test
-    @DisplayName("Should return 401 when no cookie set")
-    public void userController_getUserInfo_returns401WhenNoCookieSet() throws Exception {
+    @DisplayName("Should return 499 when no cookie set")
+    public void userController_getUserInfo_returns499WhenNoCookieSet() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/v1/user")).andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                MockMvcRequestBuilders.get("/api/v1/user")).andExpect(MockMvcResultMatchers.status().is(499))
                 .andReturn();
     }
 
-    // Wrong token throws 403
     @Test
-    @DisplayName("Should return 403 when bad token passed")
-    public void userController_getUserInfo_returns403WhenNBadTokenPassed() throws Exception {
+    @DisplayName("Should return 498 when bad token passed")
+    public void userController_getUserInfo_returns498WhenNBadTokenPassed() throws Exception {
         // User user = prepareUser();
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/v1/user").cookie(new Cookie(authCookieName, "badToken")))
-                .andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
+                .andExpect(MockMvcResultMatchers.status().is(498)).andReturn();
     }
 
     // Returns UserDto

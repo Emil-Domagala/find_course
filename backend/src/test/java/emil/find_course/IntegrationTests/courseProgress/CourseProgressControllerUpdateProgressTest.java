@@ -61,7 +61,7 @@ public class CourseProgressControllerUpdateProgressTest extends IntegrationTestB
                 var user = prepareUserUtil.prepareVerifiedUser();
                 var token = jwtUtils.generateToken(user);
                 var req = UpdateProgressRequest.builder().chapterProgressId(UUID.randomUUID()).build();
-                var course = prepareCourseWithStudentUtil.prepareCourse(user, 2);
+                var course = prepareCourseWithStudentUtil.prepareCourse(user);
                 var json = objectMapper.writeValueAsString(req);
 
                 mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/progress/{courseId}", course.getId())

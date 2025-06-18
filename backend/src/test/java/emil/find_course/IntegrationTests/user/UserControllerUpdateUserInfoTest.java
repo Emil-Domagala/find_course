@@ -344,8 +344,8 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
         }
 
         @Test
-        @DisplayName("Should return 401 when no cookie set")
-        public void userController_updateUserInfo_returns403WhenNoCookieSet() throws Exception {
+        @DisplayName("Should return 499 when no cookie set")
+        public void userController_updateUserInfo_returns499WhenNoCookieSet() throws Exception {
 
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser("John", "Doe",
                                 null, null);
@@ -355,13 +355,13 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                 mockMvc.perform(
                                 MockMvcRequestBuilders.multipart(HttpMethod.PATCH, "/api/v1/user")
                                                 .file(userDataPart))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().is(499)).andReturn();
 
         }
 
         @Test
-        @DisplayName("Should return 403 when bad token passed")
-        public void userController_updateUserInfo_returns403WhenNBadTokenPassed() throws Exception {
+        @DisplayName("Should return 498 when bad token passed")
+        public void userController_updateUserInfo_returns498WhenNBadTokenPassed() throws Exception {
 
                 RequestUpdateUser requestUpdateUser = createRequestUpdateUser("John", "Doe",
                                 null, null);
@@ -372,7 +372,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                                 MockMvcRequestBuilders.multipart(HttpMethod.PATCH, "/api/v1/user")
                                                 .file(userDataPart)
                                                 .cookie(new Cookie(authCookieName, "badToken")))
-                                .andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().is(498)).andReturn();
 
         }
 }

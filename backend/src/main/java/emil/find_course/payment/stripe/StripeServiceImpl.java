@@ -2,6 +2,7 @@ package emil.find_course.payment.stripe;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,9 +22,11 @@ import com.stripe.param.PaymentIntentCreateParams;
 import emil.find_course.cart.CartService;
 import emil.find_course.cart.entity.Cart;
 import emil.find_course.cart.entity.CartItem;
+import emil.find_course.cart.repository.CartRepository;
 import emil.find_course.common.service.EmailService;
 import emil.find_course.course.entity.Course;
 import emil.find_course.course.enums.CourseStatus;
+import emil.find_course.payment.stripe.dto.PaymentIntentResponse;
 import emil.find_course.payment.stripe.exception.CustomStripeException;
 import emil.find_course.payment.transaction.TransactionService;
 import emil.find_course.payment.transaction.entity.Transaction;
@@ -48,25 +51,41 @@ public class StripeServiceImpl implements StripeService {
     private final UserService userService;
     private final CartService cartService;
     private final TransactionService transactionService;
+    private final CartRepository cartRepository;
 
     @Override
-    public PaymentIntent createPaymentIntent(Cart cart, User user) {
+    public PaymentIntentResponse createPaymentIntent(Cart cart, User user) {
 
         // Get valid courses
+        PaymentIntentResponse response = new PaymentIntentResponse();
 
         int totalPrice = 0;
         Set<CartItem> validItems = new HashSet<>();
         Set<String> courseIds = new HashSet<>();
+        boolean wasInvalid = false;
 
         for (CartItem item : cart.getCartItems()) {
             if (item.getCourse() != null && item.getCourse().getStatus().equals(CourseStatus.PUBLISHED)) {
                 validItems.add(item);
                 courseIds.add(item.getCourse().getId().toString());
                 totalPrice += item.getPriceAtAddition();
+            } else {
+                wasInvalid = true;
             }
         }
+        cart.setCartItems(validItems);
+        cartRepository.save(cart);
 
-        if (totalPrice <= 0) {
+        if (wasInvalid) {
+            response.setWarnings(
+                    List.of("Some courses were removed from your cart because they are no longer available."));
+        }
+
+        if (courseIds.size() == 0) {
+            throw new IllegalArgumentException("Cart is empty.");
+        }
+
+        if (totalPrice <= 100) {
             throw new IllegalArgumentException("Cart total price must be positive.");
         }
 
@@ -84,10 +103,13 @@ public class StripeServiceImpl implements StripeService {
 
         try {
             PaymentIntent intent = PaymentIntent.create(params);
-            return intent;
+            response.setClientSecret(intent.getClientSecret());
+            return response;
         } catch (StripeException e) {
+            log.error("Error creating PaymentIntent", e);
             throw new CustomStripeException("Error creating PaymentIntent");
         } catch (Exception e) {
+            log.error("Error creating PaymentIntent", e);
             throw new RuntimeException("Error creating PaymentIntent");
         }
     }
@@ -129,7 +151,7 @@ public class StripeServiceImpl implements StripeService {
                         failedPaymentIntent.getLastPaymentError() != null
                                 ? failedPaymentIntent.getLastPaymentError().getMessage()
                                 : "Unknown");
-                break;
+                throw new CustomStripeException("Payment failed");
 
             default:
                 log.info("Webhook received: Unhandled event type: {}", event.getType());

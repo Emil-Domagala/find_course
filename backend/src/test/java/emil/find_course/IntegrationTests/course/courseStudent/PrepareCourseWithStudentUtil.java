@@ -27,6 +27,7 @@ public class PrepareCourseWithStudentUtil {
     public Course prepareCourseWithChapters(User student, int count) {
         User teacher = prepareTeacherUtil.prepareUniqueTeacher();
         var course = CourseFactory.createPublishedCourse(teacher);
+        course.setPrice((int) Math.random() * 10000);
         course.getStudents().add(student);
         student.getEnrollmentCourses().add(course);
 
@@ -38,9 +39,10 @@ public class PrepareCourseWithStudentUtil {
         return savedCourse;
     }
 
-    public Course prepareCourse(User student, int count) {
+    public Course prepareCourse(User student) {
         User teacher = prepareTeacherUtil.prepareUniqueTeacher();
         var course = CourseFactory.createPublishedCourse(teacher);
+        course.setPrice((int) Math.random() * 10000);
         course.getStudents().add(student);
         student.getEnrollmentCourses().add(course);
         Course savedCourse = courseRepository.save(course);

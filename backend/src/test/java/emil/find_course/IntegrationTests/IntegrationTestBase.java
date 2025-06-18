@@ -1,12 +1,15 @@
 package emil.find_course.IntegrationTests;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @Testcontainers
 @SpringBootTest
 public abstract class IntegrationTestBase {

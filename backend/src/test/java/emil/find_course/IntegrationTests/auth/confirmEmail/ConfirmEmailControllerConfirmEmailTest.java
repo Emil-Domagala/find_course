@@ -192,8 +192,8 @@ public class ConfirmEmailControllerConfirmEmailTest extends IntegrationTestBase 
 
         // No cookie or bad token
         @Test
-        @DisplayName("Should return 401 when no cookie set or bad token passed")
-        public void confirmEmailController_confirmEmail_returns401WhenNoCookieSetOrBadTokenPassed() throws Exception {
+        @DisplayName("Should return 498 when no cookie set or bad token passed")
+        public void confirmEmailController_confirmEmail_returns498WhenNoCookieSetOrBadTokenPassed() throws Exception {
                 User user = prepareUserUtil.prepareNotVerifiedUser();
                 String token = prepareConfirmEmailOTT.prepareConfirmEmailOTT(user).getToken();
                 RequestConfirmEmailOTT requestConfirmEmailOTT = new RequestConfirmEmailOTT(token);
@@ -201,10 +201,7 @@ public class ConfirmEmailControllerConfirmEmailTest extends IntegrationTestBase 
 
                 mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").cookie(new Cookie(authCookieName,
                                 "Bad token")).content(json).contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(MockMvcResultMatchers.status().isForbidden());
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/confirm-email").content(json)
-                                .contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                                .andExpect(MockMvcResultMatchers.status().is(498));
 
         }
 }

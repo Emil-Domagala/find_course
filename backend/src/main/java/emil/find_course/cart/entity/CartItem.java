@@ -3,6 +3,7 @@ package emil.find_course.cart.entity;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -43,6 +44,7 @@ public class CartItem {
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Course course;
 
+    @Check(constraints = "price_at_addition >= 0")
     @Column(nullable = false)
     private int priceAtAddition;
 

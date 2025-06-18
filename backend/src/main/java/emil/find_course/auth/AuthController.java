@@ -17,8 +17,11 @@ import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.util.CookieHelper;
 import emil.find_course.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Auth Controller",description = "Endpoints for authentication")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class AuthController {
         private final AuthService authService;
         private final CookieHelper cookieHelper;
 
+        @Operation(summary = "Register user")
         @PostMapping("/public/register")
         public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
                 User user = authService.registerUser(request);
@@ -55,6 +59,7 @@ public class AuthController {
                                 .body(auth);
         }
 
+        @Operation(summary = "Login user")
         @PostMapping("/public/login")
         public ResponseEntity<AuthResponse> login(@Validated @RequestBody UserLoginRequest request) {
                 AuthResponse auth = authService.loginUser(request);
@@ -69,6 +74,7 @@ public class AuthController {
                                 .body(auth);
         }
 
+        @Operation(summary = "Logout user", description = "Sets all cookies to expire")
         @PostMapping("/public/logout")
         public ResponseEntity<Void> logout() {
                 ResponseCookie deleteCookie = cookieHelper.setCookie(authCookieName, "", 0, "/");
@@ -80,7 +86,7 @@ public class AuthController {
                                 .build();
         }
 
-        // refresh-cookie
+        @Operation(summary = "Refresh token",description = "Sends new auth token")
         @PostMapping("/public/refresh-token")
         public ResponseEntity<Void> refreshCookie(@CookieValue(name = "${cookie.auth.refreshToken.name}", required = false) String refreshToken) {
 

@@ -22,4 +22,5 @@ public class TransactionDto {
     private Instant createdAt;
     private Set<CourseDto> courses;
 
+    public static final Set<String> ALLOWED_SORT_FIELDS = Set.of("createdAt", "amount", "id");
 }

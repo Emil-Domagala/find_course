@@ -1,7 +1,5 @@
 package emil.find_course.payment.stripe;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stripe.model.PaymentIntent;
-
 import emil.find_course.cart.CartService;
 import emil.find_course.cart.entity.Cart;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
+import emil.find_course.payment.stripe.dto.PaymentIntentResponse;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +26,13 @@ public class StripeController {
     private final StripeService stripeService;
 
     @PostMapping("transaction/stripe/create-payment-intent")
-    public ResponseEntity<Map<String, String>> createPaymentIntent(
+    public ResponseEntity<PaymentIntentResponse> createPaymentIntent(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();
         Cart cart = cartService.findByUserWithItemsAndCourses(user);
 
-        // TODO: If some courses were deleted from cart inform user
-        PaymentIntent intent = stripeService.createPaymentIntent(cart, user);
-        Map<String, String> response = Map.of("clientSecret", intent.getClientSecret());
+        PaymentIntentResponse response = stripeService.createPaymentIntent(cart, user);
+
         return ResponseEntity.ok(response);
     }
 
