@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,7 +73,7 @@ public class CourseProgressServiceImpl implements CourseProgressService {
             // This means that the CourseUpdata was not created yet. So i needt to create
             // new Entity.
             log.info("Course progress not found");
-            courseProgressDto = courseProgressMapper.toDto(createCourseProject(course, user));
+            courseProgressDto = courseProgressMapper.toDto(createCourseProgress(course, user));
         } else if (course.getUpdatedAt().isAfter(courseProgressUpdatedAt.get())) {
             // Course progress might be unsync
             log.info("Course progress might be unsync");
@@ -180,7 +178,7 @@ public class CourseProgressServiceImpl implements CourseProgressService {
     // CREATE NEW COURSES PROGRESS BLOCK
 
     @Transactional
-    private CourseProgress createCourseProject(Course course, User user) {
+    private CourseProgress createCourseProgress(Course course, User user) {
 
         CourseProgress courseProgress = CourseProgress.builder().course(course).user(user).build();
 

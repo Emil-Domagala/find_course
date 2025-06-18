@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;

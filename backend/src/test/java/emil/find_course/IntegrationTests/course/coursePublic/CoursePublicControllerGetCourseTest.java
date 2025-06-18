@@ -3,7 +3,6 @@ package emil.find_course.IntegrationTests.course.coursePublic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;

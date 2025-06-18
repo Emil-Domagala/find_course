@@ -15,7 +15,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import emil.find_course.common.exception.JwtAuthException;
 import emil.find_course.common.exception.JwtTokenRequiredException;
-import emil.find_course.common.exception.UnauthorizedException;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
@@ -50,7 +49,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         try {
-
             Cookie[] cookies = request.getCookies();
             String token = null;
 

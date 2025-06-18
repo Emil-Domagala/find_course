@@ -3,7 +3,6 @@ package emil.find_course.course.dto.request;
 import java.util.List;
 import java.util.UUID;
 
-import emil.find_course.common.validation.ValidEnum;
 import emil.find_course.course.enums.CourseCategory;
 import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.course.enums.Level;
@@ -34,8 +33,6 @@ public class CourseRequest {
     private String description;
 
     @Nullable
-    // @ValidEnum(enumClass = CourseCategory.class, message = "Invalid course
-    // category value")
     private CourseCategory category;
 
     @Nullable

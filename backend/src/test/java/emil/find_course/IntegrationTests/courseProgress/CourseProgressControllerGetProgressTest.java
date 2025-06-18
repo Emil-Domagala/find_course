@@ -3,13 +3,14 @@ package emil.find_course.IntegrationTests.courseProgress;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,13 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import emil.find_course.IntegrationTests.IntegrationTestBase;
+import emil.find_course.IntegrationTests.course.ChapterFactory;
+import emil.find_course.IntegrationTests.course.SectionFactory;
 import emil.find_course.IntegrationTests.course.courseStudent.PrepareCourseWithStudentUtil;
 import emil.find_course.IntegrationTests.user.PrepareUserUtil;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.course.chapter.repository.ChapterRepository;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.course.section.repository.SectionRepository;
+import emil.find_course.courseProgress.CourseProgressService;
 import emil.find_course.courseProgress.dto.CourseProgressDto;
+import emil.find_course.courseProgress.repository.ChapterProgressRepository;
+import emil.find_course.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 
@@ -67,31 +73,62 @@ public class CourseProgressControllerGetProgressTest extends IntegrationTestBase
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private ChapterProgressRepository chapterProgressRepository;
+
+    @MockitoSpyBean
+    private CourseProgressService courseProgressService;
+
+    User user;
+    String token;
+
+    @BeforeEach
+    public void setup() {
+        user = prepareUserUtil.prepareVerifiedUser();
+        token = jwtUtils.generateToken(user);
+    }
+
     private CourseProgressDto extractContent(MvcResult res) throws Exception {
         String content = res.getResponse().getContentAsString();
         return objectMapper.readValue(content, CourseProgressDto.class);
     }
 
-    // 400 invalid coursId
-    // not found course 404
-    // user not enrolled
-    // course progress not exists creates new entities
-    // - creates all sections and chapter progress as not finished adn adds position
-    // from chapter
+    @Test
+    public void courseProgressController_getProgress_shouldSucessfullySynchCourseProgress() throws Exception {
 
-    // course progress exists and was created after course was updated. Shouldnt
-    // update anything and call update
+        var c1 = prepareCourseWithStudentUtil.prepareCourseWithChapters(user, 2);
+        var cp1 = prepareCourseProgressUtil.createCourseProgress(c1, user);
+        var chpC = cp1.getSections().get(0).getChapters().get(0);
+        chpC.setCompleted(true);
+        chapterProgressRepository.save(chpC);
 
-    // Course progress exists but was created/updated b4 course was updated.
-    // should add new sections/chapters
-    // shouldn't change progress in existion
+        entityManager.flush();
+        entityManager.clear();
 
+        var s3 = SectionFactory.createSection(c1, 3);
+        var ch3_3 = ChapterFactory.createChapterWithContent(3, s3);
+        s3.getChapters().add(ch3_3);
+        c1.getSections().add(s3);
+        c1.setUpdatedAt(Instant.now());
+
+        courseRepository.save(c1);
+        entityManager.flush();
+        entityManager.clear();
+
+        MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/progress/{courseId}", c1.getId())
+                .cookie(new Cookie(authCookieName, token)))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        var result = extractContent(res);
+        assertThat(result.getSections().size()).isEqualTo(3);
+        assertThat(result.getSections().get(0).getChapters().get(0).isCompleted()).isTrue();
+        assertThat(result.getSections().get(2).getChapters().get(0).isCompleted()).isFalse();
+    }
 
     @Test
     public void courseProgressController_getProgress_shouldSucessfullyDeleteCourseProgressIfChapterWasDeleted()
             throws Exception {
-        var user = prepareUserUtil.prepareVerifiedUser();
-        var token = jwtUtils.generateToken(user);
+
         var c1 = prepareCourseWithStudentUtil.prepareCourseWithChapters(user, 2);
         prepareCourseProgressUtil.createCourseProgress(c1, user);
         var lastChapterId = c1.getSections().get(0).getChapters().get(1).getId();
@@ -128,8 +165,7 @@ public class CourseProgressControllerGetProgressTest extends IntegrationTestBase
 
     @Test
     public void courseProgressController_getProgress_shouldSucessfullyCreateNewCourseProgress() throws Exception {
-        var user = prepareUserUtil.prepareVerifiedUser();
-        var token = jwtUtils.generateToken(user);
+
         var course = prepareCourseWithStudentUtil.prepareCourseWithChapters(user, 2);
         prepareCourseProgressUtil.createCourseProgress(course, user);
         MvcResult res = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/progress/{courseId}", course.getId())
@@ -159,6 +195,30 @@ public class CourseProgressControllerGetProgressTest extends IntegrationTestBase
             }
         }
 
+    }
+
+    // 400 invalid coursId
+    @Test
+    public void courseProgressController_getProgress_shouldReturn400IfInvalidCourseId() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/progress/{courseId}", "course.getId()")
+                .cookie(new Cookie(authCookieName, token)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+    }
+
+    // user not enrolled
+    @Test
+    public void courseProgressController_getProgress_shouldReturn403IfUserNotEnrolled() throws Exception {
+        var u2 = prepareUserUtil.prepareVerifiedUser("email@rmail.com", "Name");
+        var c1 = prepareCourseWithStudentUtil.prepareCourseWithChapters(u2, 2);
+        prepareCourseProgressUtil.createCourseProgress(c1, user);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/progress/{courseId}", c1.getId())
+                .cookie(new Cookie(authCookieName, token)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
     }
 
 }
