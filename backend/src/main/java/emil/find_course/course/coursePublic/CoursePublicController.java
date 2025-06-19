@@ -16,8 +16,11 @@ import emil.find_course.course.dto.CourseDto;
 import emil.find_course.course.dto.pub.CourseDetailsPublicDto;
 import emil.find_course.course.enums.CourseCategory;
 import emil.find_course.course.mapper.CourseMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Course Public Controller", description = "Endpoints for Course Public")
 @RestController
 @RequestMapping("/api/v1/public")
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class CoursePublicController {
     private final CourseMapper courseMapper;
 
     // Find published courses
+    @Operation(summary = "Search Published Courses", description = "Search Published Courses")
     @GetMapping("/courses")
     public ResponseEntity<PagingResult<CourseDto>> getCourses(
             @RequestParam(required = false) Integer page,
@@ -46,6 +50,7 @@ public class CoursePublicController {
     }
 
     // Show one published course
+    @Operation(summary = "Get Published Course", description = "Get Published Course")
     @GetMapping("/courses/{courseId}")
     public ResponseEntity<CourseDetailsPublicDto> getPublishedCourse(@PathVariable UUID courseId) {
         final CourseDetailsPublicDto course = courseMapper

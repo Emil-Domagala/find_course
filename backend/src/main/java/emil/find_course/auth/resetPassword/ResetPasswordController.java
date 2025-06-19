@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.auth.resetPassword.dto.request.ResetPasswordEmailRequest;
 import emil.find_course.auth.resetPassword.dto.request.ResetPasswordPasswordRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Reset Password Controller", description = "Endpoints for reset password")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -19,12 +22,14 @@ public class ResetPasswordController {
 
     private final ResetPasswordService resetPasswordService;
 
+    @Operation(summary = "Send email to reset password")
     @PostMapping("/public/forgot-password")
     public ResponseEntity<Void> sendResetPasswordEmail(@Validated @RequestBody ResetPasswordEmailRequest email) {
         resetPasswordService.sendResetPasswordEmail(email.getEmail());
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Reset password")
     @PostMapping("/public/reset-password")
     public ResponseEntity<Void> resetPassword(@RequestParam(required = false) String token,
             @Validated @RequestBody ResetPasswordPasswordRequest password) {

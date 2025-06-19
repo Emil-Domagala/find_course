@@ -19,20 +19,23 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.teacherApplication.admin.dto.request.TeacherApplicationUpdateRequest;
 import emil.find_course.teacherApplication.dto.TeacherApplicationDto;
 import emil.find_course.teacherApplication.enums.TeacherApplicationStatus;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Teacher Application Admin Controller", description = "Endpoints for menaging teacher applications by admin")
 @Validated
 @RestController
-@RequestMapping("/api/v1/admin/teacher-application") // TODO: Change teacher-request to teacher-application on frontend
-                                                     // // B4 deploying
+@RequestMapping("/api/v1/admin/teacher-application")
 @RequiredArgsConstructor
 public class TeacherApplicationAdminController {
 
     private final TeacherApplicationAdminService adminService;
 
+    @Operation(summary = "Get teacher applications")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<PagingResult<TeacherApplicationDto>> getTeacherApplications(
@@ -55,13 +58,15 @@ public class TeacherApplicationAdminController {
         return ResponseEntity.ok(becomeTeacher);
     }
 
+    @Operation(summary = "Get counted new teacher applications")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/notifications") // TODO: Fix path on frontend
+    @GetMapping("/notifications")
     public ResponseEntity<Map<String, Integer>> getCountedNewTeacherApplications() {
         Map<String, Integer> result = adminService.getCountedNewTeacherApplications();
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Updates teacher applications", description = "All applications will be market as seen by admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping
     public ResponseEntity<Void> patchTeacherApplications(

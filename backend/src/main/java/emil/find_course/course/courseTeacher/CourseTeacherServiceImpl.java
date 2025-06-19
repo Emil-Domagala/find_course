@@ -134,7 +134,6 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         if (!course.getTeacher().getId().equals(teacherId)) {
             throw new IllegalArgumentException("You are not the teacher of this course");
         }
-        // TODO: test this
         if (courseRepository.countStudentsByCourse(course) > 0) {
             throw new IllegalArgumentException("You cannot delete this course because it has students enrolled");
         }

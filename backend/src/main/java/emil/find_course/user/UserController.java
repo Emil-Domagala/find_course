@@ -24,8 +24,11 @@ import emil.find_course.user.dto.UserDto;
 import emil.find_course.user.dto.request.RequestUpdateUser;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.mapper.UserMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "User Controller", description = "Endpoints for user")
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class UserController {
         private final UserService userService;
         private final UserMapper userMapper;
 
+        @Operation(summary = "Get user info")
         @GetMapping
         public ResponseEntity<UserDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -53,6 +57,7 @@ public class UserController {
 
         }
 
+        @Operation(summary = "Update user profile information")
         @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<UserDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                         @RequestPart("userData") @Validated RequestUpdateUser requestUpdateUser,
@@ -74,7 +79,7 @@ public class UserController {
                                 .body(userDto);
 
         }
-
+        @Operation(summary = "Delete user")
         @DeleteMapping
         public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
                 final User user = userDetails.getUser();

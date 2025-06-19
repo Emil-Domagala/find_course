@@ -43,7 +43,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Ignore public routes
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/api/v1/public/") || requestURI.contains("/uploads/images/")) {
+        if (requestURI.startsWith("/api/v1/public/")
+                || requestURI.contains("/uploads/images/")
+                || requestURI.contains("swagger-ui")
+                || requestURI.contains("v3/api-docs")) {
             filterChain.doFilter(request, response);
             return;
         }

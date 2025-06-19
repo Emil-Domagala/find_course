@@ -37,3 +37,6 @@ next-env.d.ts
 .vscode/
 
 /src/state/endpoints
+/src/state
+/src/types
+src/

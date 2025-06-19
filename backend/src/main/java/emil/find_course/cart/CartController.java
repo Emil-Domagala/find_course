@@ -21,8 +21,11 @@ import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.coursePublic.CoursePublicService;
 import emil.find_course.course.entity.Course;
 import emil.find_course.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Cart Controller", description = "Endpoints for cart")
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -33,6 +36,7 @@ public class CartController {
     private final CoursePublicService coursePublicService;
     private final CartItemRepository cartItemRepository;
 
+    @Operation(summary = "Add course to cart")
     @PostMapping("/cart/{courseId}")
     public ResponseEntity<CartDto> addCourseToCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
@@ -42,6 +46,7 @@ public class CartController {
         return ResponseEntity.ok(cart);
     }
 
+    @Operation(summary = "Remove course from cart")
     @DeleteMapping("/cart/{courseId}")
     public ResponseEntity<CartResponse> removeCourseFromCart(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID courseId) {
@@ -52,6 +57,7 @@ public class CartController {
         return ResponseEntity.ok(res);
     }
 
+    @Operation(summary = "Get user cart")
     @GetMapping("/cart")
     public ResponseEntity<CartResponse> getCart(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();

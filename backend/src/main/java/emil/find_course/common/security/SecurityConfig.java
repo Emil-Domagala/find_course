@@ -43,6 +43,7 @@ public class SecurityConfig {
         http.csrf(customizer -> customizer.disable());
         http.addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request -> request
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/v1/public/**").permitAll()
                 .requestMatchers("/uploads/images/**").permitAll()
                 .anyRequest().authenticated());

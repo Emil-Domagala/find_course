@@ -13,10 +13,11 @@ import emil.find_course.cart.entity.Cart;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.payment.stripe.dto.PaymentIntentResponse;
 import emil.find_course.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Tag(name = "Stripe Controller", description = "Endpoints for stripe")
 @RestController
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class StripeController {
     private final CartService cartService;
     private final StripeService stripeService;
 
+    @Operation(summary = "Create payment intent")
     @PostMapping("transaction/stripe/create-payment-intent")
     public ResponseEntity<PaymentIntentResponse> createPaymentIntent(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -36,6 +38,7 @@ public class StripeController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Handle stripe webhook")
     @PostMapping("public/transaction/stripe/webhook")
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,

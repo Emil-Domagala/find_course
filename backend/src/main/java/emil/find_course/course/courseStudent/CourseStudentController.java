@@ -13,10 +13,12 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.course.dto.CourseDtoWithFirstChapter;
 import emil.find_course.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
+@Tag(name = "Course Student Controller", description = "Endpoints for Course Student")
 @RestController
 @RequestMapping("/api/v1/student") // TODO: Fix route on frontend
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class CourseStudentController {
     private final CourseStudentService courseStudentService;
 
     // Show enrolled courses with first chapter of first section
+    @Operation(summary = "Get User Enrolled Courses", description = "Get Curses that User is enrolled in")
     @GetMapping("/courses")
     public ResponseEntity<PagingResult<CourseDtoWithFirstChapter>> getUserEnrolledCourses(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -37,7 +40,6 @@ public class CourseStudentController {
         }
 
         final User user = userDetails.getUser();
-        log.info("logged User: {}", user.toString());
 
         final PaginationRequest request = new PaginationRequest(page, size, sortField, direction);
 

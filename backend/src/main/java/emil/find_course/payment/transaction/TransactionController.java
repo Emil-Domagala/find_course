@@ -13,10 +13,11 @@ import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.payment.transaction.dto.TransactionDto;
 import emil.find_course.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+@Tag(name = "Transaction Controller", description = "Endpoints for transaction")
 @RestController
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
+    @Operation(summary = "Get transactions")
     @GetMapping("transaction")
     public ResponseEntity<PagingResult<TransactionDto>> getTransactions(
             @RequestParam(required = false) Integer page,

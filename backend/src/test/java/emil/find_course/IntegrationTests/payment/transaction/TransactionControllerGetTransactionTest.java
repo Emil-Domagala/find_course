@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -32,6 +33,7 @@ import emil.find_course.common.pagination.PaginationRequest;
 import emil.find_course.common.pagination.PagingResult;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.payment.transaction.dto.TransactionDto;
+import emil.find_course.payment.transaction.entity.Transaction;
 import emil.find_course.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
@@ -104,9 +106,9 @@ public class TransactionControllerGetTransactionTest extends IntegrationTestBase
     // returns multiple transactions
     @Test
     public void transactionController_getTransaction_returnsMultipleTransactions() throws Exception {
-        var tA = prepareTransactionUtil.prepareUniqueCoursesAndTransactions(user, 2);
+        List<Transaction> tA = prepareTransactionUtil.prepareUniqueCoursesAndTransactions(user, 2);
         var c1 = tA.get(0).getCourses().stream().toList().get(0);
-        var c2 = tA.get(1).getCourses().stream().toList().get(1);
+        var c2 = tA.get(1).getCourses().stream().toList().get(0);
 
         entityManager.flush();
         entityManager.clear();
