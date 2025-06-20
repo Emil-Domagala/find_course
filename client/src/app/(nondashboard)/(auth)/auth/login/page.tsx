@@ -4,14 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserLoginSchema } from '@/lib/validation/userAuth';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { useLoginMutation } from '@/state/api';
+
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { UserLoginRequest } from '@/types/auth';
-import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import { useLoginMutation } from '@/state/endpoints/auth/auth';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const LoginPage = () => {
   const searchParams = useSearchParams();
@@ -55,12 +55,10 @@ const LoginPage = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CustomFormField type="email" name="email" label="Email adress" className="mb-2" />
         <CustomFormField type="password" name="password" label="Password" className="mb-2" />
-        {form.formState.errors.root && (
-          <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
-        )}
-        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Continue {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        {form.formState.errors.root && <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>}
+        <ButtonWithSpinner variant="primary" type="submit" isLoading={isLoading}>
+          Continue
+        </ButtonWithSpinner>
       </form>
     </Form>
   );

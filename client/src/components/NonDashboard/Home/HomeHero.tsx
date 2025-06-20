@@ -37,7 +37,7 @@ const HomeHero = () => {
           Everyday learn something new!
         </p>
         <Link href={'/search'}>
-          <div className="w-fit text-center rounded-md bg-primary-700 px-4 py-2 duration-300 hover:bg-primary-600">
+          <div className="w-fit text-center text-md font-medium rounded-md bg-primary-700 px-4 py-2 duration-300 hover:bg-primary-600 hover:text-white-100">
             Search for courses
           </div>
         </Link>
@@ -52,9 +52,7 @@ const HomeHero = () => {
             fill
             priority={index === currentImage}
             sizes="(max-width: 768px) 100vw, (max-width:1200) 50vw, 33vw"
-            className={`object-cover transition-opacity duration-500 ${
-              index === currentImage ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`object-cover transition-opacity duration-500 ${index === currentImage ? 'opacity-100' : 'opacity-0'}`}
           />
         ))}
       </div>

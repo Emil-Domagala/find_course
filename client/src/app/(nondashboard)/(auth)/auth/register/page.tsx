@@ -4,13 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserRegisterRequest, UserRegisterSchema } from '@/lib/validation/userAuth';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { useRegisterMutation } from '@/state/api';
+
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
-import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import { useRegisterMutation } from '@/state/endpoints/auth/auth';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -62,9 +62,9 @@ const RegisterPage = () => {
         <CustomFormField name="email" label="Email adress" type="email" className="mb-2" />
         <CustomFormField name="password" label="Password" type="password" className="mb-2" />
         {form.formState.errors.root && <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>}
-        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Sign Up {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        <ButtonWithSpinner className="w-full mt-2" isLoading={isLoading}>
+          Sign Up
+        </ButtonWithSpinner>
       </form>
     </Form>
   );

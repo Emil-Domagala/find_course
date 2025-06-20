@@ -9,7 +9,7 @@ import CartButton from '@/components/Common/Navigation/CartButton';
 const NonDashboardNav = async () => {
   const cookieStore = await cookies();
 
-  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
+  const authToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME!)?.value;
   let decoded;
 
   try {

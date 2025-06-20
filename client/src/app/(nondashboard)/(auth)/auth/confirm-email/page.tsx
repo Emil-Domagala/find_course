@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from '@/state/api';
+import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from '@/state/endpoints/auth/confirmEmail';
 import { ApiErrorResponse } from '@/types/apiError';
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 import { useRouter } from 'next/navigation';

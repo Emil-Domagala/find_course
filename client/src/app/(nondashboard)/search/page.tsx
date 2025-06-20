@@ -2,12 +2,13 @@
 
 import DisplayCourses from '@/components/NonDashboard/Search/DisplayCourses';
 import Pagination from '@/components/Common/Filter/Pagination';
-import { useLazyGetCoursesPublicQuery } from '@/state/api';
+
 import { useEffect } from 'react';
 import Filter from '@/components/Common/Filter/Filter';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
 import { CourseCategory } from '@/types/courses-enum';
 import { SearchDirection, SearchField } from '@/types/enums';
+import { useLazyGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
 
 const SearchPage = () => {
   const [category, setCategory] = useSelectFilter<CourseCategory>({ valueName: 'category' });

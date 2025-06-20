@@ -1,8 +1,9 @@
-import { useGetChapterEnrolledStudentQuery, useGetUserCourseProgressQuery, useUpdateCourseChapterProgressMutation } from '@/state/api';
 import { ChapterDetailsProtectedDto, ChapterProgress, CourseProgress, SectionProgress, UpdateProgressRequest } from '@/types/courses';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { usePrefetch } from '@/state/api';
+
+import { useGetChapterEnrolledStudentQuery, usePrefetch } from '@/state/endpoints/course/chapter';
+import { useUpdateCourseChapterProgressMutation, useGetUserCourseProgressQuery } from '@/state/endpoints/courseProgress/courseProgress';
 
 type UseChapterAndCourseSidebarDataReturn = {
   chapterData: ChapterDetailsProtectedDto | undefined;
@@ -22,11 +23,12 @@ type UseChapterAndCourseSidebarDataReturn = {
 export const useChapterAndCourseSidebarData = (): UseChapterAndCourseSidebarDataReturn => {
   const { courseId, chapterId } = useParams();
   const [updateChapterProgress] = useUpdateCourseChapterProgressMutation();
-  const {
-    data: chapterData,
-    isLoading: chapterIsLoading,
-  } = useGetChapterEnrolledStudentQuery({ courseId: courseId as string, chapterId: chapterId as string }, { skip: !courseId || !chapterId });
- const prefetchChapter = usePrefetch('getChapterEnrolledStudent');
+  const { data: chapterData, isLoading: chapterIsLoading } = useGetChapterEnrolledStudentQuery(
+    { courseId: courseId as string, chapterId: chapterId as string },
+    { skip: !courseId || !chapterId },
+  );
+
+  const prefetchChapter = usePrefetch('getChapterEnrolledStudent');
   const {
     data: courseProgressData,
     isLoading: courseProgressIsLoading,
@@ -39,7 +41,8 @@ export const useChapterAndCourseSidebarData = (): UseChapterAndCourseSidebarData
   );
 
   const { currentSectionIndex, currentChapterIndex, currentSection, currentChapter } = useMemo(() => {
-    if (!courseProgressData || !chapterId || !courseProgressData.sections) return { currentSectionIndex: -1, currentChapterIndex: -1, currentSection: null, currentChapter: null };
+    if (!courseProgressData || !chapterId || !courseProgressData.sections)
+      return { currentSectionIndex: -1, currentChapterIndex: -1, currentSection: null, currentChapter: null };
 
     let foundSectionIndex = -1;
     let foundChapterIndex = -1;
@@ -95,11 +98,11 @@ export const useChapterAndCourseSidebarData = (): UseChapterAndCourseSidebarData
     }
   }, [isSuccess, courseProgressData, currentSectionIndex, currentChapterIndex, currentSection, courseProgressIsLoading]);
 
-useEffect(()=>{
-     if (nextChapterId && courseId) {
-        prefetchChapter({ courseId: courseId as string, chapterId: nextChapterId }, { force: false });
-      }
-},[nextChapterId])
+  useEffect(() => {
+    if (nextChapterId && courseId) {
+      prefetchChapter({ courseId: courseId as string, chapterId: nextChapterId }, { force: false });
+    }
+  }, [nextChapterId]);
 
   return {
     chapterData,
@@ -116,5 +119,3 @@ useEffect(()=>{
     handleUpdateChapterProgress,
   };
 };
-
-

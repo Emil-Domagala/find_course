@@ -10,10 +10,10 @@ import { SectionDetailsPublicDto } from '@/types/courses';
 import { ChapterType } from '@/types/enums';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
-  const { courseId } = params;
+  const { courseId } = await params;
   const course = await apiServerService.getCoursesPublic(courseId);
   const cookieStore = await cookies();
-  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME as string)?.value;
+  const authToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME as string)?.value;
 
   return (
     <>

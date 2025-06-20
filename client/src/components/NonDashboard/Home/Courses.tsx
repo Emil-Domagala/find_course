@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useGetCoursesPublicQuery } from '@/state/api';
+
 import CourseCard, { CourseCardSkeleton } from '../../Common/CourseCard';
+import { useGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
 
 export const CoursesSkeleton = ({ size }: { size: number }) => {
   return (

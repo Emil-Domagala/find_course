@@ -1,11 +1,12 @@
 'use client';
 
-import { useCreateStripePaymentIntentMutation } from '@/state/api';
 import { Appearance, loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiErrorResponse } from '@/types/apiError';
+import { useCreateStripePaymentIntentMutation } from '@/state/endpoints/payment/stripe';
+import { toast } from 'sonner';
 
 if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not set');
@@ -39,6 +40,9 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const result = await createStripePaymentIntent().unwrap();
         setClientSecret(result.clientSecret);
+        if (result.warnings) {
+          toast.warning(result.warnings?.[0]);
+        }
       } catch (e) {
         setIsError(true);
         const errorFull = e as ApiErrorResponse;

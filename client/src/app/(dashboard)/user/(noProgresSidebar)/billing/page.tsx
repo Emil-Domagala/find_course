@@ -4,8 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SearchDirection } from '@/types/enums';
 import { centsToDollars } from '@/lib/utils';
-import { useLazyGetTransactionsQuery } from '@/state/api';
 import { useCallback, useEffect, useState } from 'react';
+import { useLazyGetTransactionsQuery } from '@/state/endpoints/payment/transaction';
 
 const BillingPage = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);

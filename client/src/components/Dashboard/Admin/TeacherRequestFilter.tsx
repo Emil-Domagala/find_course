@@ -1,11 +1,10 @@
 'use client';
 
 import CustomSelect from '@/components/Common/Filter/CustomSelect';
-import { Button } from '@/components/ui/button';
 import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/enums';
-import { Loader } from 'lucide-react';
 import { transformToFrontendFormat } from '@/lib/utils';
 import { SetStateAction } from 'react';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 type Props = {
   requetsStatus: BecomeTeacherRequestStatus | undefined;
@@ -20,7 +19,18 @@ type Props = {
   handleFetchCourses: () => void;
 };
 
-const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, setRequestsStatus, direction, setDirection, seenByAdmin, setSeenByAdmin, size, setSize }: Props) => {
+const TeacherRequestFilter = ({
+  handleFetchCourses,
+  isLoading,
+  requetsStatus,
+  setRequestsStatus,
+  direction,
+  setDirection,
+  seenByAdmin,
+  setSeenByAdmin,
+  size,
+  setSize,
+}: Props) => {
   return (
     <div className="flex flex-col md:flex-row gap-5 justify-center items-end w-full max-w-4xl mx-auto">
       <div className={`flex flex-row gap-2 justify-between items-end w-full md:gap-5 md:justify-center md:w-fit`}>
@@ -76,9 +86,9 @@ const TeacherRequestFilter = ({ handleFetchCourses, isLoading, requetsStatus, se
       {/* Apply */}
 
       <div className="max-w-[15rem] md:m-0 mx-auto w-full">
-        <Button variant="primary" className="h-12 text-md w-full " onClick={handleFetchCourses}>
-          Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        <ButtonWithSpinner isLoading={isLoading} onClick={handleFetchCourses}>
+          Search
+        </ButtonWithSpinner>
       </div>
     </div>
   );

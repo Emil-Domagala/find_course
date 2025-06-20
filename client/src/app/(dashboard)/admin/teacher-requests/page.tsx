@@ -10,10 +10,12 @@ import TeacherRequestFilter from '@/components/Dashboard/Admin/TeacherRequestFil
 import Pagination from '@/components/Common/Filter/Pagination';
 import BecomeTeacherItem from '@/components/Dashboard/Admin/BecomeTeacherItem';
 import { useEffect, useState } from 'react';
-import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from '@/state/api';
+
 import LoadingSpinner from '@/components/Common/LoadingSpinner';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
+import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from '@/state/endpoints/teacherApplication/teacherApplicationAdmin';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 export type UpdateTeacherRequest = { id: string; status?: BecomeTeacherRequestStatus; seenByAdmin?: boolean };
 
@@ -75,9 +77,8 @@ const BecomeTeacherRequestsPage = ({}) => {
         title="Become Teacher Requestes"
         subtitle="Manage requests"
         rightElement={
-          <Button variant="primary" className="p-3 font-medium text-md " onClick={handleSaveChanges}>
-            Save Changes {isUpdating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-          </Button>
+          <ButtonWithSpinner isLoading={isUpdating} onClick={handleSaveChanges}>Save Changes</ButtonWithSpinner>
+        
         }
       />
       <TeacherRequestFilter

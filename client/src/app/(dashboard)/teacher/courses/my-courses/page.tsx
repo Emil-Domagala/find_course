@@ -4,16 +4,15 @@ import Filter from '@/components/Common/Filter/Filter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import Header from '@/components/Dashboard/Header';
 import TeacherCourseCard from '@/components/Dashboard/Teacher/TeacherCourseCard';
-import { Button } from '@/components/ui/button';
 import { SearchDirection, SearchField } from '@/types/enums';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
-import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/api';
 import { CourseCategory } from '@/types/courses-enum';
-import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
+import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/endpoints/course/courseTeacher';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const MyCourses = () => {
   const router = useRouter();
@@ -76,9 +75,9 @@ const MyCourses = () => {
         title="Your Courses"
         subtitle="Manage your courses"
         rightElement={
-          <Button onClick={handleCreateCourse} variant="primary" className="p-3 font-medium text-md ">
-            Create Course {isCreating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-          </Button>
+          <ButtonWithSpinner isLoading={isCreating} onClick={handleCreateCourse}>
+            Create Course
+          </ButtonWithSpinner>
         }
       />
       <Filter

@@ -8,7 +8,7 @@ import UserButton from '@/components/Common/Navigation/UserButton';
 const DashboardNav = async () => {
   const cookieStore = await cookies();
 
-  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
+  const authToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME!)?.value;
   let decoded;
   try {
     decoded = jwtDecode(authToken!) as AuthToken;

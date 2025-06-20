@@ -2,7 +2,7 @@
 import CourseCard from '@/components/Common/CourseCard';
 import Pagination from '@/components/Common/Filter/Pagination';
 import Header from '@/components/Dashboard/Header';
-import { useLazyGetEnrolledCoursesQuery } from '@/state/api';
+import { useLazyGetEnrolledCoursesQuery } from '@/state/endpoints/course/courseStudent';
 import { useEffect, useState } from 'react';
 
 const EnrolledCourses = ({}) => {

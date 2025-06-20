@@ -4,12 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { NewPassword, NewPasswordSchema } from '@/lib/validation/userAuth';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { useResetPasswordMutation } from '@/state/api';
 import { ApiErrorResponse } from '@/types/apiError';
-import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import { useResetPasswordMutation } from '@/state/endpoints/auth/resetPassword';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const ResetPassword = ({}) => {
   const router = useRouter();
@@ -82,14 +81,12 @@ const ResetPassword = ({}) => {
               <CustomFormField name="confirmPassword" label="Confirm Password" type="password" />
             </>
           ) : (
-            <h3 className={`text-center  font-semibold text-lg  ${isError ? 'text-red-500' : 'text-primary-750'}`}>
-              {message}
-            </h3>
+            <h3 className={`text-center  font-semibold text-lg  ${isError ? 'text-red-500' : 'text-primary-750'}`}>{message}</h3>
           )}
         </div>
-        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading || !showInputs}>
-          Continue {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        <ButtonWithSpinner className="w-full mt-2" isLoading={isLoading} disabled={!showInputs || isLoading}>
+          Continue
+        </ButtonWithSpinner>
       </form>
     </Form>
   );

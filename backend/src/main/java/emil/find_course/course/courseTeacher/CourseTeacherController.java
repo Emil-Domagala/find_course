@@ -82,7 +82,8 @@ public class CourseTeacherController {
             @PathVariable UUID courseId) {
 
         final CourseDetailsProtectedDto course = courseMapper.toProtectedDto(courseService.getById(courseId));
-        if (course.getTeacher().getId() != userDetails.getUser().getId()) {
+
+        if (!course.getTeacher().getId().equals(userDetails.getUser().getId())) {
             throw new ForbiddenException("You are not the teacher of this course");
         }
         return ResponseEntity.ok(course);

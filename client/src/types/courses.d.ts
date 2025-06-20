@@ -43,12 +43,6 @@ export type ChapterStructure = {
   type: ChapterType;
 };
 
-export type CartDto = {
-  id: string;
-  courses: CourseDto[];
-  totalPrice: number;
-};
-
 export type ChapterDto = {
   id: string;
   title: string;

@@ -1,13 +1,12 @@
 'use client';
 
 import { transformKey, transformToFrontendFormat } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SearchDirection, SearchField } from '@/types/enums';
 import { CourseCategory } from '@/types/courses-enum';
-import { Loader } from 'lucide-react';
 import CustomSelect from './CustomSelect';
 import { SetStateAction } from 'react';
+import ButtonWithSpinner from '../ButtonWithSpinner';
 
 type Props = {
   category: CourseCategory | undefined;
@@ -24,7 +23,20 @@ type Props = {
   isLoading?: boolean;
 };
 
-const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSortField, direction, setDirection, size, setSize, handleFetchCourses, isLoading }: Props) => {
+const Filter = ({
+  category,
+  setCategory,
+  keyword,
+  setKeyword,
+  sortField,
+  setSortField,
+  direction,
+  setDirection,
+  size,
+  setSize,
+  handleFetchCourses,
+  isLoading,
+}: Props) => {
   return (
     <div className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
       {/* category */}
@@ -89,9 +101,9 @@ const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSort
         />
 
         <div className="max-w-[15rem] md:m-0 mx-auto w-full">
-          <Button variant="primary" className="h-12 text-md w-full" onClick={handleFetchCourses}>
-            Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-          </Button>
+          <ButtonWithSpinner onClick={handleFetchCourses} isLoading={isLoading}>
+            Search
+          </ButtonWithSpinner>
         </div>
       </div>
     </div>

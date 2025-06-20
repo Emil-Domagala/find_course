@@ -23,7 +23,9 @@ import emil.find_course.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -44,8 +46,9 @@ public class AuthServiceImpl implements AuthService {
                         userLoginRequest.getEmail().trim(), userLoginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        String token = jwtUtils.generateToken(userPrincipal);
-        String refreshToken = jwtUtils.generateRefreshToken(userPrincipal.getUser());
+        User user = userPrincipal.getUser();
+        String token = jwtUtils.generateToken(user);
+        String refreshToken = jwtUtils.generateRefreshToken(user);
 
         return new AuthResponse(token, refreshToken);
     }
@@ -72,17 +75,22 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String refreshAuthToken(String recivedRefreshToken) {
+        log.debug("recivedRefreshToken: " + recivedRefreshToken);
         if (recivedRefreshToken == null) {
+            log.debug("Didn't recive refresh token");
             throw new InvalidRefreshTokenException("Didn't recive refresh token");
         }
         try {
             if (!jwtUtils.validateRefreshToken(recivedRefreshToken)) {
+                log.debug("Invalid refresh token");
                 throw new InvalidRefreshTokenException("Invalid refresh token");
             }
             String email = jwtUtils.getUserEmailFromJwtToken(recivedRefreshToken);
+            log.debug("email: " + email);
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
+            log.debug("user: " + user);
             String newAuthToken = jwtUtils.generateToken(user);
             return newAuthToken;
 
@@ -90,8 +98,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidRefreshTokenException(ex.getMessage());
         } catch (JwtAuthException ex) {
             throw new InvalidRefreshTokenException(ex.getMessage());
-        } 
-        catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             throw new InvalidRefreshTokenException(ex.getMessage());
         } catch (Exception ex) {
             throw new InvalidRefreshTokenException("Invalid refresh token", ex);

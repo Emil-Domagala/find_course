@@ -1,6 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { useAddCourseToCartMutation } from '@/state/api';
+import { useAddCourseToCartMutation } from '@/state/endpoints/cart/cart';
+
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
