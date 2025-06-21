@@ -1,6 +1,6 @@
 'use client';
 
-import CartItem from './CartItem';
+import CartItem from '../../../../components/NonDashboard/cart/CartItem';
 import { Button } from '@/components/ui/button';
 import { centsToDollars } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

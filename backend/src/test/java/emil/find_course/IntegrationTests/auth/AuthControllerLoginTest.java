@@ -127,7 +127,7 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
 
                 assertAuthAndRefreshCookies(result);
 
-                verify(jwtUtils).generateToken(any(UserDetailsImpl.class));
+                verify(jwtUtils).generateToken(any(User.class));
                 verify(jwtUtils).generateRefreshToken(any(User.class));
 
         }

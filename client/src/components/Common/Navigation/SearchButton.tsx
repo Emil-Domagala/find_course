@@ -19,7 +19,7 @@ const SearchButton = ({ className }: { className?: string }) => {
           <Link
             href={'/search'}
             className={cn(
-              'bg-customgreys-secondarybg items-center flex flex-row gap-2  px-5 sm:px-14 py-3 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base',
+              'bg-customgreys-secondarybg items-center flex flex-row gap-2 px-5 sm:px-4 md:px-10 py-3 rounded-xl text-customgreys-dirtyGrey hover:text-white-50 hover:bg-customgreys-darkerGrey transition-all duration-300 text-sm sm:text-base',
               className,
               isSecondary,
             )}>

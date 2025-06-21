@@ -59,6 +59,7 @@ const EditCourseForm = () => {
       });
       dispatch(setSections(course.sections || []));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course, methods]);
 
   const onSubmit = async (data: CourseFormData) => {

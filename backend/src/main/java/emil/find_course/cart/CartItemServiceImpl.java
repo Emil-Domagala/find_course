@@ -57,7 +57,6 @@ public class CartItemServiceImpl implements CartItemService {
         log.info("invalid items size: " + invalidItems.size());
         cart.getCartItems().clear();
         cart.getCartItems().addAll(validItems);
-        cartItemRepository.deleteAll(invalidItems);
         return cartRes;
     }
 

@@ -83,8 +83,8 @@ public class CartControllerGetCartTest extends IntegrationTestBase {
                 .perform(MockMvcRequestBuilders.get("/api/v1/cart").cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         var result = extractResponse(res);
-        assertThat(result.getCartDto().getCourses().size()).isEqualTo(2);
-        assertThat(result.getCartDto().getTotalPrice()).isEqualTo(30);
+        assertThat(result.getCart().getCourses().size()).isEqualTo(2);
+        assertThat(result.getCart().getTotalPrice()).isEqualTo(30);
 
         assertThat(courseRepo.findById(c2.getId()).get().getPrice()).isEqualTo(50);
 
@@ -116,8 +116,8 @@ public class CartControllerGetCartTest extends IntegrationTestBase {
                 .perform(MockMvcRequestBuilders.get("/api/v1/cart").cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         var result = extractResponse(res);
-        assertThat(result.getCartDto().getCourses().size()).isEqualTo(1);
-        assertThat(result.getCartDto().getTotalPrice()).isEqualTo(10);
+        assertThat(result.getCart().getCourses().size()).isEqualTo(1);
+        assertThat(result.getCart().getTotalPrice()).isEqualTo(10);
         assertThat(result.getWarnings().size()).isEqualTo(1);
         assertThat(cartItemRepo.count()).isEqualTo(1);
     }
@@ -151,7 +151,7 @@ public class CartControllerGetCartTest extends IntegrationTestBase {
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         var result = extractResponse(res);
 
-        assertThat(result.getCartDto()).isNull();
+        assertThat(result.getCart()).isNull();
     }
 
 }

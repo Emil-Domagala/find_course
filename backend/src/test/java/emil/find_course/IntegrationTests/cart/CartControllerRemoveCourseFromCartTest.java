@@ -88,8 +88,8 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
         var response = extractResponse(res);
-        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
-        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(20);
+        assertThat(response.getCart().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCart().getTotalPrice()).isEqualTo(20);
 
         entityManager.flush();
         entityManager.clear();
@@ -134,8 +134,8 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
         var response = extractResponse(res);
-        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
-        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(10);
+        assertThat(response.getCart().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCart().getTotalPrice()).isEqualTo(10);
 
         Cart foundCart = cartRepository.findByUser(user).orElseThrow();
         assertThat(foundCart.getCartItems().size()).isEqualTo(1);
@@ -189,8 +189,8 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
         var response = extractResponse(res);
-        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
-        assertThat(response.getCartDto().getTotalPrice()).isEqualTo(expectedPrice);
+        assertThat(response.getCart().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCart().getTotalPrice()).isEqualTo(expectedPrice);
 
         assertThat(courseRepository.findById(c2.getId()).get().getPrice()).isEqualTo(newPrice);
         assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(1);
@@ -222,7 +222,7 @@ public class CartControllerRemoveCourseFromCartTest extends IntegrationTestBase 
 
         var response = extractResponse(res);
         assertThat(response.getWarnings().size()).isEqualTo(1);
-        assertThat(response.getCartDto().getCourses().size()).isEqualTo(1);
+        assertThat(response.getCart().getCourses().size()).isEqualTo(1);
 
         assertThat(cartRepository.findByUser(user).get().getCartItems().size()).isEqualTo(1);
     }

@@ -7,7 +7,7 @@ const LoadingSearchPage = () => {
       <FilterSkeleton />
       <div className="container">
         <DisplayCoursesHeadingSkele />
-        <DisplayCoursesSkeleton size={12} />
+        <DisplayCoursesSkeleton size={4} />
       </div>
     </>
   );

@@ -71,7 +71,7 @@ export type SectionDetailsProtectedDto = SectionDto & {
 };
 
 export type ChapterDetailsProtectedDto = ChapterDto & {
-  content: string;
+  content?: string;
   videoUrl?: string;
 };
 

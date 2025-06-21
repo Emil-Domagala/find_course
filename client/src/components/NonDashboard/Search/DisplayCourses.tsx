@@ -31,10 +31,7 @@ const DisplayCourses = ({ coursesPage, isLoading }: Props) => {
       <h2 className="text-gray-500 mb-3">{coursesPage?.totalElements || 0} courses available</h2>
 
       {!isLoading ? (
-        <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${
-            courses?.length === 0 ? '!grid-cols-1' : ''
-          }`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${courses?.length === 0 ? '!grid-cols-1' : ''}`}>
           {courses && courses.length > 0 ? (
             courses.map((course) => (
               <div key={course.id}>
@@ -46,7 +43,7 @@ const DisplayCourses = ({ coursesPage, isLoading }: Props) => {
           )}
         </div>
       ) : (
-        <DisplayCoursesSkeleton size={12} />
+        <DisplayCoursesSkeleton size={4} />
       )}
     </>
   );

@@ -26,17 +26,17 @@ const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, a
     if (!refreshResult.error) {
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.info('should logout');
-      // await baseQuery(
-      //   {
-      //     url: 'public/logout',
-      //     method: 'POST',
-      //     credentials: 'include',
-      //   },
-      //   api,
-      //   extraOptions,
-      // );
-      // window.location.href = '/auth/login';
+      // console.info('should logout');
+      await baseQuery(
+        {
+          url: 'public/logout',
+          method: 'POST',
+          credentials: 'include',
+        },
+        api,
+        extraOptions,
+      );
+      window.location.href = '/auth/login';
     }
   }
   return result;

@@ -6,7 +6,6 @@ import { ChapterFormData, chapterSchema } from '@/lib/validation/course';
 
 import { addChapter, closeChapterModal, editChapter } from '@/state';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
-import { ChapterDetailsProtectedDto } from '@/types/courses';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -18,7 +17,7 @@ const ChapterModal = () => {
   const dispatch = useAppDispatch();
   const { isChapterModalOpen, selectedSectionIndex, selectedChapterIndex, sections } = useAppSelector((state) => state.global.courseEditor);
 
-  const chapter: ChapterDetailsProtectedDto | undefined =
+  const chapter =
     selectedSectionIndex !== null && selectedChapterIndex !== null ? sections[selectedSectionIndex].chapters![selectedChapterIndex] : undefined;
 
   const methods = useForm<ChapterFormData>({
@@ -35,7 +34,7 @@ const ChapterModal = () => {
       methods.reset({
         title: chapter.title,
         content: chapter.content,
-        videoUrl: chapter.videoUrl || '',
+        videoUrl: chapter.videoUrl,
       });
     } else {
       methods.reset({
@@ -53,9 +52,9 @@ const ChapterModal = () => {
   const onSubmit = (data: ChapterFormData) => {
     if (selectedSectionIndex === null) return;
 
-    const newChapter: ChapterDetailsProtectedDto & { tempId?: string } = {
-      id: chapter?.id || '',
-      tempId: uuidv4(),
+    const newChapter = {
+      id: chapter?.id || undefined,
+      tempId: chapter.id ? undefined : uuidv4(),
       title: data.title,
       content: data.content,
       videoUrl: data.videoUrl,
@@ -100,8 +99,7 @@ const ChapterModal = () => {
 
             <CustomFormField name="videoUrl" label="Video Url" placeholder="Paste video url here" />
 
-
-{/* TODO: Videos are not supported yet. I will add it later. */}
+            {/* TODO: Videos are not supported yet. I will add it later. */}
             {/* <FormField
               control={methods.control}
               name="videoUrl"
@@ -129,7 +127,6 @@ const ChapterModal = () => {
                 </FormItem>
               )}
             /> */}
-
 
             <div className="flex justify-end space-x-2 mt-6">
               <Button type="button" variant="outline" onClick={onClose}>

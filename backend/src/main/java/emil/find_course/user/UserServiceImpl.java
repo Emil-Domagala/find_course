@@ -2,7 +2,6 @@ package emil.find_course.user;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,9 @@ import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -77,10 +78,6 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    @Override
-    public void grantAccessToCourse(User user, Set<Course> courses) {
-        user.getEnrollmentCourses().addAll(courses);
-        userRepository.save(user);
-    }
+ 
 
 }

@@ -6,7 +6,6 @@ import { Form } from '@/components/ui/form';
 import { SectionFormData, sectionSchema } from '@/lib/validation/course';
 import { addSection, closeSectionModal, editSection } from '@/state';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
-import { SectionDetailsProtectedDto } from '@/types/courses';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -47,9 +46,9 @@ const SectionModal = () => {
   };
 
   const onSubmit = (data: SectionFormData) => {
-    const newSection: SectionDetailsProtectedDto & { tempId?: string } = {
-      id: section?.id || '',
-      tempId: uuidv4(),
+    const newSection = {
+      id: section?.id || undefined,
+      tempId: section?.id ? undefined : uuidv4(),
       title: data.title,
       description: data.description,
       chapters: section?.chapters || [],

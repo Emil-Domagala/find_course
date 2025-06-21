@@ -17,6 +17,7 @@ const EnrolledCourses = ({}) => {
 
   useEffect(() => {
     handleGetEnrolledCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, size]);
 
   return (

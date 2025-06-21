@@ -6,7 +6,7 @@ import { cn, formatPrice } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 
 export const CourseCardSkeleton = () => {
-  return <Skeleton className="h-[300px] rounded-lg"></Skeleton>;
+  return <Skeleton className="h-[350px] md:h-[300px] lg:h-[250px] rounded-lg"></Skeleton>;
 };
 
 const CourseCard = ({ course, isSearch, link, cardClasses }: { course: CourseDto; isSearch?: boolean; link: string; cardClasses?: string }) => {
