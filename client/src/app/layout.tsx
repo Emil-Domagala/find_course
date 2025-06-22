@@ -26,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.className} antialiased bg-customgreys-primary`}>
+        {/* Layout */}
         <Toaster position="bottom-right" richColors />
         <Providers>{children}</Providers>
       </body>
