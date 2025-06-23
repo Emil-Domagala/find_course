@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { ChapterProgress } from '@/types/courses';
-import { ChapterType } from '@/types/enums';
+import { ChapterType } from '@/types/search-enums';
 import { CheckCircle, FileText } from 'lucide-react';
 
 type Props = {

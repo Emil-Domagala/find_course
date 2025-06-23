@@ -1,12 +1,12 @@
 import { CourseDtoWithFirstChapter } from '@/types/courses';
 import { api } from '../../api';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { CourseCategory } from '@/types/courses-enum';
 
 type PaginationProps = {
   page?: number;
   size?: number;
-  sortField?: SearchField | '';
+  sortField?: CourseDtoSortField | '';
   direction?: SearchDirection;
   keyword?: string;
   category?: CourseCategory | '';

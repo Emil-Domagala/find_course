@@ -1,4 +1,4 @@
-import { BecomeTeacherRequestStatus } from './enums';
+import { BecomeTeacherRequestStatus } from './search-enums';
 
 export type BecomeTeacherRequest = {
   id: string;

@@ -1,11 +1,11 @@
-import { SearchDirection, SearchField } from '@/types/enums';
+import { CourseDtoSortField, SearchDirection } from '@/types/search-enums';
 import { api } from '../../api';
 import { CourseCategory } from '@/types/courses-enum';
 
 type PaginationProps = {
   page?: number;
   size?: number;
-  sortField?: SearchField | '';
+  sortField?: CourseDtoSortField | '';
   direction?: SearchDirection;
   keyword?: string;
   category?: CourseCategory | '';

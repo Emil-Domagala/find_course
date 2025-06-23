@@ -1,7 +1,7 @@
 import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { api } from '../../api';
 import { BecomeTeacherRequest } from '@/types/user';
-import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/enums';
+import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/search-enums';
 
 type PaginationProps = {
   page?: number;
@@ -53,4 +53,5 @@ export const teacherApplicationAdminApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetNewTeacherApplicationNumberQuery, useLazyGetAdminBecomeUserRequestsQuery, useAdminUpdateTeacherRequestsMutation } = teacherApplicationAdminApi;
+export const { useGetNewTeacherApplicationNumberQuery, useLazyGetAdminBecomeUserRequestsQuery, useAdminUpdateTeacherRequestsMutation } =
+  teacherApplicationAdminApi;

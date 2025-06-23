@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 import BuyButton from './BuyButton';
 import { centsToDollars } from '@/lib/utils';
 import { SectionDetailsPublicDto } from '@/types/courses';
-import { ChapterType } from '@/types/enums';
+import { ChapterType } from '@/types/search-enums';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
   const { courseId } = await params;

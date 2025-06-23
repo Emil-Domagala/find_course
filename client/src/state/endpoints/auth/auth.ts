@@ -1,5 +1,5 @@
-import { UserRegisterRequest } from '@/lib/validation/userAuth';
-import { UserLoginRequest } from '@/types/auth';
+import { UserLoginRequest, UserRegisterRequest } from '@/lib/validation/userAuth';
+
 import { api } from '../../api';
 
 export const authApi = api.injectEndpoints({

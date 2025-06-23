@@ -1,12 +1,12 @@
 import { CourseDetailsPublicDto } from '@/types/courses';
 import { api } from '../../api';
 import { CourseCategory } from '@/types/courses-enum';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 
 type PaginationProps = {
   page?: number;
   size?: number;
-  sortField?: SearchField | '';
+  sortField?: CourseDtoSortField | '';
   direction?: SearchDirection;
   keyword?: string;
   category?: CourseCategory | '';
@@ -66,6 +66,7 @@ export const courseTeacherApi = api.injectEndpoints({
           if (!queryArgs) continue;
           try {
             const patchResult = dispatch(
+              // @ts-expect-error redux error code fine
               api.util.updateQueryData('getCoursesTeacher', queryArgs, (draft: Page<CourseDto>) => {
                 if (!draft || !draft.content || !Array.isArray(draft.content)) return;
 

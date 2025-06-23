@@ -4,7 +4,7 @@ import Filter from '@/components/Common/Filter/Filter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import Header from '@/components/Dashboard/Header';
 import TeacherCourseCard from '@/components/Dashboard/Teacher/TeacherCourseCard';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
 import { CourseCategory } from '@/types/courses-enum';
 import { useRouter } from 'next/navigation';
@@ -20,9 +20,9 @@ const MyCourses = () => {
 
   const [category, setCategory] = useSelectFilter<CourseCategory>({ valueName: 'category' });
   const [keyword, setKeyword] = useSelectFilter<string>({ valueName: 'keyword' });
-  const [sortField, setSortField] = useSelectFilter<SearchField>({
+  const [sortField, setSortField] = useSelectFilter<CourseDtoSortField>({
     valueName: 'sortField',
-    initialValue: SearchField.CreatedAt,
+    initialValue: CourseDtoSortField.CreatedAt,
   });
   const [direction, setDirection] = useSelectFilter<SearchDirection>({
     valueName: 'direction',
@@ -85,7 +85,7 @@ const MyCourses = () => {
         setCategory={setCategory}
         keyword={keyword}
         setKeyword={setKeyword}
-        sortField={sortField || SearchField.CreatedAt}
+        sortField={sortField || CourseDtoSortField.CreatedAt}
         setSortField={setSortField}
         direction={direction || SearchDirection.ASC}
         setDirection={setDirection}

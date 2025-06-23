@@ -1,7 +1,7 @@
 'use client';
 
 import CustomSelect from '@/components/Common/Filter/CustomSelect';
-import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/enums';
+import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/search-enums';
 import { transformToFrontendFormat } from '@/lib/utils';
 import { SetStateAction } from 'react';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';

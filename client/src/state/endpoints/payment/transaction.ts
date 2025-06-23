@@ -1,11 +1,11 @@
 import { api } from '../../api';
 import { TransactionDto } from '@/types/payments';
-import { SearchDirection } from '@/types/enums';
+import { SearchDirection, TransactionDtoSortField } from '@/types/search-enums';
 
 type PaginationProps = {
   page?: number;
   size?: number;
-  sortField?: string | '';
+  sortField?: TransactionDtoSortField | '';
   direction?: SearchDirection;
 };
 

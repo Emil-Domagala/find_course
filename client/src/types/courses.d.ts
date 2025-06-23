@@ -1,5 +1,5 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
-import { ChapterType } from './enums';
+import { ChapterType } from './search-enums';
 
 export type UpdateProgressRequest = {
   chapterProgressId: string;

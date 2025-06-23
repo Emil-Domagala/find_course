@@ -2,7 +2,7 @@
 
 import { transformKey, transformToFrontendFormat } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { CourseCategory } from '@/types/courses-enum';
 import CustomSelect from './CustomSelect';
 import { SetStateAction } from 'react';
@@ -13,8 +13,8 @@ type Props = {
   setCategory: React.Dispatch<SetStateAction<CourseCategory | undefined>>;
   keyword: string | undefined;
   setKeyword: React.Dispatch<SetStateAction<string | undefined>>;
-  sortField: SearchField;
-  setSortField: React.Dispatch<SetStateAction<SearchField | undefined>>;
+  sortField: CourseDtoSortField;
+  setSortField: React.Dispatch<SetStateAction<CourseDtoSortField | undefined>>;
   direction: SearchDirection;
   setDirection: React.Dispatch<SetStateAction<SearchDirection | undefined>>;
   size: number;
@@ -69,7 +69,7 @@ const Filter = ({
           label="Order by"
           value={sortField}
           onChange={setSortField}
-          options={Object.values(SearchField)}
+          options={Object.values(CourseDtoSortField)}
           placeholder="Select Category"
           transformFn={transformKey}
           selectTriggerClasses={'lg:w-52 w-full'}

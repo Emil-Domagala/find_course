@@ -4,7 +4,7 @@ import Header from '@/components/Dashboard/Header';
 import { Button } from '@/components/ui/button';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
 
-import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/enums';
+import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/search-enums';
 import { Loader } from 'lucide-react';
 import TeacherRequestFilter from '@/components/Dashboard/Admin/TeacherRequestFilter';
 import Pagination from '@/components/Common/Filter/Pagination';
@@ -77,8 +77,9 @@ const BecomeTeacherRequestsPage = ({}) => {
         title="Become Teacher Requestes"
         subtitle="Manage requests"
         rightElement={
-          <ButtonWithSpinner isLoading={isUpdating} onClick={handleSaveChanges}>Save Changes</ButtonWithSpinner>
-        
+          <ButtonWithSpinner isLoading={isUpdating} onClick={handleSaveChanges}>
+            Save Changes
+          </ButtonWithSpinner>
         }
       />
       <TeacherRequestFilter

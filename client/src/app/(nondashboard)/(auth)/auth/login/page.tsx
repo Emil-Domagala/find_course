@@ -3,20 +3,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { UserLoginSchema } from '@/lib/validation/userAuth';
+import { UserLoginRequest, UserLoginSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
 
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { UserLoginRequest } from '@/types/auth';
+
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import { useLoginMutation } from '@/state/endpoints/auth/auth';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const LoginPage = () => {
   const searchParams = useSearchParams();
-  let redirect = searchParams.get('redirect');
-  if (!redirect) redirect = '/user/courses';
+  const redirect = searchParams.get('redirect') || '/user/courses';
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

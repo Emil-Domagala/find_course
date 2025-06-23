@@ -2,7 +2,7 @@
 import Pagination from '@/components/Common/Filter/Pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SearchDirection } from '@/types/enums';
+import { SearchDirection, TransactionDtoSortField } from '@/types/search-enums';
 import { centsToDollars } from '@/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
 import { useLazyGetTransactionsQuery } from '@/state/endpoints/payment/transaction';
@@ -10,10 +10,10 @@ import { useLazyGetTransactionsQuery } from '@/state/endpoints/payment/transacti
 const BillingPage = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);
   const [size] = useState(10);
-  const [sortField, setSortField] = useState<string>('createdAt');
+  const [sortField, setSortField] = useState<TransactionDtoSortField | ''>(TransactionDtoSortField.CreatedAt);
   const [direction, setDirection] = useState(SearchDirection.DESC);
 
-  const handleChangeSortField = (field: string) => {
+  const handleChangeSortField = (field: TransactionDtoSortField) => {
     if (sortField === field) {
       setDirection(direction === SearchDirection.ASC ? SearchDirection.DESC : SearchDirection.ASC);
     } else {
@@ -54,10 +54,14 @@ const BillingPage = ({}) => {
               <TableHeader className="bg-customgreys-darkGrey">
                 <TableRow className="border-none text-white-50">
                   <TableHead className="border-none p-4">Transaction Number</TableHead>
-                  <TableHead className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer" onClick={() => handleChangeSortField('createdAt')}>
+                  <TableHead
+                    className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer"
+                    onClick={() => handleChangeSortField(TransactionDtoSortField.CreatedAt)}>
                     Date
                   </TableHead>
-                  <TableHead className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer" onClick={() => handleChangeSortField('amount')}>
+                  <TableHead
+                    className="border-none p-4 hover:bg-customgreys-secondarybg cursor-pointer"
+                    onClick={() => handleChangeSortField(TransactionDtoSortField.Amount)}>
                     Amount
                   </TableHead>
                   <TableHead className="border-none p-4">Courses</TableHead>
