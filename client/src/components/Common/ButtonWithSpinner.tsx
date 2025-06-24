@@ -15,7 +15,7 @@ type ButtonWithSpinnerProps = ButtonProps & {
 const ButtonWithSpinner = ({ isLoading, children, className, onClick, ...props }: ButtonWithSpinnerProps) => {
   return (
     <Button variant="primary" className={cn('h-12 text-md w-full', className)} onClick={onClick} disabled={isLoading} {...props}>
-      {children} {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
+      {children} {isLoading && <Loader data-testid="spinner" size={20} className="animate-[spin_2s_linear_infinite]" />}
     </Button>
   );
 };

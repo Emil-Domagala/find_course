@@ -35,15 +35,9 @@ const LoginPage = () => {
       await loginUser(values).unwrap();
       router.push(redirect);
       router.refresh();
-    } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.message) {
-        form.setError('root', { message: 'An unexpected error occurred.' });
-        return;
-      }
-
-      form.setError('root', { message: error.message });
+    } catch (e: unknown) {
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      form.setError('root', { message: errorMessage });
     } finally {
       setIsLoading(false);
     }
