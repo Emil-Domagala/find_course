@@ -116,9 +116,33 @@ test(`shows validation error for invalid email`, async () => {
   });
 });
 
-test('validation errors disapear after correction', async () => {})
-test('Api call is triggered correctly and isLoading is set correctly', async () => {})
-test('On success redirect and router.refresh() is called', async () => {});
-test('When no message in API error response, shows default message', async () => {})
-test('Shows api error messsage', async () => {})
+test('validation errors disapear after correction', async () => {
+  const user = userEvent.setup();
 
+  render(<LoginPage />);
+  const button = screen.getByRole('button', { name: /continue/i });
+  const emailInput = screen.getByLabelText(/Email/);
+  const passwordInput = screen.getByLabelText(/Password/);
+
+  await user.type(emailInput, 'invalid@email');
+  await user.type(passwordInput, 'Pas');
+  await user.click(button);
+
+  await waitFor(() => {
+    expect(screen.queryByText(/Invalid email format/i)).toBeInTheDocument();
+    expect(screen.queryByText(/At least 6 characters long/i)).toBeInTheDocument();
+  });
+
+  await user.type(emailInput, '.com');
+  await user.type(passwordInput, 'sword');
+  await user.click(button);
+
+  await waitFor(() => {
+    expect(screen.queryByText(/Invalid email format/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/At least 6 characters long/i)).not.toBeInTheDocument();
+  });
+});
+test('Api call is triggered correctly and isLoading is set correctly', async () => {});
+test('On success redirect and router.refresh() is called', async () => {});
+test('When no message in API error response, shows default message', async () => {});
+test('Shows api error messsage', async () => {});
