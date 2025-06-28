@@ -130,8 +130,8 @@ test('validation errors disapear after correction', async () => {
   await user.click(button);
 
   await waitFor(() => {
-    expect(screen.queryByText(/Invalid email format/i)).toBeInTheDocument();
-    expect(screen.queryByText(/At least 6 characters long/i)).toBeInTheDocument();
+    expect(screen.getByText(/Invalid email format/i)).toBeInTheDocument();
+    expect(screen.getByText(/At least 6 characters long/i)).toBeInTheDocument();
   });
 
   await user.type(emailInput, '.com');
@@ -143,7 +143,7 @@ test('validation errors disapear after correction', async () => {
     expect(screen.queryByText(/At least 6 characters long/i)).not.toBeInTheDocument();
   });
 });
-test('Api call is triggered correctly and isLoading is set correctly', async () => {
+test('Api call is triggered correctly', async () => {
   const user = userEvent.setup();
   render(<LoginPage />);
   const button = screen.getByRole('button', { name: /continue/i });
@@ -194,6 +194,7 @@ test('When no message in API error response, shows default message', async () =>
     expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
   });
 });
+
 test('Shows api error messsage', async () => {
   const user = userEvent.setup();
   render(<LoginPage />);

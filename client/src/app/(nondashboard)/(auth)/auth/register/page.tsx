@@ -33,20 +33,20 @@ const RegisterPage = () => {
       await registerUser(values).unwrap();
       router.push('/confirm-email');
       router.refresh();
-    } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.errors) {
-        form.setError('root', { message: 'An unexpected error occurred.' });
-        return;
+    } catch (e: unknown) {
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      const fieldErrors = (e as ApiErrorResponse)?.data?.errors;
+      if (fieldErrors) {
+        fieldErrors.forEach((err) => {
+          if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
+            form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
+            return;
+          }
+          form.setError('root', { message: errorMessage });
+        });
+      } else {
+        form.setError('root', { message: errorMessage });
       }
-      error.errors.forEach((err) => {
-        if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
-          form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
-          return;
-        }
-        form.setError('root', { message: err.message });
-      });
     } finally {
       setIsLoading(false);
     }
