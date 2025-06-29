@@ -40,9 +40,7 @@ const RegisterPage = () => {
         fieldErrors.forEach((err) => {
           if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
             form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
-            return;
           }
-          form.setError('root', { message: errorMessage });
         });
       } else {
         form.setError('root', { message: errorMessage });

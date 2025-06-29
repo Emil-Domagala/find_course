@@ -17,7 +17,7 @@ const DEFAULT_LOGIN_REDIRECT = '/auth/login';
 const DEFAULT_LOGGED_IN_REDIRECT = '/user/courses';
 
 export async function middleware(req: NextRequest) {
-  if (!AUTH_COOKIE_NAME || !JWT_SECRET) {
+  if (!AUTH_COOKIE_NAME || !JWT_SECRET || !ACCESS_COOKIE_NAME) {
     console.error('Missing AUTH_COOKIE_NAME or JWT_SECRET or ACCESS_COOKIE_NAME environment variables.');
     return new NextResponse('Internal Server Error: Missing configuration', { status: 500 });
   }

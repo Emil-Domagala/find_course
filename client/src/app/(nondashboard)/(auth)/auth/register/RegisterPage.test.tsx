@@ -143,3 +143,21 @@ test('validation errors disapear after correction', async () => {
     expect(screen.queryByText(/Password is required/i)).not.toBeInTheDocument();
   });
 });
+
+test('shows field validation errors', async () => {
+  const user = userEvent.setup();
+  render(<RegisterPage />);
+  const emailError = { field: 'email', message: 'Invalid Email' };
+  const usernameError = { field: 'username', message: 'Invalid UserNAme' };
+  const userLastnameError = { field: 'userLastname', message: 'Invalid Last Name' };
+  const passwordError = { field: 'password', message: 'Invalid Password' };
+  registerUserMock.mockReturnValue({ unwrap: () => Promise.reject({ data: { errors: [emailError, usernameError, userLastnameError, passwordError] } }) });
+  const { button } = await correctInputs(user);
+  await user.click(button);
+  await waitFor(() => {
+    expect(screen.getByText(emailError.message)).toBeInTheDocument();
+    expect(screen.getByText(usernameError.message)).toBeInTheDocument();
+    expect(screen.getByText(userLastnameError.message)).toBeInTheDocument();
+    expect(screen.getByText(passwordError.message)).toBeInTheDocument();
+  });
+});

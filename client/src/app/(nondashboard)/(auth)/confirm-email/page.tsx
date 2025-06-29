@@ -16,7 +16,7 @@ const ConfirmEmailPage = () => {
   const [isError, setIsError] = useState(false);
 
   const [confirmEmail] = useConfirmEmailMutation();
-  const [resendConfirmEmail] = useResendConfirmEmailTokenMutation();
+  const [resendConfirmEmail, { isLoading: isResending }] = useResendConfirmEmailTokenMutation();
 
   const showInputsAgain = () =>
     setTimeout(() => {
@@ -31,15 +31,10 @@ const ConfirmEmailPage = () => {
 
   const handleError = (e: unknown) => {
     setIsError(true);
-    const errorFull = e as ApiErrorResponse;
-    const error = errorFull.data;
-    if (!error.message) {
-      setMessage('An unexpected error occurred.');
-      showInputsAgain();
-      return;
-    }
-    setMessage(error.message);
-    if (error.message.includes('verified')) {
+    const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+    setMessage(errorMessage);
+
+    if (errorMessage.includes('verified')) {
       pushToCourses();
     } else {
       showInputsAgain();
@@ -91,7 +86,11 @@ const ConfirmEmailPage = () => {
 
       <div className="mx-auto mt-10">
         <span className="text-md ">Didn&apos;t recive an email? </span>
-        <Button onClick={() => handleResendEmail()} variant="link" className="text-primary-750 hover:text-primary-600 text-md transition-colors duration-300">
+        <Button
+          disabled={isResending}
+          onClick={() => handleResendEmail()}
+          variant="link"
+          className="text-primary-750 hover:text-primary-600 text-md transition-colors duration-300 ">
           Resend
         </Button>
       </div>
