@@ -27,7 +27,7 @@ export const UserLoginSchema = z.object({
 export type UserLoginRequest = z.infer<typeof UserLoginSchema>;
 
 export const ForgotPasswordShema = z.object({
-  email: z.string().trim().email({ message: 'Invalid email format' }),
+  email: z.string().trim().nonempty('Email is required').email({ message: 'Invalid email format' }),
 });
 
 export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordShema>;

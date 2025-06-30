@@ -10,7 +10,7 @@ import { CustomFormField } from '@/components/Common/CustomFormField';
 import { useResetPasswordMutation } from '@/state/endpoints/auth/resetPassword';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
-const ResetPassword = ({}) => {
+const ResetPasswordPage = ({}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -92,4 +92,4 @@ const ResetPassword = ({}) => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordPage;

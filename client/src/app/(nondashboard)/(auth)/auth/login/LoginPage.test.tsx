@@ -18,202 +18,145 @@ const push = jest.fn();
 const refresh = jest.fn();
 const loginUserMock = jest.fn();
 
+let user: ReturnType<typeof userEvent.setup>;
+
 beforeEach(() => {
   (useRouter as jest.Mock).mockReturnValue({ push, refresh });
   (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams('redirect=/dashboard'));
   (useLoginMutation as jest.Mock).mockReturnValue([loginUserMock]);
+
   loginUserMock.mockReset();
   push.mockReset();
   refresh.mockReset();
+
+  user = userEvent.setup();
 });
 
-test('renders inputs and button', () => {
-  render(<LoginPage />);
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
-  const button = screen.getByRole('button', { name: /continue/i });
-  expect(emailInput).toBeInTheDocument();
-  expect(passwordInput).toBeInTheDocument();
-  expect(button).toBeInTheDocument();
-});
-
-test('button is being disabled and loading is showing when isLoading is true', async () => {
-  loginUserMock.mockReturnValue({ unwrap: () => new Promise(() => {}) });
-  const user = userEvent.setup();
-
-  render(<LoginPage />);
-
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
-  const button = screen.getByRole('button', { name: /continue/i });
-  await user.type(emailInput, 'test@example.com');
-  await user.type(passwordInput, 'password123');
-  await user.click(button);
-
-  await waitFor(() => {
-    expect(button).toBeDisabled();
-    expect(screen.getByTestId('spinner')).toBeInTheDocument();
-  });
-});
-
-test('submitting empty form shows required errors', async () => {
-  render(<LoginPage />);
-
-  const button = screen.getByRole('button', { name: /continue/i });
-  await userEvent.click(button);
-
-  await waitFor(() => {
-    expect(screen.getByText(/Email is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/Password is required/i)).toBeInTheDocument();
-  });
-});
-
-const InvalidPasswordTestCases = [
-  {
-    description: 'to short password',
-    password: 'pa',
-    expectedErrors: {
-      password: /At least 6 characters long/i,
-    },
-  },
-  {
-    description: 'to long password',
-    password: '0123456789_01234567890_01234567890_0123456789',
-    expectedErrors: {
-      password: /At most 30 characters long/i,
-    },
-  },
-];
-
-test.each(InvalidPasswordTestCases)(`shows validation error for invalid password: %s`, async ({ password, expectedErrors }) => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-
-  const button = screen.getByRole('button', { name: /continue/i });
-  const passwordInput = screen.getByLabelText(/Password/);
-  await user.clear(passwordInput);
-
-  await user.type(passwordInput, password);
-
-  await user.click(button);
-
-  await waitFor(() => {
-    expect(screen.getByText(expectedErrors.password)).toBeInTheDocument();
-  });
-});
-
-test(`shows validation error for invalid email`, async () => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  await user.clear(emailInput);
-  await user.type(emailInput, 'invalid@email');
-  await user.click(button);
-
-  await waitFor(() => {
-    expect(screen.getByText(/Invalid email format/i)).toBeInTheDocument();
-  });
-});
-
-test('validation errors disapear after correction', async () => {
-  const user = userEvent.setup();
-
-  render(<LoginPage />);
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
-
-  await user.type(emailInput, 'invalid@email');
-  await user.type(passwordInput, 'Pas');
-  await user.click(button);
-
-  await waitFor(() => {
-    expect(screen.getByText(/Invalid email format/i)).toBeInTheDocument();
-    expect(screen.getByText(/At least 6 characters long/i)).toBeInTheDocument();
+describe('LoginPage', () => {
+  describe('Rendering', () => {
+    test('renders email and password inputs and submit button', () => {
+      render(<LoginPage />);
+      expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
+    });
   });
 
-  await user.type(emailInput, '.com');
-  await user.type(passwordInput, 'sword');
-  await user.click(button);
+  describe('Validation', () => {
+    test('shows required errors when form is submitted empty', async () => {
+      render(<LoginPage />);
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  await waitFor(() => {
-    expect(screen.queryByText(/Invalid email format/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/At least 6 characters long/i)).not.toBeInTheDocument();
+      expect(await screen.findByText(/Email is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/Password is required/i)).toBeInTheDocument();
+    });
+
+    test('shows validation error for invalid email format', async () => {
+      render(<LoginPage />);
+      await user.type(screen.getByLabelText(/Email/i), 'invalid@email');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
+
+      expect(await screen.findByText(/Invalid email format/i)).toBeInTheDocument();
+    });
+
+    test.each([
+      { description: 'too short password', password: 'pa', error: /At least 6 characters long/i },
+      {
+        description: 'too long password',
+        password: '0123456789_01234567890_01234567890_0123456789',
+        error: /At most 30 characters long/i,
+      },
+    ])('shows validation error for $description', async ({ password, error }) => {
+      render(<LoginPage />);
+      await user.clear(screen.getByLabelText(/Password/i));
+      await user.type(screen.getByLabelText(/Password/i), password);
+      await user.click(screen.getByRole('button', { name: /continue/i }));
+
+      expect(await screen.findByText(error)).toBeInTheDocument();
+    });
+
+    test('clears validation errors after correcting inputs', async () => {
+      render(<LoginPage />);
+
+      await user.type(screen.getByLabelText(/Email/i), 'invalid@email');
+      await user.type(screen.getByLabelText(/Password/i), '123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
+
+      expect(await screen.findByText(/Invalid email format/i)).toBeInTheDocument();
+      expect(screen.getByText(/At least 6 characters long/i)).toBeInTheDocument();
+
+      await user.type(screen.getByLabelText(/Email/i), '.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
+
+      await waitFor(() => {
+        expect(screen.queryByText(/Invalid email format/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/At least 6 characters long/i)).not.toBeInTheDocument();
+      });
+    });
   });
-});
-test('Api call is triggered correctly', async () => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
 
-  await user.type(emailInput, 'invalid@email.com');
-  await user.type(passwordInput, 'Password');
-  await user.click(button);
+  describe('Form submission & API', () => {
+    test('displays loading spinner and disables button while submitting', async () => {
+      loginUserMock.mockReturnValue({ unwrap: () => new Promise(() => {}) });
 
-  assert(loginUserMock.mock.calls.length === 1);
-});
+      render(<LoginPage />);
 
-test('On success redirect and router.refresh() is called', async () => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
+      await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  await user.type(emailInput, 'test@example.com');
-  await user.type(passwordInput, 'password123');
+      expect(await screen.findByTestId('spinner')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled();
+    });
 
-  loginUserMock.mockReturnValue({ unwrap: () => Promise.resolve() });
+    test('triggers API call with correct data', async () => {
+      render(<LoginPage />);
+      await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  await user.click(button);
+      assert(loginUserMock.mock.calls.length === 1);
+    });
 
-  await waitFor(() => {
-    expect(push).toHaveBeenCalledTimes(1);
-    expect(push).toHaveBeenCalledWith('/dashboard');
-    expect(refresh).toHaveBeenCalledTimes(1);
-  });
-});
+    test('redirects on successful login and calls router.refresh', async () => {
+      loginUserMock.mockReturnValue({ unwrap: () => Promise.resolve() });
 
-test('When no message in API error response, shows default message', async () => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
+      render(<LoginPage />);
+      await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  await user.type(emailInput, 'invalid@email.com');
-  await user.type(passwordInput, 'Password');
-  loginUserMock.mockReturnValue({ unwrap: () => Promise.reject({ data: {} }) });
-  await user.click(button);
-  await waitFor(() => {
-    expect(screen.getByText(/An unexpected error occurred./i)).toBeInTheDocument();
-    expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
-  });
-});
+      await waitFor(() => {
+        expect(push).toHaveBeenCalledWith('/dashboard');
+        expect(refresh).toHaveBeenCalled();
+      });
+    });
 
-test('Shows api error messsage', async () => {
-  const user = userEvent.setup();
-  render(<LoginPage />);
-  const button = screen.getByRole('button', { name: /continue/i });
-  const emailInput = screen.getByLabelText(/Email/);
-  const passwordInput = screen.getByLabelText(/Password/);
+    test('shows default error message if API error has no message', async () => {
+      loginUserMock.mockReturnValue({ unwrap: () => Promise.reject({ data: {} }) });
 
-  await user.type(emailInput, 'invalid@email.com');
-  await user.type(passwordInput, 'Password');
+      render(<LoginPage />);
+      await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  const apiErrorMessage = 'Invalid credentials provided.';
+      expect(await screen.findByText(/An unexpected error occurred./i)).toBeInTheDocument();
+      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+    });
 
-  loginUserMock.mockReturnValue({ unwrap: () => Promise.reject({ data: { message: apiErrorMessage } }) });
+    test('displays server error message from API', async () => {
+      const apiErrorMessage = 'Invalid credentials provided.';
+      loginUserMock.mockReturnValue({ unwrap: () => Promise.reject({ data: { message: apiErrorMessage } }) });
 
-  await user.click(button);
+      render(<LoginPage />);
+      await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+      await user.type(screen.getByLabelText(/Password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /continue/i }));
 
-  await waitFor(() => {
-    expect(screen.getByText(apiErrorMessage)).toBeInTheDocument();
-    expect(loginUserMock).toHaveBeenCalledTimes(1);
-    expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      expect(await screen.findByText(apiErrorMessage)).toBeInTheDocument();
+      expect(loginUserMock).toHaveBeenCalledTimes(1);
+      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+    });
   });
 });

@@ -13,7 +13,7 @@ import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 const ForgotPasswordPage = () => {
   const [sendResetPassword, { isLoading }] = useSendResetPasswordEmailMutation();
   const [showInputs, setShowInputs] = useState(true);
-  const [message, setMessage] = useState('Request Send');
+  const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
   const form = useForm<ForgotPasswordRequest>({
@@ -37,14 +37,8 @@ const ForgotPasswordPage = () => {
       setMessage('Reset password email has been send');
     } catch (e) {
       setIsError(true);
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.message) {
-        setMessage('An unexpected error occurred.');
-        showInputsAgain();
-        return;
-      }
-      setMessage(error.message);
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      setMessage(errorMessage);
       showInputsAgain();
     }
   };
