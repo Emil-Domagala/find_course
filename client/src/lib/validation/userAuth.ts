@@ -34,15 +34,19 @@ export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordShema>;
 
 export const NewPasswordSchema = z
   .object({
-    password: z.string().min(6, { message: 'At least 6 characters long' }).max(30, { message: 'At most 30 characters long' }),
-    confirmPassword: z.string().min(6, { message: 'At least 6 characters long' }).max(30, { message: 'At most 30 characters long' }),
+    password: z.string().nonempty('Password is required').min(6, { message: 'At least 6 characters long' }).max(30, { message: 'At most 30 characters long' }),
+    confirmPassword: z
+      .string()
+      .nonempty('Confirm Password is required')
+      .min(6, { message: 'At least 6 characters long' })
+      .max(30, { message: 'At most 30 characters long' }),
   })
   .refine(
     (data) => {
       return data.password === data.confirmPassword;
     },
     {
-      message: "Passwords don't match",
+      message: 'Confirm Password must match Password',
       path: ['confirmPassword'],
     },
   );

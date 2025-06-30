@@ -9,6 +9,7 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import { useResetPasswordMutation } from '@/state/endpoints/auth/resetPassword';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { h } from 'node_modules/framer-motion/dist/types.d-B50aGbjN';
 
 const ResetPasswordPage = ({}) => {
   const router = useRouter();
@@ -31,11 +32,18 @@ const ResetPasswordPage = ({}) => {
     setTimeout(() => {
       setShowInputs(true);
     }, 1500);
+
   const pushToLogin = () =>
     setTimeout(() => {
       router.push('/auth/login');
     }, 1500);
 
+  const handleInvalidToken = () => {
+    setMessage('Invalid token, get new token from email');
+    return setTimeout(() => {
+      router.push('/auth/forgot-password');
+    }, 1500);
+  };
   const onSubmit = async (values: NewPassword) => {
     setIsError(false);
     setMessage('Sending request...');
@@ -44,8 +52,7 @@ const ResetPasswordPage = ({}) => {
     if (!token) {
       setShowInputs(false);
       setIsError(true);
-      setMessage('Invalid token, get new token from email');
-      return;
+      return handleInvalidToken();
     }
 
     try {
@@ -54,19 +61,11 @@ const ResetPasswordPage = ({}) => {
       pushToLogin();
     } catch (e) {
       setIsError(true);
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.message) {
-        setMessage('An unexpected error occurred.');
-        showInputsAgain();
-        return;
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || 'An unexpected error occurred.';
+      if (errorMessage.includes('token')) {
+        return handleInvalidToken();
       }
-      if (error.message.includes('token')) {
-        setMessage('Invalid token, get new token from email');
-        showInputsAgain();
-        return;
-      }
-      setMessage(error.message);
+      setMessage(errorMessage);
       showInputsAgain();
     }
   };
@@ -77,7 +76,7 @@ const ResetPasswordPage = ({}) => {
         <div className="mb-5">
           {showInputs ? (
             <>
-              <CustomFormField name="password" label="Password" type="password" />
+              <CustomFormField name="password" label="New Password" type="password" />
               <CustomFormField name="confirmPassword" label="Confirm Password" type="password" />
             </>
           ) : (
@@ -85,7 +84,7 @@ const ResetPasswordPage = ({}) => {
           )}
         </div>
         <ButtonWithSpinner className="w-full mt-2" isLoading={isLoading} disabled={!showInputs || isLoading}>
-          Continue
+          Reset Password
         </ButtonWithSpinner>
       </form>
     </Form>
