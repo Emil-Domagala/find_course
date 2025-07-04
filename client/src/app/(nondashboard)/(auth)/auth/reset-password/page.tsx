@@ -9,7 +9,6 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import { useResetPasswordMutation } from '@/state/endpoints/auth/resetPassword';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
-import { h } from 'node_modules/framer-motion/dist/types.d-B50aGbjN';
 
 const ResetPasswordPage = ({}) => {
   const router = useRouter();
@@ -61,7 +60,7 @@ const ResetPasswordPage = ({}) => {
       pushToLogin();
     } catch (e) {
       setIsError(true);
-      const errorMessage = (e as ApiErrorResponse)?.data?.message || 'An unexpected error occurred.';
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
       if (errorMessage.includes('token')) {
         return handleInvalidToken();
       }

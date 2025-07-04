@@ -1,20 +1,18 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { useAddCourseToCartMutation } from '@/state/endpoints/cart/cart';
-
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-type Props = { courseId: string; authToken?: string };
+type Props = { courseId: string; accessToken?: string };
 
-const BuyButton = ({ courseId, authToken }: Props) => {
+const BuyButton = ({ courseId, accessToken }: Props) => {
   const router = useRouter();
-  const [addCourseToCart] = useAddCourseToCartMutation();
+  const [addCourseToCart, { isLoading }] = useAddCourseToCartMutation();
 
   const handleAddToCart = async () => {
-
-    if (!authToken) {
+    if (!accessToken) {
       toast.info('Please login to add to cart');
       return router.push('/auth/login?redirect=/course/' + courseId);
     }
@@ -23,20 +21,15 @@ const BuyButton = ({ courseId, authToken }: Props) => {
       await addCourseToCart({ courseId }).unwrap();
       toast.success('Added to cart');
     } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      let message = 'Something went wrong';
-      if (error.message) {
-        message = error.message;
-      }
-      toast.error(message);
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      toast.error(errorMessage);
     }
   };
 
   return (
-    <Button variant="primary" onClick={handleAddToCart}>
+    <ButtonWithSpinner variant="primary" onClick={handleAddToCart} isLoading={isLoading}>
       Add to Cart!
-    </Button>
+    </ButtonWithSpinner>
   );
 };
 

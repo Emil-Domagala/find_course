@@ -13,7 +13,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
   const { courseId } = await params;
   const course = await apiServerService.getCoursesPublic(courseId);
   const cookieStore = await cookies();
-  const authToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME as string)?.value;
+  const accessToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME as string)?.value;
 
   return (
     <>
@@ -34,7 +34,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
 
             <span className="text-primary-500 text-xl font-semibold py-4">Only ${centsToDollars(course.price)}</span>
             <div className="flex flex-row gap-2">
-              <BuyButton courseId={courseId} authToken={authToken} />
+              <BuyButton courseId={courseId} accessToken={accessToken} />
             </div>
           </div>
           {/* Image */}

@@ -10,6 +10,7 @@ const PaymentFormContent = () => {
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
+  router.prefetch('/user/checkout/success');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
