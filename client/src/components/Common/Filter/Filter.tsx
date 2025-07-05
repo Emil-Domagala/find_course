@@ -7,6 +7,7 @@ import { CourseCategory } from '@/types/courses-enum';
 import CustomSelect from './CustomSelect';
 import { SetStateAction } from 'react';
 import ButtonWithSpinner from '../ButtonWithSpinner';
+import { Label } from '@radix-ui/react-select';
 
 type Props = {
   category: CourseCategory | undefined;
@@ -20,7 +21,7 @@ type Props = {
   size: number;
   setSize: React.Dispatch<SetStateAction<number | undefined>>;
   handleFetchCourses: () => void;
-  isLoading?: boolean;
+  isLoading: boolean;
 };
 
 const Filter = ({
@@ -38,7 +39,7 @@ const Filter = ({
   isLoading,
 }: Props) => {
   return (
-    <div className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
+    <div data-testid="filter-component" className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
       {/* category */}
       <div className={`w-full lg:w-fit`}>
         <CustomSelect
@@ -56,8 +57,12 @@ const Filter = ({
 
       {/* Keyword */}
       <div className="w-full">
-        <p className="text-sm mb-1">Search by title</p>
+        {/* TODO: check how it looks */}
+        <label htmlFor="keyword" className="text-sm mb-1">
+          Search by title
+        </label>
         <Input
+          id="keyword"
           value={keyword || ''}
           onChange={(e) => setKeyword(e.target.value)}
           className="bg-customgreys-primarybg h-12 text-white-50 !shadow-none border-none font-medium text-lg lg:text-lg selection:bg-primary-750"

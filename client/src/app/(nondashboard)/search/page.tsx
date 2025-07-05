@@ -27,8 +27,16 @@ const SearchPage = () => {
   const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesPublicQuery();
 
   const handleFetchCourses = () => {
-    return fetchCourses({ page, size, sortField, direction, keyword, category });
+    return fetchCourses({
+      page: page || 0,
+      size: size || 12,
+      sortField: sortField || CourseDtoSortField.CreatedAt,
+      direction: direction || SearchDirection.ASC,
+      keyword: keyword ?? '',
+      category: category ?? '',
+    });
   };
+
   useEffect(() => {
     handleFetchCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps

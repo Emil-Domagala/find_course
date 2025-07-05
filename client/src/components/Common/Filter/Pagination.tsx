@@ -12,7 +12,7 @@ type Props = {
 
 const Pagination = ({ setPage, currentPage, totalPages, className }: Props) => {
   return (
-    <div className={cn('flex flex-row gap-2 justify-center py-4', className)}>
+    <div data-testid="pagination-component" className={cn('flex flex-row gap-2 justify-center py-4', className)}>
       {currentPage != 0 && (
         <Button size="sm" className="p-3 font-semibold" onClick={() => setPage((prev) => prev || 1 - 1)}>
           <ChevronLeft className="h-4 w-4" />
