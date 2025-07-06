@@ -100,7 +100,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse getValidCart(User user) {
         log.info("Getting valid cart");
         Cart cart = cartRepository.findByUserWithItemsAndCourses(user).orElse(new Cart());
-        log.info("Cart found");
+        
         if (cart.getUser() == null) {
             log.info("Cart not found");
             var cartRes = CartResponse.builder().build();

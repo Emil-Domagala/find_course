@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event';
 import SearchPage from './page';
 import { useLazyGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
 import { CourseCategory } from '@/types/courses-enum';
-import { createCourseDto } from '@/testUtils/factories/courseFactory';
-import { createPageResponse } from '@/testUtils/factories/pageFactory';
+import { createCourseDto } from '@/__test__/factories/courseFactory';
+import { createPageResponse } from '@/__test__/factories/pageFactory';
 
 const replace = jest.fn();
 const get = jest.fn();
