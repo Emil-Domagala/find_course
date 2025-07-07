@@ -27,10 +27,12 @@ const BuyButton = ({ courseId, accessToken }: Props) => {
   };
 
   return (
-    <ButtonWithSpinner variant="primary" onClick={handleAddToCart} isLoading={isLoading}>
+    <ButtonWithSpinner className="w-fit" variant="primary" onClick={handleAddToCart} isLoading={isLoading}>
       Add to Cart!
     </ButtonWithSpinner>
   );
 };
 
 export default BuyButton;
+
+

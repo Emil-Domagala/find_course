@@ -14,7 +14,7 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/state/endpoints/course/courseTeacher';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
-const MyCourses = () => {
+const MyCoursesTeacherPage = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
 
@@ -102,9 +102,9 @@ const MyCourses = () => {
           ))}
         </div>
       </div>
-      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages} />
+      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages || 0} />
     </div>
   );
 };
 
-export default MyCourses;
+export default MyCoursesTeacherPage;

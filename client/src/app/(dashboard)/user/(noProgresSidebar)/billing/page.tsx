@@ -84,7 +84,7 @@ const BillingPage = ({}) => {
               <TableFooter className="bg-customgreys-primarybg border-customgreys-secondarybg">
                 <TableRow>
                   <TableCell colSpan={4} className="p-0 m-0 border-none">
-                    <Pagination className="p-3" setPage={setPage} currentPage={page || 0} totalPages={transactions?.totalPages} />
+                    <Pagination className="p-3" setPage={setPage} currentPage={page || 0} totalPages={transactions?.totalPages || 0} />
                   </TableCell>
                 </TableRow>
               </TableFooter>

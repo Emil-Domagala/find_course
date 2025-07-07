@@ -58,6 +58,10 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public PaymentIntentResponse createPaymentIntent(Cart cart, User user) {
 
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty.");
+        }
+
         // Get valid courses
         PaymentIntentResponse response = new PaymentIntentResponse();
 

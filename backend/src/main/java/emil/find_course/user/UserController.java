@@ -59,6 +59,7 @@ public class UserController {
 
         }
 
+        // PICTURE IS BEING DELETED WHEN IT SHOULDNT
         @Operation(summary = "Update user profile information")
         @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<UserDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,

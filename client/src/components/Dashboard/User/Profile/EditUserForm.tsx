@@ -13,6 +13,7 @@ import CustomAddImg from '@/components/Common/CustomAddImg';
 import { useGetUserInfoQuery, useDeleteUserMutation, useUpdateUserInfoMutation } from '@/state/endpoints/user/user';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
+// TODO: PICTURE IS BEING DELETED
 const EditUserForm = () => {
   const router = useRouter();
   const { data: profileData, isLoading } = useGetUserInfoQuery();

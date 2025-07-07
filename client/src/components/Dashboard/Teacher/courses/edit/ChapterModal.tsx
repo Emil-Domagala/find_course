@@ -17,8 +17,7 @@ const ChapterModal = () => {
   const dispatch = useAppDispatch();
   const { isChapterModalOpen, selectedSectionIndex, selectedChapterIndex, sections } = useAppSelector((state) => state.global.courseEditor);
 
-  const chapter =
-    selectedSectionIndex !== null && selectedChapterIndex !== null ? sections[selectedSectionIndex].chapters![selectedChapterIndex] : undefined;
+  const chapter = selectedSectionIndex !== null && selectedChapterIndex !== null ? sections[selectedSectionIndex].chapters![selectedChapterIndex] : undefined;
 
   const methods = useForm<ChapterFormData>({
     resolver: zodResolver(chapterSchema),
@@ -54,7 +53,7 @@ const ChapterModal = () => {
 
     const newChapter = {
       id: chapter?.id || undefined,
-      tempId: chapter.id ? undefined : uuidv4(),
+      tempId: chapter?.id ? undefined : uuidv4(),
       title: data.title,
       content: data.content,
       videoUrl: data.videoUrl,
