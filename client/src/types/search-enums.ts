@@ -3,7 +3,7 @@ export enum SearchDirection {
   DESC = 'DESC',
 }
 
-export enum BecomeTeacherRequestStatus {
+export enum TeacherRequestStatus {
   PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   DENIED = 'DENIED',

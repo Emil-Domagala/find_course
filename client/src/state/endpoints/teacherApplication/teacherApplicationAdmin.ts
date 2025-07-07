@@ -1,14 +1,14 @@
-import { UpdateTeacherRequest } from '@/app/(dashboard)/admin/teacher-requests/page';
 import { api } from '../../api';
-import { BecomeTeacherRequest } from '@/types/user';
-import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/search-enums';
+
+import { TeacherRequestStatus, SearchDirection } from '@/types/search-enums';
+import { TeacherRequest, UpdateTeacherRequest } from '@/types/teacherRequest';
 
 type PaginationProps = {
   page?: number;
   size?: number;
   direction?: SearchDirection;
   seenByAdmin?: 'true' | 'false';
-  status?: BecomeTeacherRequestStatus;
+  status?: TeacherRequestStatus;
 };
 
 export const teacherApplicationAdminApi = api.injectEndpoints({
@@ -18,7 +18,7 @@ export const teacherApplicationAdminApi = api.injectEndpoints({
       providesTags: ['TeacherApplicationNumber'],
     }),
 
-    getAdminBecomeUserRequests: build.query<Page<BecomeTeacherRequest>, PaginationProps>({
+    getAdminBecomeUserRequests: build.query<Page<TeacherRequest>, PaginationProps>({
       query: ({ page, size, direction, seenByAdmin, status }) => ({
         url: 'admin/teacher-application',
         method: 'GET',

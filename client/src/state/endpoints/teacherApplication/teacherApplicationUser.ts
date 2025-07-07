@@ -1,4 +1,4 @@
-import { BecomeTeacherRequest } from '@/types/user';
+import { TeacherRequest } from '@/types/teacherRequest';
 import { api } from '../../api';
 
 export const teacherApplicationUserApi = api.injectEndpoints({
@@ -8,7 +8,7 @@ export const teacherApplicationUserApi = api.injectEndpoints({
       query: () => ({ url: 'user/teacher-application', method: 'POST' }),
     }),
     // Get Become teacher request status
-    getTeacherApplicationInformation: build.query<BecomeTeacherRequest, void>({
+    getTeacherApplicationInformation: build.query<TeacherRequest, void>({
       query: () => ({ url: 'user/teacher-application' }),
     }),
   }),

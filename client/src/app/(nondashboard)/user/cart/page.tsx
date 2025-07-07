@@ -39,7 +39,7 @@ const CartPage = () => {
       <div className="flex flex-col gap-5 w-fit min-w-[15rem] mx-auto md:mx-0 md:ml-auto mt-5">
         <div className="flex gap-5 justify-between w-full">
           <div>
-            <p className="text-lg font-semibold">Total: ${centsToDollars(response.cart.totalPrice)}</p>
+            <p className="text-lg font-semibold">Total</p>
             <p className="text-sm text-customgreys-dirtyGrey">Items: {response.cart.courses.length}</p>
           </div>
           <p className="text-primary-500 font-semibold text-xl">${centsToDollars(response.cart.totalPrice)}</p>

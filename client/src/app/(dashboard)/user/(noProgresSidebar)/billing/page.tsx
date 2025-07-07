@@ -41,11 +41,6 @@ const BillingPage = ({}) => {
   }, [page, sortField, direction]);
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-6 bg-customgreys-secondarybg">
-        <h2 className="text-2xl font-semibold">Billing History</h2>
-
-        {/* TABLE */}
         <div className="h-[400px] w-full">
           {isLoadingTransactions ? (
             <Skeleton className="h-[400px] w-full" />
@@ -96,8 +91,7 @@ const BillingPage = ({}) => {
             </Table>
           )}
         </div>
-      </div>
-    </div>
+  
   );
 };
 

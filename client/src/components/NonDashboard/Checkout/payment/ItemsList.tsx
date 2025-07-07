@@ -3,6 +3,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { centsToDollars } from '@/lib/utils';
 import { useGetCartQuery } from '@/state/endpoints/cart/cart';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 export const ItemsListSkeleton = () => {
@@ -10,11 +11,22 @@ export const ItemsListSkeleton = () => {
 };
 
 const ItemsList = () => {
-  const { data: res } = useGetCartQuery();
+  const { data: res, isLoading } = useGetCartQuery();
 
-  if (!res) return <ItemsListSkeleton />;
-  if(res.warnings){
-    toast.warning(res.warnings)
+  useEffect(() => {
+    if (res?.warnings?.length) {
+      res.warnings.forEach((msg) => toast.warning(msg));
+    }
+  }, [res?.warnings]);
+
+  if (isLoading) return <ItemsListSkeleton />;
+
+  if (res?.warnings) {
+    toast.warning(res.warnings);
+  }
+
+  if (!res?.cart || !res.cart.courses || res.cart.courses.length === 0) {
+    return <p className="text-center text-lg">Your cart is empty.</p>;
   }
 
   return (
@@ -25,7 +37,7 @@ const ItemsList = () => {
         </h3>
         {res.cart.courses.map((course) => (
           <div key={course.id} className="flex justify-between mb-4 text-customgreys-dirtyGrey text-base">
-            <span className="font-bold">1x {course.title}</span>
+            <span className="font-bold">{course.title}</span>
             <span className="font-bold">${centsToDollars(course.price)}</span>
           </div>
         ))}

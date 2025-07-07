@@ -82,6 +82,17 @@ public class TeacherApplicationAdminControllerGetTeacherApplicationsTest extends
         }
 
         @Test
+        @DisplayName("Should sucessfully return one teacher application")
+        public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturOneElemennt() throws Exception {
+                var application = prepareTeacherApplicationUtil.praparUniqueTeacherApplication();
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/admin/teacher-application")
+                                .cookie(new Cookie(authCookieName, authToken)))
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1));
+        }
+
+        @Test
         @DisplayName("Should return top 100 elements")
         public void teacherApplicationAdminControlle_getTeacherApplications_shouldReturnTop100Elements()
                         throws Exception {

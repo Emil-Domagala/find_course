@@ -45,14 +45,17 @@ describe('CartPage', () => {
     });
     test('renders cart items total price, items length', async () => {
       const courseDto = createCourseDto();
-      const cartDto = createCartDto({ courses: [courseDto] });
+      const courseDto2 = createCourseDto();
+
+      const cartDto = createCartDto({ courses: [courseDto, courseDto2] });
       const cartResponse = createCartResponse({ cart: cartDto });
       (useGetCartQuery as jest.Mock).mockReturnValue({ data: cartResponse, isLoading: false });
       render(<CartPage />);
       await waitFor(() => {
-        screen.getByText('Total: $' + (courseDto.price / 100).toFixed(2));
-        screen.getByText('Items: 1');
+        screen.getByText('$' + ((courseDto.price + courseDto2.price) / 100).toFixed(2));
+        screen.getByText('Items: 2');
         screen.getByText(courseDto.title);
+        screen.getByText(courseDto2.title);
       });
     });
   });

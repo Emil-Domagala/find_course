@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 const BecomeTeacherUser = () => {
   const [sendBecomeTeacherRequest] = useSendTeacherApplicationMutation();
-  const { data: becomeTeacherRequestStatus, isLoading } = useGetTeacherApplicationInformationQuery();
+  const { data: myTeacherRequest, isLoading } = useGetTeacherApplicationInformationQuery();
 
   const [showSendRequest, setShowSendRequest] = useState(true);
   const [message, setMessage] = useState('Request Sent');
@@ -42,18 +42,14 @@ const BecomeTeacherUser = () => {
       <AccordionItem value="item-1">
         <AccordionTrigger className="bg-customgreys-primarybg p-3 w-full rounded-lg text-white-100 text-lg font-semibold  ">Become a Teacher</AccordionTrigger>
         <AccordionContent className=" px-3 py-5">
-          {becomeTeacherRequestStatus?.id ? (
+          {myTeacherRequest?.id ? (
             <p>
-              Your request was send {new Date(becomeTeacherRequestStatus.createdAt).toLocaleDateString()} and it is{' '}
+              Your request was send {new Date(myTeacherRequest.createdAt).toLocaleDateString()} and it is{' '}
               <span
                 className={`${
-                  becomeTeacherRequestStatus.status === 'DENIED'
-                    ? 'text-red-500'
-                    : becomeTeacherRequestStatus.status === 'PENDING'
-                    ? 'text-yellow-500'
-                    : 'text-green-500'
+                  myTeacherRequest.status === 'DENIED' ? 'text-red-500' : myTeacherRequest.status === 'PENDING' ? 'text-yellow-500' : 'text-green-500'
                 }`}>
-                {transformToFrontendFormat(becomeTeacherRequestStatus.status)}
+                {transformToFrontendFormat(myTeacherRequest.status)}
               </span>
             </p>
           ) : showSendRequest ? (
