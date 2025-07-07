@@ -1,32 +1,45 @@
 'use client';
 
 import { transformKey, transformToFrontendFormat } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { CourseCategory } from '@/types/courses-enum';
-import { Loader } from 'lucide-react';
 import CustomSelect from './CustomSelect';
 import { SetStateAction } from 'react';
+import ButtonWithSpinner from '../ButtonWithSpinner';
+import { Label } from '@radix-ui/react-select';
 
 type Props = {
   category: CourseCategory | undefined;
   setCategory: React.Dispatch<SetStateAction<CourseCategory | undefined>>;
   keyword: string | undefined;
   setKeyword: React.Dispatch<SetStateAction<string | undefined>>;
-  sortField: SearchField;
-  setSortField: React.Dispatch<SetStateAction<SearchField | undefined>>;
+  sortField: CourseDtoSortField;
+  setSortField: React.Dispatch<SetStateAction<CourseDtoSortField | undefined>>;
   direction: SearchDirection;
   setDirection: React.Dispatch<SetStateAction<SearchDirection | undefined>>;
   size: number;
   setSize: React.Dispatch<SetStateAction<number | undefined>>;
   handleFetchCourses: () => void;
-  isLoading?: boolean;
+  isLoading: boolean;
 };
 
-const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSortField, direction, setDirection, size, setSize, handleFetchCourses, isLoading }: Props) => {
+const Filter = ({
+  category,
+  setCategory,
+  keyword,
+  setKeyword,
+  sortField,
+  setSortField,
+  direction,
+  setDirection,
+  size,
+  setSize,
+  handleFetchCourses,
+  isLoading,
+}: Props) => {
   return (
-    <div className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
+    <div data-testid="filter-component" className="flex flex-col lg:flex-row  gap-5 justify-center items-end w-full">
       {/* category */}
       <div className={`w-full lg:w-fit`}>
         <CustomSelect
@@ -44,8 +57,12 @@ const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSort
 
       {/* Keyword */}
       <div className="w-full">
-        <p className="text-sm mb-1">Search by title</p>
+        {/* TODO: check how it looks */}
+        <label htmlFor="keyword" className="text-sm mb-1">
+          Search by title
+        </label>
         <Input
+          id="keyword"
           value={keyword || ''}
           onChange={(e) => setKeyword(e.target.value)}
           className="bg-customgreys-primarybg h-12 text-white-50 !shadow-none border-none font-medium text-lg lg:text-lg selection:bg-primary-750"
@@ -57,7 +74,7 @@ const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSort
           label="Order by"
           value={sortField}
           onChange={setSortField}
-          options={Object.values(SearchField)}
+          options={Object.values(CourseDtoSortField)}
           placeholder="Select Category"
           transformFn={transformKey}
           selectTriggerClasses={'lg:w-52 w-full'}
@@ -89,9 +106,9 @@ const Filter = ({ category, setCategory, keyword, setKeyword, sortField, setSort
         />
 
         <div className="max-w-[15rem] md:m-0 mx-auto w-full">
-          <Button variant="primary" className="h-12 text-md w-full" onClick={handleFetchCourses}>
-            Search {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-          </Button>
+          <ButtonWithSpinner onClick={handleFetchCourses} isLoading={isLoading}>
+            Search
+          </ButtonWithSpinner>
         </div>
       </div>
     </div>

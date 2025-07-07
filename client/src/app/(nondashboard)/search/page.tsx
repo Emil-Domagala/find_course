@@ -2,19 +2,20 @@
 
 import DisplayCourses from '@/components/NonDashboard/Search/DisplayCourses';
 import Pagination from '@/components/Common/Filter/Pagination';
-import { useLazyGetCoursesPublicQuery } from '@/state/api';
+
 import { useEffect } from 'react';
 import Filter from '@/components/Common/Filter/Filter';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
 import { CourseCategory } from '@/types/courses-enum';
-import { SearchDirection, SearchField } from '@/types/enums';
+import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
+import { useLazyGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
 
 const SearchPage = () => {
   const [category, setCategory] = useSelectFilter<CourseCategory>({ valueName: 'category' });
   const [keyword, setKeyword] = useSelectFilter<string>({ valueName: 'keyword' });
-  const [sortField, setSortField] = useSelectFilter<SearchField>({
+  const [sortField, setSortField] = useSelectFilter<CourseDtoSortField>({
     valueName: 'sortField',
-    initialValue: SearchField.CreatedAt,
+    initialValue: CourseDtoSortField.CreatedAt,
   });
   const [direction, setDirection] = useSelectFilter<SearchDirection>({
     valueName: 'direction',
@@ -26,8 +27,16 @@ const SearchPage = () => {
   const [fetchCourses, { data: coursesPage, isLoading }] = useLazyGetCoursesPublicQuery();
 
   const handleFetchCourses = () => {
-    return fetchCourses({ page, size, sortField, direction, keyword, category });
+    return fetchCourses({
+      page: page || 0,
+      size: size || 12,
+      sortField: sortField || CourseDtoSortField.CreatedAt,
+      direction: direction || SearchDirection.ASC,
+      keyword: keyword ?? '',
+      category: category ?? '',
+    });
   };
+
   useEffect(() => {
     handleFetchCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +51,7 @@ const SearchPage = () => {
             setCategory={setCategory}
             keyword={keyword}
             setKeyword={setKeyword}
-            sortField={sortField || SearchField.CreatedAt}
+            sortField={sortField || CourseDtoSortField.CreatedAt}
             setSortField={setSortField}
             direction={direction || SearchDirection.ASC}
             setDirection={setDirection}
@@ -58,7 +67,7 @@ const SearchPage = () => {
         <DisplayCourses coursesPage={coursesPage} isLoading={isLoading} />
       </div>
 
-      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages} />
+      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages || 0} />
     </>
   );
 };

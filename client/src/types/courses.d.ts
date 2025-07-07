@@ -1,5 +1,5 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
-import { ChapterType } from './enums';
+import { ChapterType } from './search-enums';
 
 export type UpdateProgressRequest = {
   chapterProgressId: string;
@@ -43,12 +43,6 @@ export type ChapterStructure = {
   type: ChapterType;
 };
 
-export type CartDto = {
-  id: string;
-  courses: CourseDto[];
-  totalPrice: number;
-};
-
 export type ChapterDto = {
   id: string;
   title: string;
@@ -77,7 +71,7 @@ export type SectionDetailsProtectedDto = SectionDto & {
 };
 
 export type ChapterDetailsProtectedDto = ChapterDto & {
-  content: string;
+  content?: string;
   videoUrl?: string;
 };
 

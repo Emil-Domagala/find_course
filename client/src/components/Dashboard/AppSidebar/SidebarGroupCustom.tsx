@@ -1,6 +1,7 @@
 'use client';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { useGetAdminNotyficationQuery } from '@/state/api';
+import { useGetNewTeacherApplicationNumberQuery } from '@/state/endpoints/teacherApplication/teacherApplicationAdmin';
+
 import { LucideIcon } from 'lucide-react';
 
 import Link from 'next/link';
@@ -20,7 +21,7 @@ const SidebarGroupCustom = ({ links, groupName }: Props) => {
     data: notificationData,
     isLoading,
     isError,
-  } = useGetAdminNotyficationQuery(undefined, {
+  } = useGetNewTeacherApplicationNumberQuery(undefined, {
     skip: !shouldFetchNotifications,
     refetchOnReconnect: true,
   });
@@ -40,7 +41,9 @@ const SidebarGroupCustom = ({ links, groupName }: Props) => {
             const isActive = pathname.startsWith(link.href);
             const showNotification = link.notification && notificationCount > 0 && !isLoading && !isError;
             return (
-              <SidebarMenuItem key={link.label} className={`group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center  ${isActive ? 'bg-gray-800' : ''}`}>
+              <SidebarMenuItem
+                key={link.label}
+                className={`group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center  ${isActive ? 'bg-gray-800' : ''}`}>
                 <SidebarMenuButton
                   asChild
                   size={'lg'}

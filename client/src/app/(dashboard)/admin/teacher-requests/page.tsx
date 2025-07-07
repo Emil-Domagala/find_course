@@ -1,36 +1,32 @@
 'use client';
 
 import Header from '@/components/Dashboard/Header';
-import { Button } from '@/components/ui/button';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
-
-import { BecomeTeacherRequestStatus, SearchDirection } from '@/types/enums';
-import { Loader } from 'lucide-react';
+import { TeacherRequestStatus, SearchDirection } from '@/types/search-enums';
 import TeacherRequestFilter from '@/components/Dashboard/Admin/TeacherRequestFilter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import BecomeTeacherItem from '@/components/Dashboard/Admin/BecomeTeacherItem';
 import { useEffect, useState } from 'react';
-import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from '@/state/api';
 import LoadingSpinner from '@/components/Common/LoadingSpinner';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
+import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from '@/state/endpoints/teacherApplication/teacherApplicationAdmin';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { UpdateTeacherRequest } from '@/types/teacherRequest';
 
-export type UpdateTeacherRequest = { id: string; status?: BecomeTeacherRequestStatus; seenByAdmin?: boolean };
-
-const BecomeTeacherRequestsPage = ({}) => {
+// TODO: add form here!!!
+const TeacherRequestAdminPage = ({}) => {
   const [dataToSend, setDataToSend] = useState<UpdateTeacherRequest[]>([]);
 
   // Filter states
-  const [requetsStatus, setRequestsStatus] = useSelectFilter<BecomeTeacherRequestStatus>({
-    valueName: 'status',
-  });
+  const [requetsStatus, setRequestsStatus] = useSelectFilter<TeacherRequestStatus>({ valueName: 'status' });
   const [direction, setDirection] = useSelectFilter<SearchDirection>({ valueName: 'direction', initialValue: SearchDirection.ASC });
   const [seenByAdmin, setSeenByAdmin] = useSelectFilter<'true' | 'false'>({ valueName: 'seenByAdmin' });
   const [size, setSize] = useSelectFilter<number>({ valueName: 'size', initialValue: 12 });
   const [page, setPage] = useSelectFilter<number>({ valueName: 'page' });
 
   // RTK Query
-  const [fetchBecomeTeacherRequest, { data: becomeTeacherRequestPage, isLoading }] = useLazyGetAdminBecomeUserRequestsQuery();
+  const [fetchRequests, { data: teacherApplications, isLoading }] = useLazyGetAdminBecomeUserRequestsQuery();
   const [adminUpdateTeacherRequests, { isLoading: isUpdating }] = useAdminUpdateTeacherRequestsMutation();
 
   const handleAddDataToSend = (itemId: string, change: Partial<UpdateTeacherRequest>) => {
@@ -46,27 +42,29 @@ const BecomeTeacherRequestsPage = ({}) => {
   };
 
   const handleSaveChanges = async () => {
-    const clearedDataToSend = dataToSend.filter((item) => item.seenByAdmin !== false && item.status !== BecomeTeacherRequestStatus.PENDING);
+    const clearedDataToSend = dataToSend.filter((item) => item.seenByAdmin !== false && item.status !== TeacherRequestStatus.PENDING);
     try {
-      adminUpdateTeacherRequests(clearedDataToSend).unwrap();
+      await adminUpdateTeacherRequests(clearedDataToSend).unwrap();
       toast.success('Data Updated');
     } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      let message = 'Something went wrong, try again later';
-      if (error.message) {
-        message = error.message;
-      }
-      toast.error(message);
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'Something went wrong, try again later');
+      toast.error(errorMessage);
     }
   };
 
-  const handleFetchBecomeTeacherRequest = () => {
-    return fetchBecomeTeacherRequest({ page, size, direction, status: requetsStatus, seenByAdmin });
+  const handleFetchRequests = () => {
+    return fetchRequests({
+      page: page ?? 0,
+      size: size ?? 12,
+      direction: direction ?? SearchDirection.ASC,
+      status: requetsStatus ?? TeacherRequestStatus.PENDING,
+      seenByAdmin: seenByAdmin ?? 'false',
+    });
   };
 
   useEffect(() => {
-    handleFetchBecomeTeacherRequest();
+    handleFetchRequests();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   return (
@@ -75,9 +73,9 @@ const BecomeTeacherRequestsPage = ({}) => {
         title="Become Teacher Requestes"
         subtitle="Manage requests"
         rightElement={
-          <Button variant="primary" className="p-3 font-medium text-md " onClick={handleSaveChanges}>
-            Save Changes {isUpdating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-          </Button>
+          <ButtonWithSpinner isLoading={isUpdating} onClick={handleSaveChanges}>
+            Save Changes
+          </ButtonWithSpinner>
         }
       />
       <TeacherRequestFilter
@@ -90,7 +88,7 @@ const BecomeTeacherRequestsPage = ({}) => {
         size={size || 12}
         setSize={setSize}
         isLoading={false}
-        handleFetchCourses={() => handleFetchBecomeTeacherRequest()}
+        onClick={() => handleFetchRequests()}
       />
 
       <div className="flex-1 pt-6  ">
@@ -104,20 +102,20 @@ const BecomeTeacherRequestsPage = ({}) => {
           <ul>
             {isLoading ? (
               <LoadingSpinner />
-            ) : becomeTeacherRequestPage && becomeTeacherRequestPage?.content.length === 0 ? (
-              <p className="p-4 text-center text-lg">No New Requests Found</p>
+            ) : teacherApplications && teacherApplications.content.length < 1 ? (
+              <p className="p-4 text-center text-lg">No Requests Found</p>
             ) : (
-              becomeTeacherRequestPage?.content.map((becomeTeacherRequest) => (
-                <BecomeTeacherItem key={becomeTeacherRequest.id} becomeTeacherRequest={becomeTeacherRequest} handleAddDataToSend={handleAddDataToSend} />
+              teacherApplications?.content.map((item) => (
+                <BecomeTeacherItem key={item.id} becomeTeacherRequest={item} handleAddDataToSend={handleAddDataToSend} />
               ))
             )}
           </ul>
         </div>
       </div>
 
-      <Pagination setPage={setPage} currentPage={page || 0} />
+      <Pagination totalPages={teacherApplications?.totalPages || 0} setPage={setPage} currentPage={page || 0} />
     </div>
   );
 };
 
-export default BecomeTeacherRequestsPage;
+export default TeacherRequestAdminPage;

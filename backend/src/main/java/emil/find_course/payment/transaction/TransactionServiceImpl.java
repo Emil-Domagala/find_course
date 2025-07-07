@@ -19,7 +19,9 @@ import emil.find_course.payment.transaction.mapper.TransactionMapper;
 import emil.find_course.payment.transaction.repository.TransactionRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
@@ -29,6 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction createTransaction(User user, PaymentIntent paymentIntent, Cart cart) {
+        log.info("Creating transaction for user {}", user.getEmail());
         Transaction transaction = Transaction.builder()
                 .user(user)
                 .amount((int) (paymentIntent.getAmount() / 1))

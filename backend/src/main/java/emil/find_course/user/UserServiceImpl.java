@@ -2,7 +2,6 @@ package emil.find_course.user;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,9 @@ import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -43,12 +44,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(requestUpdateUser.getPassword()));
         }
 
-        if (requestUpdateUser.isDeleteImage() == true) {
+        if (requestUpdateUser.getDeleteImage().equals(true)) {
             fileStorageService.deleteImage(user.getImageUrl());
             user.setImageUrl(null);
 
         }
-        if (imageFile != null && !imageFile.isEmpty()) {
+        if (imageFile != null && !imageFile.isEmpty() && !requestUpdateUser.getDeleteImage().equals(true)) {
             String oldImgUrl = user.getImageUrl();
             String oryginalName = imageFile.getOriginalFilename();
             InputStream resizedImage = fileStorageService.resizeImage(imageFile, 150, 1, 1, 51_200);
@@ -75,12 +76,6 @@ public class UserServiceImpl implements UserService {
         user.getTeachingCourses().clear();
 
         userRepository.delete(user);
-    }
-
-    @Override
-    public void grantAccessToCourse(User user, Set<Course> courses) {
-        user.getEnrollmentCourses().addAll(courses);
-        userRepository.save(user);
     }
 
 }

@@ -4,13 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
 import { UserRegisterRequest, UserRegisterSchema } from '@/lib/validation/userAuth';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { useRegisterMutation } from '@/state/api';
+
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
-import { Loader } from 'lucide-react';
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import { useRegisterMutation } from '@/state/endpoints/auth/auth';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -33,20 +33,18 @@ const RegisterPage = () => {
       await registerUser(values).unwrap();
       router.push('/confirm-email');
       router.refresh();
-    } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.errors) {
-        form.setError('root', { message: 'An unexpected error occurred.' });
-        return;
+    } catch (e: unknown) {
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      const fieldErrors = (e as ApiErrorResponse)?.data?.errors;
+      if (fieldErrors) {
+        fieldErrors.forEach((err) => {
+          if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
+            form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
+          }
+        });
+      } else {
+        form.setError('root', { message: errorMessage });
       }
-      error.errors.forEach((err) => {
-        if (['email', 'username', 'userLastname', 'password'].includes(err.field)) {
-          form.setError(err.field as keyof UserRegisterRequest, { message: err.message });
-          return;
-        }
-        form.setError('root', { message: err.message });
-      });
     } finally {
       setIsLoading(false);
     }
@@ -62,9 +60,9 @@ const RegisterPage = () => {
         <CustomFormField name="email" label="Email adress" type="email" className="mb-2" />
         <CustomFormField name="password" label="Password" type="password" className="mb-2" />
         {form.formState.errors.root && <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>}
-        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Sign Up {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        <ButtonWithSpinner className="w-full mt-2" isLoading={isLoading}>
+          Sign Up
+        </ButtonWithSpinner>
       </form>
     </Form>
   );

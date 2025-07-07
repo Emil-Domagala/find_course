@@ -88,10 +88,18 @@ public class GlobalExcepptionHandler {
 
         }
 
-        @ExceptionHandler({ AccessDeniedException.class, ForbiddenException.class })
-        public ResponseEntity<ApiErrorResponse> handAccesDenied(Exception ex) {
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiErrorResponse> handAccesDenied(AccessDeniedException ex) {
                 ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
-                                .message("Access Denied").build();
+                                .message(ex.getMessage()).build();
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+
+        }
+
+        @ExceptionHandler(ForbiddenException.class)
+        public ResponseEntity<ApiErrorResponse> handForbiddenException(Exception ex) {
+                ApiErrorResponse error = ApiErrorResponse.builder().status(HttpStatus.FORBIDDEN.value())
+                                .message(ex.getMessage()).build();
                 return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
 
         }

@@ -19,7 +19,7 @@ public class RequestUpdateUser {
     private String userLastname;
 
     @Nullable
-    private boolean deleteImage;
+    private Boolean deleteImage;
 
     @Size(min = 6, max = 30, message = "Password must be at least {min} and {max} characters long")
     @Nullable

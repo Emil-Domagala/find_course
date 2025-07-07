@@ -41,14 +41,14 @@ public class CartServiceImpl implements CartService {
 
         log.info("after filterInvalidCourses");
         if (!cartItemForDelete.isPresent()) {
-            cartResponse.setCartDto(cartMapper.toDto(cart));
+            cartResponse.setCart(cartMapper.toDto(cart));
             return cartResponse;
         }
         var itemForDelete = cartItemForDelete.get();
         if (!cart.getCartItems().contains(itemForDelete)) {
             log.info("Item not found in cart");
             CartDto cartDto = cartMapper.toDto(cart);
-            cartResponse.setCartDto(cartDto);
+            cartResponse.setCart(cartDto);
             return cartResponse;
         }
         if (cart.getCartItems().size() == 1) {
@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
         log.info("Saving cart");
         var savedCart = cartRepository.save(cart);
         log.info("Cart saved");
-        cartResponse.setCartDto(cartMapper.toDto(savedCart));
+        cartResponse.setCart(cartMapper.toDto(savedCart));
         log.info("Returning cart response");
         return cartResponse;
 
@@ -100,7 +100,7 @@ public class CartServiceImpl implements CartService {
     public CartResponse getValidCart(User user) {
         log.info("Getting valid cart");
         Cart cart = cartRepository.findByUserWithItemsAndCourses(user).orElse(new Cart());
-        log.info("Cart found");
+        
         if (cart.getUser() == null) {
             log.info("Cart not found");
             var cartRes = CartResponse.builder().build();
@@ -119,7 +119,7 @@ public class CartServiceImpl implements CartService {
             log.info("Cart has invalid courses");
             cartRepository.save(cart);
         }
-        cartRes.setCartDto(cartMapper.toDto(cart));
+        cartRes.setCart(cartMapper.toDto(cart));
 
         return cartRes;
     }

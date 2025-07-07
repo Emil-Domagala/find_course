@@ -1,24 +1,25 @@
 'use client';
 import { CustomFormField } from '@/components/Common/CustomFormField';
-import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { profileFormSchema, ProfileFormSchema } from '@/lib/validation/profile';
-import { useDeleteUserMutation, useGetUserInfoQuery, useUpdateUserInfoMutation } from '@/state/api';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { ApiError } from 'next/dist/server/api-utils';
 import EditUserFormLoading from './EditUserFormLoading';
 import { useRouter } from 'next/navigation';
 import CustomAddImg from '@/components/Common/CustomAddImg';
-import { Loader } from 'lucide-react';
+import { useGetUserInfoQuery, useDeleteUserMutation, useUpdateUserInfoMutation } from '@/state/endpoints/user/user';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
+// TODO: PICTURE IS BEING DELETED
 const EditUserForm = () => {
   const router = useRouter();
   const { data: profileData, isLoading } = useGetUserInfoQuery();
   const [deleteUser] = useDeleteUserMutation();
   const [updateUserInfo, { isLoading: isUpdating }] = useUpdateUserInfoMutation();
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const methods = useForm<ProfileFormSchema>({
     resolver: zodResolver(profileFormSchema),
@@ -84,11 +85,13 @@ const EditUserForm = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm('Are you sure you want to delete this account? It will be permanently deleted')) {
       try {
+        setDeletingAccount(true);
         await deleteUser().unwrap();
         toast.success('Account deleted successfully');
         router.push('/');
         router.refresh();
       } catch (err) {
+        setDeletingAccount(false);
         let message = 'Something went wrong. Please try again later.';
         if (err instanceof ApiError) {
           message = err.message;
@@ -127,14 +130,14 @@ const EditUserForm = () => {
           <CustomFormField name="userLastname" label="Last Name" type="text" placeholder="Enter your last name" />
           <CustomFormField name="password" label="New Password (optional)" type="password" />
 
-          <div className="flex justify-between mt-4">
-            <Button type="submit" variant="primary" className="min-w-40" disabled={isUpdating}>
-              {isUpdating && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
+          <div className="flex justify-between gap-4 mt-4">
+            <ButtonWithSpinner className="shrink-1" isLoading={isUpdating} type="submit">
               Save Changes
-            </Button>
-            <Button type="button" variant="warning" className="min-w-40" onClick={() => handleDeleteAccount()}>
+            </ButtonWithSpinner>
+
+            <ButtonWithSpinner className="shrink-1" isLoading={deletingAccount} type="button" variant="warning" onClick={() => handleDeleteAccount()}>
               Delete Account
-            </Button>
+            </ButtonWithSpinner>
           </div>
         </form>
       </Form>

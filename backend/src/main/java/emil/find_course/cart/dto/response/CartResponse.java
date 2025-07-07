@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartResponse {
-    private CartDto cartDto;
+    private CartDto cart;
     private List<String> warnings;
 }

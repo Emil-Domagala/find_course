@@ -35,6 +35,7 @@ export default function StoreProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // @ts-expect-error redux error code is fine
   const storeRef = useRef<AppStore>();
   if (!storeRef.current) {
     storeRef.current = makeStore();

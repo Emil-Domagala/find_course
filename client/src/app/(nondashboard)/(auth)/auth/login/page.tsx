@@ -3,20 +3,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { UserLoginSchema } from '@/lib/validation/userAuth';
-import { Button } from '@/components/ui/button';
+import { UserLoginRequest, UserLoginSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
-import { useLoginMutation } from '@/state/api';
+
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { UserLoginRequest } from '@/types/auth';
-import { Loader } from 'lucide-react';
+
 import { CustomFormField } from '@/components/Common/CustomFormField';
+import { useLoginMutation } from '@/state/endpoints/auth/auth';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const LoginPage = () => {
   const searchParams = useSearchParams();
-  let redirect = searchParams.get('redirect');
-  if (!redirect) redirect = '/user/courses';
+  const redirect = searchParams.get('redirect') || '/user/courses';
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,15 +35,9 @@ const LoginPage = () => {
       await loginUser(values).unwrap();
       router.push(redirect);
       router.refresh();
-    } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-      const error = errorFull.data;
-      if (!error.message) {
-        form.setError('root', { message: 'An unexpected error occurred.' });
-        return;
-      }
-
-      form.setError('root', { message: error.message });
+    } catch (e: unknown) {
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'An unexpected error occurred.');
+      form.setError('root', { message: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -55,12 +48,10 @@ const LoginPage = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CustomFormField type="email" name="email" label="Email adress" className="mb-2" />
         <CustomFormField type="password" name="password" label="Password" className="mb-2" />
-        {form.formState.errors.root && (
-          <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>
-        )}
-        <Button variant="primary" className="w-full mt-2" type="submit" disabled={isLoading}>
-          Continue {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-        </Button>
+        {form.formState.errors.root && <p className="text-red-500 text-sm text-center">{form.formState.errors.root.message}</p>}
+        <ButtonWithSpinner variant="primary" type="submit" isLoading={isLoading}>
+          Continue
+        </ButtonWithSpinner>
       </form>
     </Form>
   );

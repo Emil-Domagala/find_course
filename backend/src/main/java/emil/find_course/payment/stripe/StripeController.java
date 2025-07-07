@@ -33,6 +33,8 @@ public class StripeController {
         final User user = userDetails.getUser();
         Cart cart = cartService.findByUserWithItemsAndCourses(user);
 
+
+
         PaymentIntentResponse response = stripeService.createPaymentIntent(cart, user);
 
         return ResponseEntity.ok(response);
@@ -43,8 +45,7 @@ public class StripeController {
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader) {
-        // stripe listen --forward-to
-        // localhost:8080/api/v1/public/transaction/stripe/webhook
+        // stripe listen --forward-to localhost:8080/api/v1/public/transaction/stripe/webhook
 
         stripeService.handleWebhookEvent(payload, sigHeader);
         return ResponseEntity.ok().build();

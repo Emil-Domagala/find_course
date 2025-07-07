@@ -1,9 +1,9 @@
-import { ChapterDetailsProtectedDto, SectionDetailsProtectedDto } from '@/types/courses';
+import { ChapterFormDataId, SectionFormDataId } from '@/lib/validation/course';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type InitialStateTypes = {
   courseEditor: {
-    sections: SectionDetailsProtectedDto[];
+    sections: SectionFormDataId[];
     isChapterModalOpen: boolean;
     isSectionModalOpen: boolean;
     selectedSectionIndex: number | null;
@@ -26,7 +26,7 @@ export const globalSlice = createSlice({
   initialState,
   reducers: {
     // Set sections
-    setSections: (state, action: PayloadAction<SectionDetailsProtectedDto[]>) => {
+    setSections: (state, action: PayloadAction<SectionFormDataId[]>) => {
       state.courseEditor.sections = action.payload;
     },
 
@@ -68,12 +68,12 @@ export const globalSlice = createSlice({
     //***************
 
     // add section ADD SECTION TYPE
-    addSection: (state, action: PayloadAction<SectionDetailsProtectedDto>) => {
+    addSection: (state, action: PayloadAction<SectionFormDataId>) => {
       const sectionToAdd = { ...action.payload, chapters: action.payload.chapters ?? [] };
       state.courseEditor.sections.push(sectionToAdd);
     },
     // edit section ADD SECTION TYPE
-    editSection: (state, action: PayloadAction<{ index: number; section: SectionDetailsProtectedDto }>) => {
+    editSection: (state, action: PayloadAction<{ index: number; section: SectionFormDataId }>) => {
       const sectionToEdit = { ...action.payload.section, chapters: action.payload.section.chapters ?? [] };
       state.courseEditor.sections[action.payload.index] = sectionToEdit;
     },
@@ -87,7 +87,7 @@ export const globalSlice = createSlice({
     //***************
 
     // Add chapter
-    addChapter: (state, action: PayloadAction<{ sectionIndex: number; chapter: ChapterDetailsProtectedDto }>) => {
+    addChapter: (state, action: PayloadAction<{ sectionIndex: number; chapter: ChapterFormDataId }>) => {
       const section = state.courseEditor.sections[action.payload.sectionIndex];
       if (section) {
         if (!section.chapters) {
@@ -102,7 +102,7 @@ export const globalSlice = createSlice({
       action: PayloadAction<{
         sectionIndex: number;
         chapterIndex: number;
-        chapter: ChapterDetailsProtectedDto;
+        chapter: ChapterFormDataId;
       }>,
     ) => {
       const section = state.courseEditor.sections[action.payload.sectionIndex];

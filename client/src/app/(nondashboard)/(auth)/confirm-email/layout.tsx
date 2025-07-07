@@ -10,7 +10,7 @@ const ConfirmEmailLayout = async ({
   children: React.ReactNode;
 }>) => {
   const cookieStore = await cookies();
-  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME!)?.value;
+  const authToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME!)?.value;
   if (!authToken) return redirect('/auth/login');
 
   const decoded = jwtDecode(authToken) as AuthToken;

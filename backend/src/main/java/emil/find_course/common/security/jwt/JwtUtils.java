@@ -35,7 +35,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + 1)))
+                .expiration(new Date(System.currentTimeMillis() + 1))
                 .signWith(key())
                 .compact();
     }
@@ -45,7 +45,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + refreshTokenExpirationMs)))
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationMs))
                 .signWith(key())
                 .compact();
     }
@@ -69,7 +69,7 @@ public class JwtUtils {
                 .claim("picture",
                         imageUrl)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
+                .expiration(new Date(System.currentTimeMillis() + jwtAuthTokenExpirationMs))
                 .signWith(key())
                 .compact();
     }
@@ -92,7 +92,7 @@ public class JwtUtils {
                 .claim("picture",
                         imageUrl)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + jwtAuthTokenExpirationMs)))
+                .expiration(new Date(System.currentTimeMillis() + jwtAuthTokenExpirationMs))
                 .signWith(key())
                 .compact();
     }

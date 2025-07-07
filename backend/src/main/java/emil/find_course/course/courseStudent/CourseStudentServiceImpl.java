@@ -1,8 +1,10 @@
 package emil.find_course.course.courseStudent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,9 @@ import emil.find_course.course.mapper.CourseMapper;
 import emil.find_course.course.repository.CourseRepository;
 import emil.find_course.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseStudentServiceImpl implements CourseStudentService {
@@ -77,6 +81,21 @@ public class CourseStudentServiceImpl implements CourseStudentService {
                                 coursesPage.getSize(),
                                 coursesPage.getNumber(),
                                 coursesPage.isEmpty());
+        }
+
+        @Override
+        public void grantAccessToCourse(User student, Set<Course> courses) {
+                log.info("granting access to courses {} to user {}",
+                                courses.stream().map(item -> item.getId()).toList(),
+                                student.getEmail());
+                List<Course> cToSave = new ArrayList<>();
+
+                for (Course c : courses) {
+                        c.getStudents().add(student);
+                        cToSave.add(c);
+                }
+                courseRepository.saveAll(cToSave);
+
         }
 
 }

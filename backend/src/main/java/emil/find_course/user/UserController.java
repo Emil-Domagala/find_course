@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.common.util.CookieHelper;
@@ -43,6 +42,9 @@ public class UserController {
         @Value("${jwt.refreshToken.expiration}")
         private int refreshCookieExpiration;
 
+        @Value("${cookie.auth.accessCookie.name}")
+        private String accessCookieName;
+
         private final CookieHelper cookieHelper;
         private final JwtUtils jwtUtils;
         private final UserService userService;
@@ -57,6 +59,7 @@ public class UserController {
 
         }
 
+        // PICTURE IS BEING DELETED WHEN IT SHOULDNT
         @Operation(summary = "Update user profile information")
         @PatchMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
         public ResponseEntity<UserDto> updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -69,16 +72,23 @@ public class UserController {
                 UserDto userDto = userMapper.toDto(updatedUser);
 
                 String refreshToken = jwtUtils.generateRefreshToken(updatedUser);
-                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser), refreshToken);
-                ResponseCookie cookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration, "/");
-                ResponseCookie refreshCookie = cookieHelper.setCookie(
-                                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
+                String authToken = jwtUtils.generateToken(updatedUser);
 
-                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString(), refreshCookie.toString())
+                ResponseCookie authCookie = cookieHelper.setCookie(authCookieName, authToken, authExpiration, "/");
+                ResponseCookie refreshCookie = cookieHelper.setCookie(
+                                refreshCookieName, refreshToken, refreshCookieExpiration,
+                                "/api/v1/public/refresh-token");
+                ResponseCookie roleCookie = cookieHelper.setCookie(accessCookieName,
+                                authToken, refreshCookieExpiration, "/");
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.SET_COOKIE, authCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
                                 .body(userDto);
 
         }
+
         @Operation(summary = "Delete user")
         @DeleteMapping
         public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {

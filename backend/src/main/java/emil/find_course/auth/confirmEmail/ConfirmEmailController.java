@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.auth.confirmEmail.dto.request.RequestConfirmEmailOTT;
+import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.common.util.CookieHelper;
@@ -19,7 +20,6 @@ import emil.find_course.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-
 
 @Tag(name = "Confirm Email Controller", description = "Endpoints for confirm email")
 @RestController
@@ -29,8 +29,17 @@ public class ConfirmEmailController {
 
     @Value("${cookie.auth.authToken.name}")
     private String authCookieName;
+
     @Value("${jwt.authToken.expiration}")
     private int authExpiration;
+
+    @Value("${cookie.auth.refreshToken.name}")
+    private String refreshCookieName;
+    @Value("${jwt.refreshToken.expiration}")
+    private int refreshCookieExpiration;
+
+    @Value("${cookie.auth.accessCookie.name}")
+    private String accessCookieName;
 
     private final CookieHelper cookieHelper;
     private final JwtUtils jwtUtils;
@@ -38,17 +47,29 @@ public class ConfirmEmailController {
 
     @Operation(summary = "Confirm email")
     @PostMapping
-    public ResponseEntity<Void> confirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ResponseEntity<AuthResponse> confirmEmail(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Validated @RequestBody RequestConfirmEmailOTT token) {
 
         final User user = userDetails.getUser();
 
         confirmEmailService.validateEmail(user, token.getToken());
-        String authToken = jwtUtils.generateToken(user);
 
-        ResponseCookie cookie = cookieHelper.setCookie(authCookieName, authToken, authExpiration, "/");
+        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user));
+        ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration,
+                "/");
+        ResponseCookie refreshCookie = cookieHelper.setCookie(
+                refreshCookieName, auth.refreshToken(),
+                refreshCookieExpiration,
+                "/api/v1/public/refresh-token");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+        ResponseCookie roleCookie = cookieHelper.setCookie(accessCookieName, auth.token(), refreshCookieExpiration,
+                "/");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                .body(auth);
     }
 
     @Operation(summary = "Resend confirm email")

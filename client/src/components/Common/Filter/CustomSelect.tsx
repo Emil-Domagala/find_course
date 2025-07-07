@@ -32,6 +32,8 @@ const CustomSelect = <T extends SelectOptionValue>({
   clearable,
   selectWrapperClasses,
 }: CustomSelectProps<T>) => {
+  const id = label ? label.toLowerCase().replace(/\s+/g, '-') : undefined;
+
   const handleValueChange = (selectedValue: string) => {
     if (clearable && selectedValue === '__clear__') {
       onChange(undefined);
@@ -45,14 +47,23 @@ const CustomSelect = <T extends SelectOptionValue>({
 
   return (
     <div className={cn('w-full', selectWrapperClasses)}>
-      {label && <p className="text-sm mb-1">{label}</p>}
-      <Select value={String(value)} onValueChange={handleValueChange}>
-        <SelectTrigger className={cn('border-none bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 !h-12', selectTriggerClasses)}>
+      {label && (
+        <label htmlFor={id} className="text-sm mb-1">
+          {label}
+        </label>
+      )}
+      <Select name={id} value={String(value)} onValueChange={handleValueChange}>
+        <SelectTrigger
+          data-testid={id}
+          id={id}
+          className={cn('border-none bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 !h-12', selectTriggerClasses)}>
           <SelectValue placeholder={placeholder}>{transformFn(value) || placeholder}</SelectValue>
         </SelectTrigger>
         <SelectContent className={cn('border-none mt-1 py-2 bg-customgreys-darkGrey rounded-md', selectContentClasses)} position="popper">
           {clearable && (
-            <SelectItem value="__clear__" className="text-center cursor-pointer bg-customgreys-darkGrey min-w-[100%] p-2 hover:bg-customgreys-darkerGrey hover:!outline-none">
+            <SelectItem
+              value="__clear__"
+              className="text-center cursor-pointer bg-customgreys-darkGrey min-w-[100%] p-2 hover:bg-customgreys-darkerGrey hover:!outline-none">
               All
             </SelectItem>
           )}

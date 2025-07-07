@@ -24,6 +24,7 @@ import emil.find_course.cart.entity.Cart;
 import emil.find_course.cart.entity.CartItem;
 import emil.find_course.cart.repository.CartRepository;
 import emil.find_course.common.service.EmailService;
+import emil.find_course.course.courseStudent.CourseStudentService;
 import emil.find_course.course.entity.Course;
 import emil.find_course.course.enums.CourseStatus;
 import emil.find_course.payment.stripe.dto.PaymentIntentResponse;
@@ -52,9 +53,14 @@ public class StripeServiceImpl implements StripeService {
     private final CartService cartService;
     private final TransactionService transactionService;
     private final CartRepository cartRepository;
+    private final CourseStudentService courseStudentService;
 
     @Override
     public PaymentIntentResponse createPaymentIntent(Cart cart, User user) {
+
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty.");
+        }
 
         // Get valid courses
         PaymentIntentResponse response = new PaymentIntentResponse();
@@ -73,10 +79,11 @@ public class StripeServiceImpl implements StripeService {
                 wasInvalid = true;
             }
         }
-        cart.setCartItems(validItems);
-        cartRepository.save(cart);
 
         if (wasInvalid) {
+            cart.getCartItems().clear();
+            cart.getCartItems().addAll(validItems);
+            cartRepository.save(cart);
             response.setWarnings(
                     List.of("Some courses were removed from your cart because they are no longer available."));
         }
@@ -200,9 +207,10 @@ public class StripeServiceImpl implements StripeService {
             }
 
             // !!!!!!!!!!!
-            userService.grantAccessToCourse(user, courses);
+            courseStudentService.grantAccessToCourse(user, courses);
             Transaction savedTransaction = transactionService.createTransaction(user, paymentIntent, cart);
             sendPurchasedEmail(user, cart, savedTransaction);
+            log.info("deleting cart {}", cart.getId());
             cartService.deleteCart(cart);
             // !!!!!!!!!!!!
 

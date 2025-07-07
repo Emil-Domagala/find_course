@@ -8,9 +8,10 @@ import LogoutButton from './LogoutButton';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
-import { useLogoutMutation, useRefetchTokenMutation } from '@/state/api';
+
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname } from 'next/navigation';
+import { useLogoutMutation, useRefetchTokenMutation } from '@/state/endpoints/auth/auth';
 
 type Props = {
   authToken?: AuthToken;
@@ -56,7 +57,9 @@ const UserButton = ({ authToken, className, classNamePopover }: Props) => {
           classNamePopover,
           isSecondary,
         )}>
-        <p className="text-customgreys-dirtyGrey group-hover:text-white-50 font-semibold hidden sm:block transition-colors duration-300">{authToken?.sub || 'User'}</p>
+        <p className="text-customgreys-dirtyGrey group-hover:text-white-50 font-semibold hidden sm:block transition-colors duration-300">
+          {authToken?.sub || 'User'}
+        </p>
         <Avatar>
           <AvatarImage src={authToken?.picture || '/Profile_avatar_placeholder.png'} />
           <AvatarFallback>

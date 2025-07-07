@@ -7,13 +7,13 @@ import { cookies } from 'next/headers';
 import BuyButton from './BuyButton';
 import { centsToDollars } from '@/lib/utils';
 import { SectionDetailsPublicDto } from '@/types/courses';
-import { ChapterType } from '@/types/enums';
+import { ChapterType } from '@/types/search-enums';
 
 const CourseDetailPage = async ({ params }: { params: { courseId: string } }) => {
-  const { courseId } = params;
+  const { courseId } = await params;
   const course = await apiServerService.getCoursesPublic(courseId);
   const cookieStore = await cookies();
-  const authToken = cookieStore.get(process.env.AUTH_COOKIE_NAME as string)?.value;
+  const accessToken = cookieStore.get(process.env.ACCESS_COOKIE_NAME as string)?.value;
 
   return (
     <>
@@ -34,7 +34,7 @@ const CourseDetailPage = async ({ params }: { params: { courseId: string } }) =>
 
             <span className="text-primary-500 text-xl font-semibold py-4">Only ${centsToDollars(course.price)}</span>
             <div className="flex flex-row gap-2">
-              <BuyButton courseId={courseId} authToken={authToken} />
+              <BuyButton courseId={courseId} accessToken={accessToken} />
             </div>
           </div>
           {/* Image */}

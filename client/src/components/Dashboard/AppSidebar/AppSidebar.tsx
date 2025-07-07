@@ -1,6 +1,5 @@
 'use client';
 
-import { useLogoutMutation } from '@/state/api';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { BookOpen, LogOut, NotebookPen, PanelLeft, Receipt, ShoppingCart, User, UserCheck } from 'lucide-react';
 import Image from 'next/image';
@@ -8,6 +7,7 @@ import SidebarGroupCustom from './SidebarGroupCustom';
 import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from '@/types/auth';
 import { useRouter } from 'next/navigation';
+import { useLogoutMutation } from '@/state/endpoints/auth/auth';
 
 type Props = { authToken?: string };
 

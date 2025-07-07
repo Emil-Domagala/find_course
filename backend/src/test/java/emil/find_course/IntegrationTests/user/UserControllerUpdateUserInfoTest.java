@@ -106,7 +106,7 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
 
         private void assertAuthAndRefreshCookies(MvcResult result) {
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
-                assertThat(setCookies).hasSize(2);
+                assertThat(setCookies).hasSize(3);
 
                 Map<String, CookieAttributes> cookies = setCookies.stream()
                                 .map(cookieHelper::parseSetCookie)

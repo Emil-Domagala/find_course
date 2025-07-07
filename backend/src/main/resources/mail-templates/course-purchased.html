@@ -6,7 +6,7 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-   background-color: #f4f6f8;
+        background-color: #f4f6f8;
         margin: 0;
         padding: 0;
       }
@@ -16,9 +16,9 @@
         background-color: #ffffff;
         padding: 30px;
         border-radius: 8px;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       }
-        .logo {
+      .logo {
         width: 120px;
         margin-bottom: 20px;
       }
@@ -46,14 +46,14 @@ box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         display: inline-block;
         padding: 12px 20px;
         background-color: #7878fc;
-        color: #ffffff;
+        color: #ffffff !important;
         text-decoration: none;
         border-radius: 6px;
         font-weight: bold;
         margin-top: 20px;
       }
       .footer {
-         margin-top: 40px;
+        margin-top: 40px;
         font-size: 12px;
         color: #999;
         text-align: center;
@@ -62,22 +62,24 @@ box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   </head>
   <body>
     <div class="container">
-        <img
-        src="https://course.emildomagala.pl/logo.svg"
-        alt="Find Course Logo"
-        class="logo" />
+      <img src="https://course.emildomagala.pl/logo.svg" alt="Find Course Logo" class="logo" />
       <div class="header">
         <h1>🎉 Thank You for Your Purchase!</h1>
       </div>
       <div class="content">
-        <p th:text="'Hi ' + ${user.username}"></p>
+        <p th:text="'Hi ' + ${user.username}">Hi user</p>
         <p>Your purchase was successful! Here are the courses you now have access to:</p>
 
-        <div th:each="course : ${cart.courses.title}" class="course-box">
-          <p><strong>Course Name:</strong> <span th:text="${course.name}">Course Title</span></p>
+        <div th:each="cartItem : ${cart.cartItems}" class="course-box">
+          <p>
+            <strong>Course Name:</strong>
+            <span th:text="${cartItem.course.title}">Course Title</span>
+          </p>
         </div>
-        <p><strong>Order ID:</strong> <span th:text="${transaction.id}"></span></p>
-        <p><strong>Purchase Date:</strong> <span th:text="${transaction.createdAt}"></span></p>
+
+        <p><strong>Order ID:</strong> <span th:text="${transaction.id}">123456</span></p>
+        <p><strong>Purchase Date:</strong> <span th:text="${transaction.createdAt}">2025-06-20</span></p>
+
         <a th:href="${link}" class="button">Go to your Courses</a>
 
         <p>You can access all your purchased courses from your dashboard anytime.</p>

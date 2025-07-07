@@ -13,6 +13,7 @@ export const courseSchema = z.object({
 });
 
 export type CourseFormData = z.infer<typeof courseSchema>;
+export type CourseFormDataId = CourseFormData & { id: string };
 
 // Chapter Schemas
 export const chapterSchema = z.object({
@@ -22,6 +23,7 @@ export const chapterSchema = z.object({
 });
 
 export type ChapterFormData = z.infer<typeof chapterSchema>;
+export type ChapterFormDataId = ChapterFormData & { id?: string; tempId?: string };
 
 // Section Schemas
 export const sectionSchema = z.object({
@@ -31,3 +33,4 @@ export const sectionSchema = z.object({
 });
 
 export type SectionFormData = z.infer<typeof sectionSchema>;
+export type SectionFormDataId = SectionFormData & { id?: string; tempId?: string; chapters?: ChapterFormDataId[] };

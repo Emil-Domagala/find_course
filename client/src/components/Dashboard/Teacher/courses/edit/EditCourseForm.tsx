@@ -7,7 +7,7 @@ import { CourseFormData, courseSchema } from '@/lib/validation/course';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, Loader, Plus } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
@@ -15,19 +15,20 @@ import { useEffect } from 'react';
 import { openSectionModal, setSections } from '@/state';
 import { transformToFrontendFormat } from '@/lib/utils';
 import CustomAddImg from '@/components/Common/CustomAddImg';
-import { useGetTeacherCourseByIdQuery, useUpdateCourseMutation } from '@/state/api';
 import SectionModal from './SectionModal';
 import DroppableComponent from './DroppableComponent';
 import ChapterModal from './ChapterModal';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
+import { useGetTeacherCourseByIdQuery, useUpdateCourseMutation } from '@/state/endpoints/course/courseTeacher';
+import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const EditCourseForm = () => {
   const { courseId }: { courseId: string } = useParams();
   const router = useRouter();
 
   const { data: course, isLoading } = useGetTeacherCourseByIdQuery(courseId as string, { skip: !courseId });
-  const [updateCourse] = useUpdateCourseMutation();
+  const [updateCourse, { isLoading: isUpdating }] = useUpdateCourseMutation();
 
   const dispatch = useAppDispatch();
   const { sections } = useAppSelector((state) => state.global.courseEditor);
@@ -58,6 +59,7 @@ const EditCourseForm = () => {
       });
       dispatch(setSections(course.sections || []));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course, methods]);
 
   const onSubmit = async (data: CourseFormData) => {
@@ -126,10 +128,11 @@ const EditCourseForm = () => {
                   className="flex items-center pb-0"
                   initialValue={course?.status}
                 />
-                <Button type="submit" className="bg-primary-700 hover:bg-primary-600" disabled={isLoading}>
-                  {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
-                  {isLoading && <Loader size={20} className="animate-[spin_2s_linear_infinite]" />}
-                </Button>
+                <div>
+                  <ButtonWithSpinner type="submit" isLoading={isUpdating} className="h-9">
+                    {methods.watch('status') == CourseStatus.PUBLISHED ? 'Update Course' : 'Save Draft'}
+                  </ButtonWithSpinner>
+                </div>
               </div>
             }
           />
@@ -137,7 +140,14 @@ const EditCourseForm = () => {
           <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-dm-sans">
             <div className="basis-1/2">
               <div className="space-y-4 max-h-64 ">
-                <CustomFormField name="title" label="Title" type="text" placeholder="Write course title here" className="border-none" initialValue={course?.title} />
+                <CustomFormField
+                  name="title"
+                  label="Title"
+                  type="text"
+                  placeholder="Write course title here"
+                  className="border-none"
+                  initialValue={course?.title}
+                />
 
                 <CustomFormField
                   name="description"

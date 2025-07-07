@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from './types/auth';
 
+const ACCESS_COOKIE_NAME = process.env.ACCESS_COOKIE_NAME;
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME;
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -16,13 +17,15 @@ const DEFAULT_LOGIN_REDIRECT = '/auth/login';
 const DEFAULT_LOGGED_IN_REDIRECT = '/user/courses';
 
 export async function middleware(req: NextRequest) {
-  if (!AUTH_COOKIE_NAME || !JWT_SECRET) {
-    console.error('Missing AUTH_COOKIE_NAME or JWT_SECRET environment variables.');
+  if (!AUTH_COOKIE_NAME || !JWT_SECRET || !ACCESS_COOKIE_NAME) {
+    console.error('Missing AUTH_COOKIE_NAME or JWT_SECRET or ACCESS_COOKIE_NAME environment variables.');
     return new NextResponse('Internal Server Error: Missing configuration', { status: 500 });
   }
+
   // get cookie
   const cookieStore = await cookies();
-  const authToken = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+
+  const accessCookie = cookieStore.get(ACCESS_COOKIE_NAME)?.value;
 
   const { pathname } = req.nextUrl;
   const isAuthRoute = pathname.startsWith(AUTH_PREFIX);
@@ -34,7 +37,7 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute = isUserRoute || isTeacherRoute || isAdminRoute;
 
   // --- Logic for NO Token (Not Logged In) ---
-  if (!authToken) {
+  if (!accessCookie) {
     // Allow access to auth routes if not logged in
     if (isAuthRoute) {
       return NextResponse.next();
@@ -50,13 +53,14 @@ export async function middleware(req: NextRequest) {
   let decoded: AuthToken | null = null;
   try {
     // Decode the token - Note: This does NOT verify the signature
-    decoded = jwtDecode<AuthToken>(authToken);
+    decoded = jwtDecode<AuthToken>(accessCookie);
   } catch (error) {
     console.error('[Middleware] Failed to decode token:', error);
     // If token is invalid/malformed, treat as unauthenticated
     // Clear the invalid cookie and redirect to login
     const response = NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
     response.cookies.delete(AUTH_COOKIE_NAME);
+    response.cookies.delete(ACCESS_COOKIE_NAME);
     return response;
   }
 
@@ -97,8 +101,9 @@ export async function middleware(req: NextRequest) {
   // --- Fallback (Should ideally not be reached if logic above is complete) ---
   // Default to redirecting to login as a safe measure
   const response = NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
-  if (authToken) {
-    response.cookies.delete(AUTH_COOKIE_NAME); // Clear potentially problematic cookie
+  if (accessCookie) {
+    response.cookies.delete(AUTH_COOKIE_NAME);
+    response.cookies.delete(ACCESS_COOKIE_NAME);
   }
   return response;
 }
