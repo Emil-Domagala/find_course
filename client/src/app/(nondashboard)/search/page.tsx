@@ -67,7 +67,7 @@ const SearchPage = () => {
         <DisplayCourses coursesPage={coursesPage} isLoading={isLoading} />
       </div>
 
-      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages} />
+      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages || 0} />
     </>
   );
 };

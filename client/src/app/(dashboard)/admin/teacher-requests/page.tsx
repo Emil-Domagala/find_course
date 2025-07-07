@@ -25,7 +25,7 @@ const TeacherRequestAdminPage = ({}) => {
   const [page, setPage] = useSelectFilter<number>({ valueName: 'page' });
 
   // RTK Query
-  const [fetchBecomeTeacherRequest, { data: teacherApplications, isLoading }] = useLazyGetAdminBecomeUserRequestsQuery();
+  const [fetchRequests, { data: teacherApplications, isLoading }] = useLazyGetAdminBecomeUserRequestsQuery();
   const [adminUpdateTeacherRequests, { isLoading: isUpdating }] = useAdminUpdateTeacherRequestsMutation();
 
   const handleAddDataToSend = (itemId: string, change: Partial<UpdateTeacherRequest>) => {
@@ -43,20 +43,26 @@ const TeacherRequestAdminPage = ({}) => {
   const handleSaveChanges = async () => {
     const clearedDataToSend = dataToSend.filter((item) => item.seenByAdmin !== false && item.status !== TeacherRequestStatus.PENDING);
     try {
-      adminUpdateTeacherRequests(clearedDataToSend).unwrap();
+      await adminUpdateTeacherRequests(clearedDataToSend).unwrap();
       toast.success('Data Updated');
     } catch (e) {
-      const errorMessage = (e as ApiErrorResponse).data.message || (e instanceof Error ? e.message : 'Something went wrong, try again later');
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'Something went wrong, try again later');
       toast.error(errorMessage);
     }
   };
 
-  const handleFetchBecomeTeacherRequest = () => {
-    return fetchBecomeTeacherRequest({ page, size, direction, status: requetsStatus, seenByAdmin });
+  const handleFetchRequests = () => {
+    return fetchRequests({
+      page: page ?? 0,
+      size: size ?? 12,
+      direction: direction ?? SearchDirection.ASC,
+      status: requetsStatus ?? TeacherRequestStatus.PENDING,
+      seenByAdmin: seenByAdmin ?? 'false',
+    });
   };
 
   useEffect(() => {
-    handleFetchBecomeTeacherRequest();
+    handleFetchRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -81,7 +87,7 @@ const TeacherRequestAdminPage = ({}) => {
         size={size || 12}
         setSize={setSize}
         isLoading={false}
-        handleFetchCourses={() => handleFetchBecomeTeacherRequest()}
+        onClick={() => handleFetchRequests()}
       />
 
       <div className="flex-1 pt-6  ">
@@ -95,18 +101,18 @@ const TeacherRequestAdminPage = ({}) => {
           <ul>
             {isLoading ? (
               <LoadingSpinner />
-            ) : teacherApplications && teacherApplications?.content.length === 0 ? (
+            ) : teacherApplications && teacherApplications.content.length < 1 ? (
               <p className="p-4 text-center text-lg">No Requests Found</p>
             ) : (
-              teacherApplications?.content.map((teacherApplication) => (
-                <BecomeTeacherItem key={teacherApplication.id} becomeTeacherRequest={teacherApplication} handleAddDataToSend={handleAddDataToSend} />
+              teacherApplications?.content.map((item) => (
+                <BecomeTeacherItem key={item.id} becomeTeacherRequest={item} handleAddDataToSend={handleAddDataToSend} />
               ))
             )}
           </ul>
         </div>
       </div>
 
-      <Pagination setPage={setPage} currentPage={page || 0} />
+      <Pagination totalPages={teacherApplications?.totalPages || 0} setPage={setPage} currentPage={page || 0} />
     </div>
   );
 };

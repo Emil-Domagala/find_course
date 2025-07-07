@@ -40,7 +40,9 @@ const BecomeTeacherItem = ({
       </div>
       <div className="w-1/4">
         <Select disabled={status !== 'PENDING'} value={String(statusChanged)} onValueChange={(newVal) => handleChangeStatus(newVal as TeacherRequestStatus)}>
-          <SelectTrigger className="border-none bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 !h-8 w-32 m-auto">
+          <SelectTrigger
+            aria-label={`change-status-for-${user.email}`}
+            className="border-none bg-customgreys-primarybg rounded-md overflow-hidden text-sm px-2 !h-8 w-32 m-auto">
             <SelectValue>
               <p className={`${statusChanged === 'DENIED' ? 'text-red-500' : statusChanged === 'PENDING' ? 'text-yellow-500' : 'text-green-500'}`}>
                 {transformToFrontendFormat(statusChanged)}
@@ -67,6 +69,7 @@ const BecomeTeacherItem = ({
 
       <div className="w-1/4 flex justify-end">
         <input
+        aria-label={`seen-by-admin-for-${user.email}`}
           checked={seenByAdminChanged}
           type="checkbox"
           name="seenByAdmin"

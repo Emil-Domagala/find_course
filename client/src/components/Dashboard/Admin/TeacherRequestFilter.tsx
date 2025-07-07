@@ -16,11 +16,11 @@ type Props = {
   size: number;
   setSize: React.Dispatch<SetStateAction<number | undefined>>;
   isLoading: boolean;
-  handleFetchCourses: () => void;
+  onClick: () => void;
 };
 
 const TeacherRequestFilter = ({
-  handleFetchCourses,
+  onClick,
   isLoading,
   requetsStatus,
   setRequestsStatus,
@@ -86,7 +86,7 @@ const TeacherRequestFilter = ({
       {/* Apply */}
 
       <div className="max-w-[15rem] md:m-0 mx-auto w-full">
-        <ButtonWithSpinner isLoading={isLoading} onClick={handleFetchCourses}>
+        <ButtonWithSpinner isLoading={isLoading} onClick={onClick}>
           Search
         </ButtonWithSpinner>
       </div>

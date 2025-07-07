@@ -5,7 +5,7 @@ export function createUserDto(overrides: Partial<UserDto> = {}): UserDto {
 
   return {
     id: genUUID,
-    email: genUUID.substring(0, 10) + '@example.com',
+    email: genUUID.substring(5, 15) + '@example.com',
     username: genUUID.substring(0, 10),
     userLastname: genUUID.substring(10, 15),
     imageUrl: 'https://via.placeholder.com/150',

@@ -46,15 +46,19 @@ const pickFromAllInputs = async () => {
   const { user, button } = basicSetup();
   const { keywordInput, categorySelect, sortSelect, directionSelect, sizeSelect } = getAllInputs();
   await user.type(keywordInput, 'test');
+
   await user.click(categorySelect);
   const optionCat = screen.getByRole('option', { name: /data science/i });
   await user.click(optionCat);
+
   await user.click(sortSelect);
   const optionSort = screen.getByRole('option', { name: /title/i });
   await user.click(optionSort);
+
   await user.click(directionSelect);
   const optionDir = screen.getByRole('option', { name: /desc/i });
   await user.click(optionDir);
+
   await user.click(sizeSelect);
   const optionSize = screen.getByRole('option', { name: /24/i });
   await user.click(optionSize);
@@ -72,7 +76,7 @@ describe('SearchPage', () => {
     });
   });
   describe('Api Interaction', () => {
-    test('On page change fetch courses', async () => {
+    test('On page load fetch courses', async () => {
       render(<SearchPage />);
       const { user, button } = basicSetup();
       await user.click(button);
