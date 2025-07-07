@@ -7,7 +7,6 @@ import { CourseCategory } from '@/types/courses-enum';
 import CustomSelect from './CustomSelect';
 import { SetStateAction } from 'react';
 import ButtonWithSpinner from '../ButtonWithSpinner';
-import { Label } from '@radix-ui/react-select';
 
 type Props = {
   category: CourseCategory | undefined;
