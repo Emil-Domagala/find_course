@@ -8,10 +8,6 @@ const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, a
   let result = await baseQuery(args, api, extraOptions);
   console.info('baseQueryWithReauth');
   console.info(result);
-
-  console.info('typeof result.error: ' + typeof result.error);
-  console.info('typeof result?.error?.status: ' + typeof result?.error?.status);
-  console.info('result?.error?.status: ' + result?.error?.status);
   if (typeof result?.error?.status === 'number' && [498, 499].includes(result?.error?.status)) {
     console.info('baseQueryWithReauth inside if');
     const refreshResult = await baseQuery(

@@ -37,6 +37,7 @@ public class AuthController {
 
         @Value("${cookie.auth.refreshToken.name}")
         private String refreshCookieName;
+
         @Value("${jwt.refreshToken.expiration}")
         private int refreshCookieExpiration;
 
@@ -51,7 +52,8 @@ public class AuthController {
         @PostMapping("/public/register")
         public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
                 User user = authService.registerUser(request);
-                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user));
+                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user),
+                                jwtUtils.generateToken(user));
 
                 ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration,
                                 "/");
@@ -60,13 +62,14 @@ public class AuthController {
                                 refreshCookieExpiration,
                                 "/api/v1/public/refresh-token");
 
-                ResponseCookie roleCookie = cookieHelper.setCookie(accessCookieName, auth.token(),refreshCookieExpiration, "/");
+                ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName, auth.token(),
+                                refreshCookieExpiration, "/");
 
                 // Set cookies in separate headers for clarity and standard compliance
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
                                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                                 .body(auth);
         }
 
@@ -80,15 +83,17 @@ public class AuthController {
                 ResponseCookie refreshCookie = cookieHelper.setCookie(
                                 refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
                                 "/api/v1/public/refresh-token");
-                ResponseCookie roleCookie = cookieHelper.setCookie(accessCookieName, auth.token(),
+                ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName, auth.accessToken(),
                                 refreshCookieExpiration, "/");
 
+                log.info("User  with email: {} logged in. Used access token: {}", request.getEmail());
+
                 // Set cookies in separate headers
-                return ResponseEntity.ok()
+                return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
                                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
-                                .body(auth);
+                                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                                .build();
         }
 
         @Operation(summary = "Logout user", description = "Sets all cookies to expire")
@@ -97,13 +102,13 @@ public class AuthController {
                 ResponseCookie deleteCookie = cookieHelper.setCookie(authCookieName, "", 0, "/");
                 ResponseCookie deleteRefreshCookie = cookieHelper.setCookie(refreshCookieName, "", 0,
                                 "/api/v1/public/refresh-token");
-                ResponseCookie deleteRoleCookie = cookieHelper.setCookie(accessCookieName, "", 0, "/");
+                ResponseCookie deleteAccessCookie = cookieHelper.setCookie(accessCookieName, "", 0, "/");
 
                 // Set cookies in separate headers
                 return ResponseEntity.noContent()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                                 .header(HttpHeaders.SET_COOKIE, deleteRefreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, deleteRoleCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, deleteAccessCookie.toString())
                                 .build();
         }
 

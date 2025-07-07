@@ -54,7 +54,7 @@ public class ConfirmEmailController {
 
         confirmEmailService.validateEmail(user, token.getToken());
 
-        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user));
+        AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user),jwtUtils.generateToken(user));
         ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration,
                 "/");
         ResponseCookie refreshCookie = cookieHelper.setCookie(
@@ -62,13 +62,13 @@ public class ConfirmEmailController {
                 refreshCookieExpiration,
                 "/api/v1/public/refresh-token");
 
-        ResponseCookie roleCookie = cookieHelper.setCookie(accessCookieName, auth.token(), refreshCookieExpiration,
+        ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName, auth.accessToken(), refreshCookieExpiration,
                 "/");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, roleCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .body(auth);
     }
 
