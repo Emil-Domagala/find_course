@@ -72,17 +72,22 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
         private String authCookieName;
         @Value("${cookie.auth.refreshToken.name}")
         private String refreshCookieName;
+        @Value("${cookie.auth.accessCookie.name}")
+        private String accCookieNAme;
 
         private String mockAuthToken;
         private String mockRefreshToken;
+        private String mockAccessToken;
 
         @BeforeEach
         void setUp() {
                 mockAuthToken = "mockAuthTokenForRegister";
                 mockRefreshToken = "mockRefreshTokenForRegister";
+                mockAccessToken = "mockAccessTokenForRegister";
 
                 // Configure mocks
                 when(jwtUtils.generateToken(any(User.class))).thenReturn(mockAuthToken);
+                when(jwtUtils.generateAccessToken(any(User.class))).thenReturn(mockAccessToken);
                 when(jwtUtils.generateRefreshToken(any(User.class))).thenReturn(mockRefreshToken);
                 doNothing().when(confirmEmailService).sendVerificationEmail(any(User.class));
         }
@@ -96,7 +101,7 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                 MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/public/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(userRegisterRequestJson))
-                                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
 
                 List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
                 assertThat(setCookies).hasSize(3);
@@ -111,6 +116,7 @@ public class AuthControllerRegisterTest extends IntegrationTestBase {
                 // Assert refresh token cookie
                 cookieHelper.testCookies(cookies.get(refreshCookieName), mockRefreshToken,
                                 "/api/v1/public/refresh-token");
+                cookieHelper.testCookies(cookies.get(accCookieNAme), mockAccessToken, "/");
 
                 Optional<User> savedUser = userRepository.findByEmail(userRegisterRequest.getEmail());
 

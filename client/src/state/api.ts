@@ -4,7 +4,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   credentials: 'include',
 });
-const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: unknown) => {
+const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: object) => {
   let result = await baseQuery(args, api, extraOptions);
   console.info('baseQueryWithReauth');
   console.info(result);

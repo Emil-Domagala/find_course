@@ -86,12 +86,6 @@
 			<version>2.8.8</version>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>io.swagger.core.v3</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>2.2.30</version>
-		</dependency> -->
-
 		<!--  JWT  -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -161,7 +155,7 @@
 
 		<!-- TESTS -->
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -182,33 +176,56 @@
 			<artifactId>postgresql</artifactId>
 			<version>1.21.1</version>
 			<scope>test</scope>
-		</dependency> -->
+		</dependency>
 
 	</dependencies>
 
 	<build>
 		<!-- TODO: uncomment b4 prod but comment when locally -->
-		<resources>
+		<!-- <resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
 					<exclude>application-local.properties</exclude>
+					<exclude>application-test.properties</exclude>
 				</excludes>
 			</resource>
-		</resources>
+		</resources> -->
 
 		<!--  -->
 		<plugins>
+			<!-- coment b4 tests run ./mvnw test -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
 						<exclude>**/IntegrationTests/**/*.java</exclude>
+						<exclude>**/test/java/**/*.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 			<!--  -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.testcontainers</groupId>
+							<artifactId>postgresql</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.testcontainers</groupId>
+							<artifactId>postgresql</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -232,18 +249,7 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+
 		</plugins>
 	</build>
 

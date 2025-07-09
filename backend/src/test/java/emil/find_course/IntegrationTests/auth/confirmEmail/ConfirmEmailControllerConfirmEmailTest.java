@@ -79,7 +79,7 @@ public class ConfirmEmailControllerConfirmEmailTest extends IntegrationTestBase 
                                                 .cookie(new Cookie(authCookieName,
                                                                 authToken))
                                                 .content(json).contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.status().isNoContent())
                                 .andReturn();
 
                 assertThat(confirmEmailOTTRepository.findByUser(user)).isEmpty();

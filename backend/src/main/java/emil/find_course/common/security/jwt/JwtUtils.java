@@ -97,6 +97,29 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateAccessToken(User user) {
+        String email = user.getEmail();
+        String roles = user.getRoles().stream().map(role -> "ROLE_" + role.name()).collect(Collectors.joining(","));
+        boolean isVerified = user.isEmailVerified();
+        String imageUrl = user.getImageUrl();
+
+        if (user.getImageUrl() != null) {
+            imageUrl = user.getImageUrl();
+        }
+
+        return Jwts.builder()
+                .subject(email)
+                .claim("roles", roles)
+                .claim("isEmailVerified",
+                        isVerified)
+                .claim("picture",
+                        imageUrl)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtAuthTokenExpirationMs))
+                .signWith(key())
+                .compact();
+    }
+
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }

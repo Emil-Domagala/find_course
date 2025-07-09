@@ -37,6 +37,8 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     private String authCookieName;
     @Value("${cookie.auth.refreshToken.name}")
     private String refreshCookieName;
+    @Value("${cookie.auth.accessCookie.name}")
+    private String accCookieNAme;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -53,9 +55,9 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
     @Autowired
     private CookieHelperTest cookieHelper;
 
-    private void assertAuthAndRefreshCookies(MvcResult result) {
+    private void assertCookies(MvcResult result) {
         List<String> setCookies = result.getResponse().getHeaders(HttpHeaders.SET_COOKIE);
-        assertThat(setCookies).hasSize(2);
+        assertThat(setCookies).hasSize(3);
 
         Map<String, CookieAttributes> cookies = setCookies.stream()
                 .map(cookieHelper::parseSetCookie)
@@ -63,6 +65,8 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
 
         // Assert auth token cookie
         cookieHelper.testCookies(cookies.get(authCookieName), "", "/", 0);
+        // Assert acces token
+        cookieHelper.testCookies(cookies.get(accCookieNAme), "", "/", 0);
 
         // Assert refresh token cookie
         cookieHelper.testCookies(cookies.get(refreshCookieName), "",
@@ -81,7 +85,7 @@ public class UserControllerDeleteUserTest extends IntegrationTestBase {
                 MockMvcRequestBuilders.delete("/api/v1/user").cookie(new Cookie(authCookieName, authToken)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
 
-        assertAuthAndRefreshCookies(result);
+        assertCookies(result);
         assertThat(userRepository.findByEmail(user.getEmail())).isEmpty();
 
     }

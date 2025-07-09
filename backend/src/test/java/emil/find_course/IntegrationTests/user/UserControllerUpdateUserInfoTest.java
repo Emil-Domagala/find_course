@@ -60,11 +60,12 @@ import io.micrometer.common.lang.Nullable;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
-
         @Value("${cookie.auth.authToken.name}")
         private String authCookieName;
         @Value("${cookie.auth.refreshToken.name}")
         private String refreshCookieName;
+        @Value("${cookie.auth.accessCookie.name}")
+        private String accCookieNAme;
 
         @Autowired
         private JwtUtils jwtUtils;
@@ -118,6 +119,8 @@ public class UserControllerUpdateUserInfoTest extends IntegrationTestBase {
                 // Assert refresh token cookie
                 cookieHelper.testCookies(cookies.get(refreshCookieName),
                                 "/api/v1/public/refresh-token");
+
+                cookieHelper.testCookies(cookies.get(accCookieNAme), "/");
         }
 
         private RequestUpdateUser createRequestUpdateUser(@Nullable String username,

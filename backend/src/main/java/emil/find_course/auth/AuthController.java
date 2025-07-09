@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
-import emil.find_course.auth.dto.response.AuthResponse;
-import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.util.CookieHelper;
+import emil.find_course.common.util.CookieHelper.AllAuthCookies;
 import emil.find_course.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,55 +43,39 @@ public class AuthController {
         @Value("${cookie.auth.accessCookie.name}")
         private String accessCookieName;
 
-        private final JwtUtils jwtUtils;
         private final AuthService authService;
         private final CookieHelper cookieHelper;
 
         @Operation(summary = "Register user")
         @PostMapping("/public/register")
-        public ResponseEntity<AuthResponse> register(@Validated @RequestBody UserRegisterRequest request) {
+        public ResponseEntity<Void> register(@Validated @RequestBody UserRegisterRequest request) {
                 User user = authService.registerUser(request);
-                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(user), jwtUtils.generateRefreshToken(user),
-                                jwtUtils.generateToken(user));
+                AllAuthCookies authCookies = cookieHelper.createAllAuthCookies(user);
 
-                ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration,
-                                "/");
-                ResponseCookie refreshCookie = cookieHelper.setCookie(
-                                refreshCookieName, auth.refreshToken(),
-                                refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
-
-                ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName, auth.token(),
-                                refreshCookieExpiration, "/");
+                log.info("User with email: {} registered", request.getEmail());
 
                 // Set cookies in separate headers for clarity and standard compliance
-                return ResponseEntity.ok()
-                                .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                                .body(auth);
+                return ResponseEntity.noContent()
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAuthCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAccessCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getRefreshCookie().toString())
+                                .build();
         }
 
         @Operation(summary = "Login user")
         @PostMapping("/public/login")
-        public ResponseEntity<AuthResponse> login(@Validated @RequestBody UserLoginRequest request) {
-                AuthResponse auth = authService.loginUser(request);
+        public ResponseEntity<Void> login(@Validated @RequestBody UserLoginRequest request) {
+                User user = authService.loginUser(request);
 
-                ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration,
-                                "/");
-                ResponseCookie refreshCookie = cookieHelper.setCookie(
-                                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
-                ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName, auth.accessToken(),
-                                refreshCookieExpiration, "/");
+                AllAuthCookies authCookies = cookieHelper.createAllAuthCookies(user);
 
                 log.info("User  with email: {} logged in. Used access token: {}", request.getEmail());
 
                 // Set cookies in separate headers
                 return ResponseEntity.noContent()
-                                .header(HttpHeaders.SET_COOKIE, authTokenCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAuthCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAccessCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getRefreshCookie().toString())
                                 .build();
         }
 
@@ -117,7 +100,6 @@ public class AuthController {
         public ResponseEntity<Void> refreshCookie(
                         @CookieValue(name = "${cookie.auth.refreshToken.name}", required = false) String refreshToken) {
 
-                log.info(refreshToken);
                 log.info("Refresh token request recived");
                 String authToken = authService.refreshAuthToken(refreshToken);
                 ResponseCookie authTokenCookie = cookieHelper.setCookie(authCookieName, authToken, authExpiration, "/");

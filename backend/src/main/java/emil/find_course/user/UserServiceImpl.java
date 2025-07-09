@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(requestUpdateUser.getPassword()));
         }
 
-        if (requestUpdateUser.getDeleteImage().equals(true)) {
+        if (requestUpdateUser.isDeleteImage()) {
             fileStorageService.deleteImage(user.getImageUrl());
             user.setImageUrl(null);
 
         }
-        if (imageFile != null && !imageFile.isEmpty() && !requestUpdateUser.getDeleteImage().equals(true)) {
+        if (imageFile != null && !imageFile.isEmpty() && !requestUpdateUser.isDeleteImage()) {
             String oldImgUrl = user.getImageUrl();
             String oryginalName = imageFile.getOriginalFilename();
             InputStream resizedImage = fileStorageService.resizeImage(imageFile, 150, 1, 1, 51_200);

@@ -37,7 +37,6 @@ import emil.find_course.IntegrationTests.auth.CookieHelperTest.CookieAttributes;
 import emil.find_course.IntegrationTests.user.UserFactory;
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.common.security.jwt.JwtUtils;
-import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.user.entity.User;
 import emil.find_course.user.repository.UserRepository;
 
@@ -68,18 +67,22 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
         private String authCookieName;
         @Value("${cookie.auth.refreshToken.name}")
         private String refreshCookieName;
+        @Value("${cookie.auth.accessCookie.name}")
+        private String accCookieNAme;
 
         private String mockAuthToken;
         private String mockRefreshToken;
+        private String mockAccessToken;
 
         @BeforeEach
         void setUp() {
                 mockAuthToken = "mockAuthTokenForRegister";
                 mockRefreshToken = "mockRefreshTokenForRegister";
+                mockAccessToken = "mockAccessTokenForRegister";
 
                 // Configure mocks
                 when(jwtUtils.generateToken(any(User.class))).thenReturn(mockAuthToken);
-                when(jwtUtils.generateToken(any(UserDetailsImpl.class))).thenReturn(mockAuthToken);
+                when(jwtUtils.generateAccessToken(any(User.class))).thenReturn(mockAccessToken);
                 when(jwtUtils.generateRefreshToken(any(User.class))).thenReturn(mockRefreshToken);
 
         }
@@ -108,6 +111,9 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
                 // Assert refresh token cookie
                 cookieHelper.testCookies(cookies.get(refreshCookieName), mockRefreshToken,
                                 "/api/v1/public/refresh-token");
+
+                // Assert acces cookie
+                cookieHelper.testCookies(cookies.get(accCookieNAme), mockAccessToken, "/");
         }
 
         @Test
@@ -123,7 +129,7 @@ public class AuthControllerLoginTest extends IntegrationTestBase {
 
                 MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/public/login")
                                 .contentType(MediaType.APPLICATION_JSON).content(json))
-                                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+                                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
 
                 assertAuthAndRefreshCookies(result);
 

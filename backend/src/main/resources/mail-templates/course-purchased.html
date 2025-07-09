@@ -70,9 +70,9 @@
         <p th:text="'Hi ' + ${user.username}">Hi user</p>
         <p>Your purchase was successful! Here are the courses you now have access to:</p>
 
+        <strong>Course Name:</strong>
         <div th:each="cartItem : ${cart.cartItems}" class="course-box">
           <p>
-            <strong>Course Name:</strong>
             <span th:text="${cartItem.course.title}">Course Title</span>
           </p>
         </div>

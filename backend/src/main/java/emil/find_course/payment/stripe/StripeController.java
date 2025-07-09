@@ -32,9 +32,7 @@ public class StripeController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         final User user = userDetails.getUser();
         Cart cart = cartService.findByUserWithItemsAndCourses(user);
-
-
-
+            
         PaymentIntentResponse response = stripeService.createPaymentIntent(cart, user);
 
         return ResponseEntity.ok(response);

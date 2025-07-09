@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import emil.find_course.auth.confirmEmail.ConfirmEmailService;
 import emil.find_course.auth.dto.request.UserLoginRequest;
 import emil.find_course.auth.dto.request.UserRegisterRequest;
-import emil.find_course.auth.dto.response.AuthResponse;
 import emil.find_course.common.exception.FieldValidationException;
 import emil.find_course.common.exception.InvalidRefreshTokenException;
 import emil.find_course.common.exception.JwtAuthException;
@@ -40,18 +39,14 @@ public class AuthServiceImpl implements AuthService {
     private final ConfirmEmailService confirmEmailService;
 
     @Override
-    public AuthResponse loginUser(UserLoginRequest userLoginRequest) {
+    public User loginUser(UserLoginRequest userLoginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userLoginRequest.getEmail().trim(), userLoginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         User user = userPrincipal.getUser();
-        String token = jwtUtils.generateToken(user);
-        String accessToken = jwtUtils.generateToken(user);
-        String refreshToken = jwtUtils.generateRefreshToken(user);
-
-        return new AuthResponse(token, refreshToken, accessToken);
+        return user;
     }
 
     @Transactional

@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import emil.find_course.auth.dto.response.AuthResponse;
-import emil.find_course.common.security.jwt.JwtUtils;
 import emil.find_course.common.security.jwt.UserDetailsImpl;
 import emil.find_course.common.util.CookieHelper;
+import emil.find_course.common.util.CookieHelper.AllAuthCookies;
 import emil.find_course.user.dto.UserDto;
 import emil.find_course.user.dto.request.RequestUpdateUser;
 import emil.find_course.user.entity.User;
@@ -47,7 +46,6 @@ public class UserController {
         private String accessCookieName;
 
         private final CookieHelper cookieHelper;
-        private final JwtUtils jwtUtils;
         private final UserService userService;
         private final UserMapper userMapper;
 
@@ -72,21 +70,12 @@ public class UserController {
                 User updatedUser = userService.updateUser(currUser, requestUpdateUser, image);
                 UserDto userDto = userMapper.toDto(updatedUser);
 
-                AuthResponse auth = new AuthResponse(jwtUtils.generateToken(updatedUser),
-                                jwtUtils.generateRefreshToken(updatedUser),
-                                jwtUtils.generateToken(updatedUser));
-
-                ResponseCookie authCookie = cookieHelper.setCookie(authCookieName, auth.token(), authExpiration, "/");
-                ResponseCookie refreshCookie = cookieHelper.setCookie(
-                                refreshCookieName, auth.refreshToken(), refreshCookieExpiration,
-                                "/api/v1/public/refresh-token");
-                ResponseCookie accessCookie = cookieHelper.setCookie(accessCookieName,
-                                auth.accessToken(), refreshCookieExpiration, "/");
+                AllAuthCookies authCookies = cookieHelper.createAllAuthCookies(updatedUser);
 
                 return ResponseEntity.ok()
-                                .header(HttpHeaders.SET_COOKIE, authCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAuthCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getAccessCookie().toString())
+                                .header(HttpHeaders.SET_COOKIE, authCookies.getRefreshCookie().toString())
                                 .body(userDto);
 
         }
