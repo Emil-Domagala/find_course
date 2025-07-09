@@ -29,7 +29,11 @@ const TeacherCourseCard = ({ course, onDelete }: Props) => {
 
           <p className="text-sm my-2">
             Status:{' '}
-            <span className={cn('font-semibold px-2 py-1 rounded', course.status === CourseStatus.PUBLISHED ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400')}>
+            <span
+              className={cn(
+                'font-semibold px-2 py-1 rounded',
+                course.status === CourseStatus.PUBLISHED ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400',
+              )}>
               {transformToFrontendFormat(course.status)}
             </span>
           </p>
@@ -41,14 +45,14 @@ const TeacherCourseCard = ({ course, onDelete }: Props) => {
         </div>
 
         <div className=" xl:flex xl:justify-between space-y-2 xl:space-y-0 gap-2 mt-3">
-          <Link href={`/teacher/courses/edit/${course.id}`} className="w-full">
+          <Link aria-label={`Edit ${course.title}`} href={`/teacher/courses/edit/${course.id}`} className="w-full">
             <Button variant="primary" className="rounded w-full text-white-100 ">
               <Pencil className="w-4 h-4 mr-2" />
               Edit
             </Button>
           </Link>
 
-          <Button variant="warning" className="!shrink rounded w-full " onClick={() => onDelete(course)}>
+          <Button aria-label={`Delete ${course.title}`} variant="warning" className="!shrink rounded w-full " onClick={() => onDelete(course)}>
             <Trash2 className="w-4 h-4 mr-2" />
             Delete
           </Button>

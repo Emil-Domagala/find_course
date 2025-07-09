@@ -11,10 +11,7 @@ const CartItem = ({ course }: { course: CourseDto }) => {
 
   return (
     <li className="flex flex-col md:flex-row justify-between min-h-[10rem] p-4 border-b-2 first-of-type:border-t-2 border-customgreys-secondarybg">
-      <Link
-        href={`/course/${course.id}`}
-        scroll={false}
-        className="hover:bg-customgreys-secondarybg rounded-lg mb-2 md:mb-0 duration-300 transition-colors">
+      <Link href={`/course/${course.id}`} scroll={false} className="hover:bg-customgreys-secondarybg rounded-lg mb-2 md:mb-0 duration-300 transition-colors">
         <div className="flex flex-col md:flex-row">
           <div className="relative aspect-video min-w-[14rem] mb-2 md:mb-0">
             <Image

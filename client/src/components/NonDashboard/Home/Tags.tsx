@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Skeleton } from '../../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import Tag, { TagSkeleton } from './Tag';
 import { CourseCategory } from '@/types/courses-enum';
 import { useEffect, useState } from 'react';

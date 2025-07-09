@@ -5,7 +5,7 @@ import { DisplayCoursesSkeleton } from '@/components/NonDashboard/Search/Display
 import { useLazyGetEnrolledCoursesQuery } from '@/state/endpoints/course/courseStudent';
 import { useEffect, useState } from 'react';
 
-const EnrolledCourses = ({}) => {
+const CoursesStudentPage = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);
   const [size] = useState(10);
 
@@ -27,7 +27,9 @@ const EnrolledCourses = ({}) => {
           {isLoading ? (
             <DisplayCoursesSkeleton size={4} />
           ) : coursesPage?.content?.length === 0 ? (
-            <p className="mx-auto h-full text-lg text-gray-400 mt-5 mb-10">You haven&apos;t enrolled in any courses yet</p>
+            <p aria-label="no courses found" className="mx-auto h-full text-lg text-gray-400 mt-5 mb-10">
+              You haven&apos;t enrolled in any courses yet
+            </p>
           ) : (
             coursesPage?.content?.map((course) => (
               <CourseCard
@@ -40,9 +42,9 @@ const EnrolledCourses = ({}) => {
           )}
         </div>
       </div>
-      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages} />
+      <Pagination setPage={setPage} currentPage={page || 0} totalPages={coursesPage?.totalPages || 0} />
     </>
   );
 };
 
-export default EnrolledCourses;
+export default CoursesStudentPage;

@@ -1,5 +1,12 @@
 import { v4 as uuid } from 'uuid';
-import { ChapterDetailsProtectedDto, ChapterDto, CourseDetailsPublicDto, SectionDetailsPublicDto, SectionDto } from '@/types/courses';
+import {
+  ChapterDetailsProtectedDto,
+  ChapterDto,
+  CourseDetailsPublicDto,
+  CourseDtoWithFirstChapter,
+  SectionDetailsPublicDto,
+  SectionDto,
+} from '@/types/courses';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { ChapterType } from '@/types/search-enums';
 import { createUserDto } from './userFactory';
@@ -106,5 +113,18 @@ export function createCoursePublicDto({
   return {
     ...courseDto,
     sections,
+  };
+}
+
+export function createCoursesWithFirstChapter({
+  courseDto = createCourseDto(),
+  firstChapter = 'First-Chapter',
+}: {
+  courseDto?: CourseDto;
+  firstChapter?: string;
+} = {}): CourseDtoWithFirstChapter {
+  return {
+    ...courseDto,
+    firstChapter,
   };
 }

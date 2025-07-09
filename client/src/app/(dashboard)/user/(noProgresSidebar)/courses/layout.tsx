@@ -5,7 +5,7 @@ const EnrolledCoursesLayout = () => {
   return (
     <div className="flex flex-col w-full min-h-full">
       <Header title="My Courses" subtitle="View your enrolled courses" />
-        <EnrolledCourses />
+      <EnrolledCourses />
     </div>
   );
 };

@@ -8,17 +8,9 @@ const ForgotPasswordLayout = ({
 }>) => {
   return (
     <>
-      <AuthHeader
-        header="Reset Your Password"
-        description="Enter your email address and we'll send instructions to reset your password."
-      />
+      <AuthHeader header="Reset Your Password" description="Enter your email address and we'll send instructions to reset your password." />
       {children}
-      <AuthFooter
-        description="Remembered your password? "
-        link="Sign in"
-        href="/auth/login"
-        hideForgotPasswordLink
-      />
+      <AuthFooter description="Remembered your password? " link="Sign in" href="/auth/login" hideForgotPasswordLink />
     </>
   );
 };

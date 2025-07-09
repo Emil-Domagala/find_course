@@ -16,7 +16,7 @@ const AuthFooter = ({
   href: string;
   description: string;
   hideForgotPasswordLink?: boolean;
-  loggin: boolean;
+  loggin?: boolean;
 }) => {
   return (
     <>
@@ -27,16 +27,18 @@ const AuthFooter = ({
         </a>{' '}
         cold start it might take up to 2 min
       </h3>
-      <p className="text-customgreys-dirtyGrey text-center mt-2">
-        By {loggin ? 'logging in' : 'creating an account'}, you agree to our{' '}
-        <Link href="/privacy-policy" className="text-primary-700 hover:underline">
-          Privacy Policy
-        </Link>{' '}
-        and{' '}
-        <Link href="/terms-of-use" className="text-primary-700 hover:underline">
-          Terms of Use
-        </Link>
-      </p>
+      {loggin && (
+        <p className="text-customgreys-dirtyGrey text-center mt-2">
+          By {loggin ? 'logging in' : 'creating an account'}, you agree to our{' '}
+          <Link href="/privacy-policy" className="text-primary-700 hover:underline">
+            Privacy Policy
+          </Link>{' '}
+          and{' '}
+          <Link href="/terms-of-use" className="text-primary-700 hover:underline">
+            Terms of Use
+          </Link>
+        </p>
+      )}
       <div className="mx-auto mt-8">
         <span className="text-md ">{description}</span>
         <Link className="text-primary-750 hover:text-primary-600 text-md transition-colors duration-300" href={href}>

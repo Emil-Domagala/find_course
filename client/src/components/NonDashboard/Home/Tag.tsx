@@ -1,5 +1,5 @@
 import { cn, transformToFrontendFormat } from '@/lib/utils';
-import { Skeleton } from '../../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cva, VariantProps } from 'class-variance-authority';
 
 export const TagSkeleton = () => {

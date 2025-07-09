@@ -1,6 +1,6 @@
 'use client';
 
-import CartItem from '../../../../components/NonDashboard/cart/CartItem';
+import CartItem from '@/components/NonDashboard/cart/CartItem';
 import { Button } from '@/components/ui/button';
 import { centsToDollars } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -44,7 +44,7 @@ const CartPage = () => {
           </div>
           <p className="text-primary-500 font-semibold text-xl">${centsToDollars(response.cart.totalPrice)}</p>
         </div>
-        <Button  variant="primary" onClick={() => router.push('/user/checkout')}>
+        <Button variant="primary" onClick={() => router.push('/user/checkout')}>
           Checkout
         </Button>
       </div>

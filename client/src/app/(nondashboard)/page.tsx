@@ -6,7 +6,6 @@ import Courses from '@/components/NonDashboard/Home/Courses';
 import RenderDialog from '@/components/NonDashboard/Home/RenderDialog';
 
 const Landing = () => {
-
   return (
     <main className="container">
       <RenderDialog />

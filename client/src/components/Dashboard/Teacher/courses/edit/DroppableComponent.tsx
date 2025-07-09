@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2, Edit, Plus, GripVertical } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { setSections, deleteSection, deleteChapter, openSectionModal, openChapterModal } from '@/state';
-import { ChapterDetailsProtectedDto, SectionDetailsProtectedDto } from '@/types/courses';
+import { ChapterFormDataId, SectionFormDataId } from '@/lib/validation/course';
 
 export default function DroppableComponent() {
   const dispatch = useAppDispatch();
@@ -43,8 +43,8 @@ export default function DroppableComponent() {
       <Droppable droppableId="sections">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            {sections.map((section: SectionDetailsProtectedDto & { tempId?: string }, sectionIndex: number) => (
-              <Draggable key={(section.id || section.tempId)!} draggableId={(section.id || section.tempId)!} index={sectionIndex}>
+            {sections.map((section: SectionFormDataId, sectionIndex: number) => (
+              <Draggable key={(section?.id || section.tempId)!} draggableId={(section.id || section.tempId)!} index={sectionIndex}>
                 {(draggableProvider) => (
                   <div
                     ref={draggableProvider.innerRef}
@@ -56,10 +56,15 @@ export default function DroppableComponent() {
                       <Droppable droppableId={`chapters-${section.id}`}>
                         {(droppableProvider) => (
                           <div ref={droppableProvider.innerRef} {...droppableProvider.droppableProps}>
-                            {section.chapters?.map((chapter: ChapterDetailsProtectedDto & { tempId?: string }, chapterIndex: number) => (
+                            {section.chapters?.map((chapter: ChapterFormDataId, chapterIndex: number) => (
                               <Draggable key={(chapter.id || chapter.tempId)!} draggableId={(chapter.id || chapter.tempId)!} index={chapterIndex}>
                                 {(draggableProvider) => (
-                                  <ChapterItem chapter={chapter} chapterIndex={chapterIndex} sectionIndex={sectionIndex} draggableProvider={draggableProvider} />
+                                  <ChapterItem
+                                    chapter={chapter}
+                                    chapterIndex={chapterIndex}
+                                    sectionIndex={sectionIndex}
+                                    draggableProvider={draggableProvider}
+                                  />
                                 )}
                               </Draggable>
                             ))}
@@ -97,7 +102,7 @@ export default function DroppableComponent() {
   );
 }
 
-const SectionHeader = ({ section, sectionIndex, dragHandleProps }: { section: SectionDetailsProtectedDto; sectionIndex: number; dragHandleProps: any }) => {
+const SectionHeader = ({ section, sectionIndex, dragHandleProps }: { section: SectionFormDataId; sectionIndex: number; dragHandleProps: any }) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -129,7 +134,7 @@ const ChapterItem = ({
   sectionIndex,
   draggableProvider,
 }: {
-  chapter: ChapterDetailsProtectedDto;
+  chapter: ChapterFormDataId;
   chapterIndex: number;
   sectionIndex: number;
   draggableProvider: any;

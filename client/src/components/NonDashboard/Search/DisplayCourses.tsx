@@ -1,5 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import CourseCard, { CourseCardSkeleton } from '../../Common/CourseCard';
+import CourseCard, { CourseCardSkeleton } from '@/components/Common/CourseCard';
 
 type Props = { coursesPage?: Page<CourseDto>; isLoading: boolean };
 

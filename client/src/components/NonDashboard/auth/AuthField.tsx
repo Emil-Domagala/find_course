@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Input } from '../../ui/input';
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

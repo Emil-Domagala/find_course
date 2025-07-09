@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import useCarosel from '@/hooks/useCarosel';
 import { motion } from 'framer-motion';
-import { Skeleton } from '../../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const HomeHeroSkeleton = () => {
   return (

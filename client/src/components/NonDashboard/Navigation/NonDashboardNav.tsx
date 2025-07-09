@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import AuthButtons from './AuthButtons';
-import SearchButton from '../../Common/Navigation/SearchButton';
+import SearchButton from '@/components/Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from '@/types/auth';
 import CartButton from '@/components/Common/Navigation/CartButton';
