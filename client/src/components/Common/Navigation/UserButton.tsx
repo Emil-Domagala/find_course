@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname } from 'next/navigation';
-import { useLogoutMutation, useRefetchTokenMutation } from '@/state/endpoints/auth/auth';
+import { useLogoutMutation, useRefetchTokenMutation } from '@/features/nondashboard/auth/api/auth';
 
 type Props = {
   authToken?: AuthToken;

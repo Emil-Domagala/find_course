@@ -1,4 +1,4 @@
-import AuthHeader from '@/components/NonDashboard/auth/AuthHeader';
+import AuthHeader from '@/features/nondashboard/auth/components/AuthHeader';
 import { AuthToken } from '@/types/auth';
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';

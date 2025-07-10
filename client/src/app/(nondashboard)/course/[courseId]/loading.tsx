@@ -1,4 +1,4 @@
-import { TagSkeleton } from '@/components/NonDashboard/Home/Tag';
+import { TagSkeleton } from '@/features/nondashboard/home/components/Tag';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const CourseDetailLoading = () => {

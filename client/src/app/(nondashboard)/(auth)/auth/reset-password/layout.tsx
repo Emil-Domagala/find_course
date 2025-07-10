@@ -1,5 +1,5 @@
-import AuthFooter from '@/components/NonDashboard/auth/AuthFooter';
-import AuthHeader from '@/components/NonDashboard/auth/AuthHeader';
+import AuthFooter from '@/features/nondashboard/auth/components/AuthFooter';
+import AuthHeader from '@/features/nondashboard/auth/components/AuthHeader';
 
 const ForgotPasswordLayout = ({
   children,

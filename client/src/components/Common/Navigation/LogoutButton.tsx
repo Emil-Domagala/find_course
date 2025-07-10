@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useLogoutMutation } from '@/state/endpoints/auth/auth';
+import { useLogoutMutation } from '@/features/nondashboard/auth/api/auth';
 
 import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';

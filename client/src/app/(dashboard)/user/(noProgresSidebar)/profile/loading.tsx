@@ -1,5 +1,5 @@
-import BecomeTeacherUserLoading from '@/components/Dashboard/User/Profile/BecomeTeacherUserLoading';
-import EditUserFormLoading from '@/components/Dashboard/User/Profile/EditUserFormLoading';
+import BecomeTeacherUserLoading from '@/features/dashboard/user/profile/components/BecomeTeacherUserLoading';
+import EditUserFormLoading from '@/features/dashboard/user/profile/components/EditUserFormLoading';
 
 const ProfileLoading = () => {
   return (

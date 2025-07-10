@@ -1,4 +1,4 @@
-import DashboardNav from '@/components/Dashboard/Navigation/DashboardNav';
+import DashboardNav from '@/features/dashboard/navigation/DashboardNav';
 import ProgresSidebar from '@/components/Dashboard/User/Course/ProgresSidebar/ProgresSidebar';
 
 export default async function UserLayout({

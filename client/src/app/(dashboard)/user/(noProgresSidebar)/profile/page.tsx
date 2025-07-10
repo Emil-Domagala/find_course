@@ -1,13 +1,5 @@
-import BecomeTeacherUser from '@/components/Dashboard/User/Profile/BecomeTeacherUser';
-import EditUserForm from '@/components/Dashboard/User/Profile/EditUserForm';
+import EditUser from '@/features/dashboard/user/profile';
 
-const EditUserPage = ({}) => {
-  return (
-    <>
-      <EditUserForm />
-      <BecomeTeacherUser />
-    </>
-  );
-};
-
-export default EditUserPage;
+export default function EditUserPage() {
+  return <EditUser />;
+}

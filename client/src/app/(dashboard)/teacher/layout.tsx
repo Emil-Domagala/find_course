@@ -1,4 +1,4 @@
-import DashboardNav from '@/components/Dashboard/Navigation/DashboardNav';
+import DashboardNav from '@/features/dashboard/navigation/DashboardNav';
 
 export default async function TeacherLayout({
   children,

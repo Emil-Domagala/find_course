@@ -1,7 +1,7 @@
 'use server';
 
-import Footer from '@/components/NonDashboard/Footer/Footer';
-import NonDashboardNav from '@/components/NonDashboard/Navigation/NonDashboardNav';
+import Footer from '@/components/Common/Footer/Footer';
+import NonDashboardNav from '@/features/nondashboard/navigation/NonDashboardNav';
 import Link from 'next/link';
 
 export default async function PageNotFound() {

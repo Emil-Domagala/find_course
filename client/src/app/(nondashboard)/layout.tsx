@@ -1,5 +1,5 @@
-import Footer from '@/components/NonDashboard/Footer/Footer';
-import NonDashboardNav from '@/components/NonDashboard/Navigation/NonDashboardNav';
+import Footer from '@/components/Common/Footer/Footer';
+import NonDashboardNav from '@/features/nondashboard/navigation/NonDashboardNav';
 
 export default function NondashboardLayout({
   children,

@@ -1,4 +1,4 @@
-import CheckoutStepper from '@/components/NonDashboard/Checkout/CheckoutStepper';
+import CheckoutStepper from '@/features/nondashboard/user/checkout/components/CheckoutStepper';
 
 export default function CartLayout({
   children,

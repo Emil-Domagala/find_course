@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
-import Tag from '../NonDashboard/Home/Tag';
+import Tag from '../../features/nondashboard/home/components/Tag';
 import { cn, formatPrice } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 

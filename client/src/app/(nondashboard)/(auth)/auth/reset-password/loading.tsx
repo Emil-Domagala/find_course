@@ -1,4 +1,4 @@
-import { AuthFieldSkeleton } from '@/components/NonDashboard/auth/AuthField';
+import { AuthFieldSkeleton } from '@/features/nondashboard/auth/components/AuthField';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const ResetPasswordLoading = () => {
