@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import AuthButtons from './AuthButtons';
 import SearchButton from '@/components/Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
-import { AuthToken } from '@/types/auth';
+import { AuthToken } from '@/types/accessToken';
 import CartButton from '@/components/Common/Navigation/CartButton';
 
 const NonDashboardNav = async () => {

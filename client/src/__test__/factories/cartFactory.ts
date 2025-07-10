@@ -1,4 +1,4 @@
-import { CartDto, CartResponse } from '@/types/cart';
+import { CartDto, CartResponse } from '@/features/nondashboard/user/cart/cart';
 import { v4 as uuid } from 'uuid';
 import { createCourseDto } from './courseFactory';
 

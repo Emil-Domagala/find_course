@@ -1,10 +1,11 @@
 'use client';
 
 import CustomSelect from '@/components/Common/Filter/CustomSelect';
-import { TeacherRequestStatus, SearchDirection } from '@/types/search-enums';
+import { SearchDirection } from '@/types/search-enums';
 import { transformToFrontendFormat } from '@/lib/utils';
 import { SetStateAction } from 'react';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { TeacherRequestStatus } from '@/features/dashboard/types/teacherRequestStatus';
 
 type Props = {
   requetsStatus: TeacherRequestStatus | undefined;

@@ -5,7 +5,7 @@ import { BookOpen, LogOut, NotebookPen, PanelLeft, Receipt, ShoppingCart, User, 
 import Image from 'next/image';
 import SidebarGroupCustom from './components/SidebarGroupCustom';
 import { jwtDecode } from 'jwt-decode';
-import { AuthToken } from '@/types/auth';
+import { AuthToken } from '@/types/accessToken';
 import { useRouter } from 'next/navigation';
 import { useLogoutMutation } from '@/features/nondashboard/auth/api/auth';
 

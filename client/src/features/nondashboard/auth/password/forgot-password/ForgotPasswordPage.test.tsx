@@ -2,11 +2,11 @@ import ForgotPassword from '.';
 import { render, screen, waitFor } from '@testing-library/react';
 
 import userEvent from '@testing-library/user-event';
-import { useSendResetPasswordEmailMutation } from '../api/resetPassword';
+import { useSendResetPasswordEmailMutation } from '../api';
 
 const sendResetPasswordMock = jest.fn();
 
-jest.mock('../api/resetPassword', () => ({
+jest.mock('../api', () => ({
   useSendResetPasswordEmailMutation: jest.fn(),
 }));
 

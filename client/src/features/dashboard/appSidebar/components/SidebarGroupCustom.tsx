@@ -1,6 +1,6 @@
 'use client';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { useGetNewTeacherApplicationNumberQuery } from '@/features/dashboard/admin/teacher-request/api/teacherApplicationAdmin';
+import { useGetNewTeacherApplicationNumberQuery } from '@/features/dashboard/admin/teacher-request/api';
 
 import { LucideIcon } from 'lucide-react';
 

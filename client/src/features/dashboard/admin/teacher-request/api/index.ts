@@ -1,7 +1,9 @@
 import { api } from '../../../../../state/api';
 
-import { TeacherRequestStatus, SearchDirection } from '@/types/search-enums';
-import { TeacherRequest, UpdateTeacherRequest } from '@/types/teacherRequest';
+import {  SearchDirection } from '@/types/search-enums';
+import { TeacherRequest } from '@/features/dashboard/types/teacherRequest';
+import { TeacherRequestStatus } from '@/features/dashboard/types/teacherRequestStatus';
+import { UpdateTeacherRequest } from '../updateTeacherRequest';
 
 type PaginationProps = {
   page?: number;

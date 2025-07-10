@@ -7,8 +7,8 @@ import { NewPassword, NewPasswordSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
-import { useResetPasswordMutation } from '@/features/nondashboard/auth/password/api/resetPassword';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { useResetPasswordMutation } from '../api';
 
 const ResetPassword = ({}) => {
   const router = useRouter();

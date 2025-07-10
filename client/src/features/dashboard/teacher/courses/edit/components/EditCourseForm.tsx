@@ -20,7 +20,7 @@ import DroppableComponent from './DroppableComponent';
 import ChapterModal from './ChapterModal';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
-import { useGetTeacherCourseByIdQuery, useUpdateCourseMutation } from '@/features/dashboard/teacher/courses/api/courseTeacher';
+import { useGetTeacherCourseByIdQuery, useUpdateCourseMutation } from '@/features/dashboard/teacher/courses/api';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 
 const EditCourseForm = () => {

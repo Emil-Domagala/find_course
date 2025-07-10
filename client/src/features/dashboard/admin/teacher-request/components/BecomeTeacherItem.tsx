@@ -1,10 +1,10 @@
 import { Select } from '@/components/ui/select';
 import { transformToFrontendFormat } from '@/lib/utils';
-import { TeacherRequestStatus } from '@/types/search-enums';
-
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
-import { TeacherRequest, UpdateTeacherRequest } from '@/types/teacherRequest';
+import { TeacherRequest } from '@/features/dashboard/types/teacherRequest';
+import { UpdateTeacherRequest } from '../updateTeacherRequest';
+import { TeacherRequestStatus } from '@/features/dashboard/types/teacherRequestStatus';
 
 const BecomeTeacherItem = ({
   becomeTeacherRequest,
@@ -69,7 +69,7 @@ const BecomeTeacherItem = ({
 
       <div className="w-1/4 flex justify-end">
         <input
-        aria-label={`seen-by-admin-for-${user.email}`}
+          aria-label={`seen-by-admin-for-${user.email}`}
           checked={seenByAdminChanged}
           type="checkbox"
           name="seenByAdmin"

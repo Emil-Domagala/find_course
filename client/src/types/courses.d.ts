@@ -1,48 +1,6 @@
 import { CourseCategory, CourseStatus, Level } from './courses-enum';
 import { ChapterType } from './search-enums';
 
-export type UpdateProgressRequest = {
-  chapterProgressId: string;
-  completed: boolean;
-};
-
-export type CourseProgress = {
-  id: string;
-  course: CourseStructure;
-  createdAt: string;
-  updatedAt: string;
-  overallProgress: number;
-  sections: SectionProgress[];
-};
-
-export type SectionProgress = {
-  id: string;
-  originalSection: SectionStructure;
-  chapters: ChapterProgress[];
-};
-
-export type ChapterProgress = {
-  id: string;
-  originalChapter: ChapterStructure;
-  completed: boolean;
-};
-
-export type CourseStructure = {
-  id: string;
-  title: string;
-};
-
-export type SectionStructure = {
-  id: string;
-  title: string;
-};
-
-export type ChapterStructure = {
-  id: string;
-  title: string;
-  type: ChapterType;
-};
-
 export type ChapterDto = {
   id: string;
   title: string;

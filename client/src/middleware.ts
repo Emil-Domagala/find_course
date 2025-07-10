@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
-import { AuthToken } from './types/auth';
+import { AuthToken } from './types/accessToken';
 
 const ACCESS_COOKIE_NAME = process.env.ACCESS_COOKIE_NAME;
 const AUTH_COOKIE_NAME = process.env.AUTH_COOKIE_NAME;

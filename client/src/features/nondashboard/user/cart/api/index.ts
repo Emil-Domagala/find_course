@@ -1,5 +1,5 @@
 import { api } from '../../../../../state/api';
-import { CartDto, CartResponse } from '@/types/cart';
+import { CartDto, CartResponse } from '@/features/nondashboard/user/cart/cart';
 // TODO: change types
 
 export const cartApi = api.injectEndpoints({

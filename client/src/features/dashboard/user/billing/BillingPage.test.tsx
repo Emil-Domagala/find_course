@@ -1,15 +1,15 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Billing from '.';
-import { useLazyGetTransactionsQuery } from './api/transaction';
+import { useLazyGetTransactionsQuery } from './api';
 import { createTransaction } from '@/__test__/factories/transactionFactory';
 import { createPageResponse } from '@/__test__/factories/pageFactory';
-import { TransactionDto } from '@/types/payments';
+import { TransactionDto } from '@/features/dashboard/user/billing/transaction';
 import { createCourseDto } from '@/__test__/factories/courseFactory';
 
 const fetchBillings = jest.fn();
 
-jest.mock('./api/transaction', () => ({
+jest.mock('./api', () => ({
   useLazyGetTransactionsQuery: jest.fn(),
 }));
 

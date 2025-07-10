@@ -1,4 +1,4 @@
-import { TeacherRequest } from '@/types/teacherRequest';
+import { TeacherRequest } from '@/features/dashboard/types/teacherRequest';
 import { api } from '../../../../../state/api';
 
 export const teacherApplicationUserApi = api.injectEndpoints({

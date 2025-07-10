@@ -1,11 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MyCoursesTeacher from '.';
-import { useLazyGetEnrolledCoursesQuery } from './api/courseStudent';
+import { useLazyGetEnrolledCoursesQuery } from './api';
 import { createCoursesWithFirstChapter } from '@/__test__/factories/courseFactory';
 import { createPageResponse } from '@/__test__/factories/pageFactory';
 
-jest.mock('./api/courseStudent', () => ({
+jest.mock('./api', () => ({
   useLazyGetEnrolledCoursesQuery: jest.fn(),
 }));
 

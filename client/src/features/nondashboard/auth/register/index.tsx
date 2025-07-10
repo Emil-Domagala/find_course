@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { CustomFormField } from '@/components/Common/CustomFormField';
-import { useRegisterMutation } from '@/features/nondashboard/auth/api/auth';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { useRegisterMutation } from './api';
 
 const Register = () => {
   const router = useRouter();

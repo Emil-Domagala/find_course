@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { centsToDollars } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/Common/LoadingSpinner';
-import { useGetCartQuery } from '@/features/nondashboard/user/cart/api/cart';
+import { useGetCartQuery } from '@/features/nondashboard/user/cart/api';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 

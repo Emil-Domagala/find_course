@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import SearchButton from '../../../components/Common/Navigation/SearchButton';
 import { jwtDecode } from 'jwt-decode';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { AuthToken } from '@/types/auth';
+import { AuthToken } from '@/types/accessToken';
 import UserButton from '@/components/Common/Navigation/UserButton';
 
 const DashboardNav = async () => {

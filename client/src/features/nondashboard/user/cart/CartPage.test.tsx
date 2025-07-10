@@ -4,7 +4,7 @@ import Cart from '.';
 import { toast } from 'sonner';
 import { createCartDto, createCartResponse } from '@/__test__/factories/cartFactory';
 import { createCourseDto } from '@/__test__/factories/courseFactory';
-import { useGetCartQuery, useRemoveCourseFromCartMutation } from './api/cart';
+import { useGetCartQuery, useRemoveCourseFromCartMutation } from './api';
 
 const push = jest.fn();
 const removeCourseFromCart = jest.fn();
@@ -12,7 +12,7 @@ const removeCourseFromCart = jest.fn();
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push }),
 }));
-jest.mock('./api/cart', () => ({
+jest.mock('./api', () => ({
   useGetCartQuery: jest.fn(),
   useRemoveCourseFromCartMutation: jest.fn(),
 }));

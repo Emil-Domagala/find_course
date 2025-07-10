@@ -1,12 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import TeacherRequestAdmin from '.';
-import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from './api/teacherApplicationAdmin';
+import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from './api';
 import { toast } from 'sonner';
 import { createTeacherRequest } from '@/__test__/factories/teacherRequestFactory';
-import { TeacherRequest } from '@/types/teacherRequest';
+import { TeacherRequest } from '@/features/dashboard/types/teacherRequest';
 import { createPageResponse } from '@/__test__/factories/pageFactory';
-import { SearchDirection, TeacherRequestStatus } from '@/types/search-enums';
+import { SearchDirection } from '@/types/search-enums';
+import { TeacherRequestStatus } from '../../types/teacherRequestStatus';
 
 const fetchRequests = jest.fn();
 const adminUpdateTeacherRequests = jest.fn();
@@ -14,7 +15,7 @@ const adminUpdateTeacherRequests = jest.fn();
 const replace = jest.fn();
 const get = jest.fn();
 
-jest.mock('./api/teacherApplicationAdmin', () => ({
+jest.mock('./api', () => ({
   useAdminUpdateTeacherRequestsMutation: jest.fn(),
   useLazyGetAdminBecomeUserRequestsQuery: jest.fn(),
 }));

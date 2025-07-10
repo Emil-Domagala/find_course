@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import { Popover } from '@/components/ui/popover';
-import { AuthToken } from '@/types/auth';
+import { AuthToken } from '@/types/accessToken';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import LogoutButton from './LogoutButton';
 import Link from 'next/link';

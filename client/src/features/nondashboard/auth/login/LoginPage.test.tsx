@@ -3,14 +3,14 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import userEvent from '@testing-library/user-event';
 import { assert } from 'node:console';
-import { useLoginMutation } from '../api/auth';
+import { useLoginMutation } from './api';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(),
 }));
 
-jest.mock('../api/auth', () => ({
+jest.mock('./api', () => ({
   useLoginMutation: jest.fn(),
 }));
 

@@ -2,7 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { centsToDollars } from '@/lib/utils';
-import { useGetCartQuery } from '@/features/nondashboard/user/cart/api/cart';
+import { useGetCartQuery } from '@/features/nondashboard/user/cart/api';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 

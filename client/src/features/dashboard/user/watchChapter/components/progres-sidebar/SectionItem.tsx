@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import ProgressVisuals from './ProgresVisuals';
 import ChaptersList from './ChaptersList';
-import { ChapterProgress, SectionProgress, UpdateProgressRequest } from '@/types/courses';
+import { ChapterProgress, SectionProgress, UpdateProgressRequest } from '../../courseProgress';
 
 export type UpdateProgressPayload = {
   courseId: string;

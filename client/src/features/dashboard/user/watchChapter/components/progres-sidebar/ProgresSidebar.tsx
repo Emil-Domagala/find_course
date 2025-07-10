@@ -5,7 +5,7 @@ import SectionItem from './SectionItem';
 
 import { useSidebar } from '@/components/ui/sidebar';
 import { useRouter } from 'next/navigation';
-import { useChapterAndCourseSidebarData } from '@/hooks/useChapterAndCourseSidebarData';
+import { useChapterAndCourseSidebarData } from '@/features/dashboard/user/watchChapter/hooks/useChapterAndCourseSidebarData';
 import { SidebarLoading } from './SidebarLoading';
 
 const ProgresSidebar = () => {
@@ -21,7 +21,9 @@ const ProgresSidebar = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleSection = (sectionTitle: string) => {
-    setExpandedSections((prevSections) => (prevSections.includes(sectionTitle) ? prevSections.filter((title) => title !== sectionTitle) : [...prevSections, sectionTitle]));
+    setExpandedSections((prevSections) =>
+      prevSections.includes(sectionTitle) ? prevSections.filter((title) => title !== sectionTitle) : [...prevSections, sectionTitle],
+    );
   };
 
   const handleChapterClick = (chapterId: string) => {

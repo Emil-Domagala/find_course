@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
-import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/features/dashboard/teacher/courses/api/courseTeacher';
+import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '@/features/dashboard/teacher/courses/api';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { DisplayCoursesSkeleton } from '@/components/Common/DisplayUserCourses';
 

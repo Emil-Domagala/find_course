@@ -1,6 +1,6 @@
 'use client';
 
-import { useChapterAndCourseSidebarData } from '@/hooks/useChapterAndCourseSidebarData';
+import { useChapterAndCourseSidebarData } from '@/features/dashboard/user/watchChapter/hooks/useChapterAndCourseSidebarData';
 import WatchCourseLoading from '@/app/(dashboard)/user/(ProgresSidebar)/course/[courseId]/chapter/[chapterId]/loading';
 import { ChapterType } from '@/types/search-enums';
 import ReactVideo from '@/features/dashboard/user/watchChapter/components/ReactVideo';

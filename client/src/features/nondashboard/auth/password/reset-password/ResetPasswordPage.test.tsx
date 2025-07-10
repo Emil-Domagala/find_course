@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ResetPassword from '.';
-import { useResetPasswordMutation } from '../api/resetPassword';
+import { useResetPasswordMutation } from '../api';
 
 const push = jest.fn();
 const resetPasswordMock = jest.fn();
@@ -16,7 +16,7 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-jest.mock('../api/resetPassword', () => ({
+jest.mock('../api', () => ({
   useResetPasswordMutation: jest.fn(),
 }));
 

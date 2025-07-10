@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import MyCoursesTeacher from '.';
 import { createCourseDto } from '@/__test__/factories/courseFactory';
 import { createPageResponse } from '@/__test__/factories/pageFactory';
-import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '../api/courseTeacher';
+import { useCreateCourseMutation, useDeleteCourseMutation, useLazyGetCoursesTeacherQuery } from '../api';
 import { toast } from 'sonner';
 
 const replace = jest.fn();
@@ -13,7 +13,7 @@ const fetchCourses = jest.fn();
 const createCourse = jest.fn();
 const deleteCourse = jest.fn();
 
-jest.mock('../api/courseTeacher', () => ({
+jest.mock('../api', () => ({
   useCreateCourseMutation: jest.fn(),
   useDeleteCourseMutation: jest.fn(),
   useLazyGetCoursesTeacherQuery: jest.fn(),

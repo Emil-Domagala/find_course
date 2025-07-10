@@ -2,10 +2,11 @@
 import Pagination from '@/components/Common/Filter/Pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SearchDirection, TransactionDtoSortField } from '@/types/search-enums';
+import { SearchDirection } from '@/types/search-enums';
 import { centsToDollars } from '@/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
-import { useLazyGetTransactionsQuery } from '@/features/dashboard/user/billing/api/transaction';
+import { useLazyGetTransactionsQuery } from './api';
+import { TransactionDtoSortField } from './transactionDtoSortField';
 
 const Billing = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);

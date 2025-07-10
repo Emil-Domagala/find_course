@@ -6,10 +6,8 @@ const baseQuery = fetchBaseQuery({
 });
 const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: object) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.info('baseQueryWithReauth');
-  console.info(result);
+
   if (typeof result?.error?.status === 'number' && [498, 499].includes(result?.error?.status)) {
-    console.info('baseQueryWithReauth inside if');
     const refreshResult = await baseQuery(
       {
         url: '/public/refresh-token',
@@ -41,7 +39,17 @@ const baseQueryWithReauth: typeof baseQuery = async (args: string | FetchArgs, a
 export const api = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ['CourseDtos', 'TeachedCourseDtos', 'User', 'Cart', 'TeacherApplicationNumber', 'UserCourseProgress', 'Chapter'],
-  endpoints: () => ({}),
+  endpoints: (build) => ({
+    refetchToken: build.mutation({
+      query: () => ({
+        url: 'public/refresh-token',
+        method: 'POST',
+      }),
+    }),
+    logout: build.mutation({
+      query: () => ({ url: 'public/logout', method: 'POST' }),
+    }),
+  }),
 });
 
 export const { usePrefetch } = api;

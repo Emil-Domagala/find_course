@@ -1,5 +1,5 @@
-import { StripeResponse } from '@/types/stripe';
-import { api } from '../../../../../state/api';
+import { StripeResponse } from '@/features/nondashboard/user/checkout/stripe';
+import { api } from '@/state/api';
 
 export const stripeApi = api.injectEndpoints({
   endpoints: (build) => ({

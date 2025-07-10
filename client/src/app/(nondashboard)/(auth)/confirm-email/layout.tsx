@@ -1,5 +1,5 @@
 import AuthHeader from '@/features/nondashboard/auth/components/AuthHeader';
-import { AuthToken } from '@/types/auth';
+import { AuthToken } from '@/types/accessToken';
 import { jwtDecode } from 'jwt-decode';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';

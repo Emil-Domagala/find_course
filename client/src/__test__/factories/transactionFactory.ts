@@ -1,4 +1,4 @@
-import { TransactionDto } from '@/types/payments';
+import { TransactionDto } from '@/features/dashboard/user/billing/transaction';
 import { createCourseDto } from './courseFactory';
 import { v4 as uuid } from 'uuid';
 

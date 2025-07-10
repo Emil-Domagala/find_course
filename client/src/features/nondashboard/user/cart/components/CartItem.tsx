@@ -1,7 +1,7 @@
 import Tag from '@/features/nondashboard/home/components/Tag';
 import { Button } from '@/components/ui/button';
 import { centsToDollars } from '@/lib/utils';
-import { useRemoveCourseFromCartMutation } from '@/features/nondashboard/user/cart/api/cart';
+import { useRemoveCourseFromCartMutation } from '@/features/nondashboard/user/cart/api';
 
 import Image from 'next/image';
 import Link from 'next/link';

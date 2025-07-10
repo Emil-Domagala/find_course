@@ -2,7 +2,7 @@
 import Link from 'next/link';
 
 import Image from 'next/image';
-import useCarosel from '@/hooks/useCarosel';
+import useCarosel from '@/features/nondashboard/home/hooks/useCarosel';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 

@@ -1,7 +1,8 @@
-import { TeacherRequestStatus } from '@/types/search-enums';
-import { TeacherRequest } from '@/types/teacherRequest';
+
+import { TeacherRequest } from '@/features/dashboard/types/teacherRequest';
 import { createUserDto } from './userFactory';
 import { v4 as uuid } from 'uuid';
+import { TeacherRequestStatus } from '@/features/dashboard/types/teacherRequestStatus';
 
 export function createTeacherRequest(overrides: Partial<TeacherRequest> = {}): TeacherRequest {
   return {

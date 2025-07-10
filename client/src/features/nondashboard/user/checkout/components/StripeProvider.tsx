@@ -5,7 +5,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiErrorResponse } from '@/types/apiError';
-import { useCreateStripePaymentIntentMutation } from '@/features/nondashboard/user/checkout/api/stripe';
+import { useCreateStripePaymentIntentMutation } from '@/features/nondashboard/user/checkout/api';
 import { toast } from 'sonner';
 
 if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {

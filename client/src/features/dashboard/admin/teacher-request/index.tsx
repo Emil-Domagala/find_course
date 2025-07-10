@@ -2,7 +2,7 @@
 
 import Header from '@/components/Dashboard/Header';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
-import { TeacherRequestStatus, SearchDirection } from '@/types/search-enums';
+import {  SearchDirection } from '@/types/search-enums';
 import TeacherRequestFilter from '@/features/dashboard/admin/teacher-request/components/TeacherRequestFilter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import BecomeTeacherItem from '@/features/dashboard/admin/teacher-request/components/BecomeTeacherItem';
@@ -10,12 +10,10 @@ import { useEffect, useState } from 'react';
 import LoadingSpinner from '@/components/Common/LoadingSpinner';
 import { toast } from 'sonner';
 import { ApiErrorResponse } from '@/types/apiError';
-import {
-  useAdminUpdateTeacherRequestsMutation,
-  useLazyGetAdminBecomeUserRequestsQuery,
-} from '@/features/dashboard/admin/teacher-request/api/teacherApplicationAdmin';
+import { useAdminUpdateTeacherRequestsMutation, useLazyGetAdminBecomeUserRequestsQuery } from './api';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
-import { UpdateTeacherRequest } from '@/types/teacherRequest';
+import { UpdateTeacherRequest } from './updateTeacherRequest';
+import { TeacherRequestStatus } from '../../types/teacherRequestStatus';
 
 // TODO: add form here!!!
 const TeacherRequestAdmin = ({}) => {

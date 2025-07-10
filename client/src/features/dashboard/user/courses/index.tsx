@@ -2,8 +2,8 @@
 import CourseCard from '@/components/Common/CourseCard';
 import Pagination from '@/components/Common/Filter/Pagination';
 import { DisplayCoursesSkeleton } from '@/components/Common/DisplayUserCourses';
-import { useLazyGetEnrolledCoursesQuery } from '@/features/dashboard/user/courses/api/courseStudent';
 import { useEffect, useState } from 'react';
+import { useLazyGetEnrolledCoursesQuery } from './api';
 
 const CoursesStudent = ({}) => {
   const [page, setPage] = useState<number | undefined>(0);

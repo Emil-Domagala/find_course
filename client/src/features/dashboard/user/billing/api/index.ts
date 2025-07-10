@@ -1,6 +1,7 @@
 import { api } from '../../../../../state/api';
-import { TransactionDto } from '@/types/payments';
-import { SearchDirection, TransactionDtoSortField } from '@/types/search-enums';
+import { TransactionDto } from '@/features/dashboard/user/billing/transaction';
+import { SearchDirection } from '@/types/search-enums';
+import { TransactionDtoSortField } from '../transactionDtoSortField';
 
 type PaginationProps = {
   page?: number;

@@ -7,8 +7,8 @@ import { ForgotPasswordRequest, ForgotPasswordShema } from '@/lib/validation/use
 import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
-import { useSendResetPasswordEmailMutation } from '@/features/nondashboard/auth/password/api/resetPassword';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { useSendResetPasswordEmailMutation } from '../api';
 
 const ForgotPassword = () => {
   const [sendResetPassword, { isLoading }] = useSendResetPasswordEmailMutation();
