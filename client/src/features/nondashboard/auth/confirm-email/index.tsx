@@ -6,7 +6,7 @@ import { ApiErrorResponse } from '@/types/apiError';
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from './api/confirmEmail';
+import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from './api';
 
 const ConfirmEmail = () => {
   const router = useRouter();

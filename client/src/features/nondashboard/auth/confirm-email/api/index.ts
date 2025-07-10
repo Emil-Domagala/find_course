@@ -1,4 +1,4 @@
-import { api } from '../../api';
+import { api } from '@/state/api';
 
 export const confirmEmailApi = api.injectEndpoints({
   endpoints: (build) => ({

@@ -1,10 +1,10 @@
 import ConfirmEmail from '.';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
-import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from './api/confirmEmail';
+import { useConfirmEmailMutation, useResendConfirmEmailTokenMutation } from './api';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('./api/confirmEmail', () => ({
+jest.mock('./api', () => ({
   useConfirmEmailMutation: jest.fn(),
   useResendConfirmEmailTokenMutation: jest.fn(),
 }));
