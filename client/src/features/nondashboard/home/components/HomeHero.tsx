@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-
 import Image from 'next/image';
 import useCarosel from '@/features/nondashboard/home/hooks/useCarosel';
 import { motion } from 'framer-motion';

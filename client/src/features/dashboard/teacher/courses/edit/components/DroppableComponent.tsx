@@ -5,12 +5,12 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Button } from '@/components/ui/button';
 import { Trash2, Edit, Plus, GripVertical } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
-import { setSections, deleteSection, deleteChapter, openSectionModal, openChapterModal } from '@/state';
-import { ChapterFormDataId, SectionFormDataId } from '@/lib/validation/course';
+import { ChapterFormDataId, SectionFormDataId } from '@/features/dashboard/teacher/courses/edit/validation';
+import { deleteChapter, deleteSection, openChapterModal, openSectionModal, setSections } from '../redux/courseEditorSlice';
 
 export default function DroppableComponent() {
   const dispatch = useAppDispatch();
-  const { sections } = useAppSelector((state) => state.global.courseEditor);
+  const { sections } = useAppSelector((state) => state.courseEditor);
 
   const handleSectionDragEnd = (result: any) => {
     if (!result.destination) return;

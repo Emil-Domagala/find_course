@@ -1,7 +1,7 @@
 'use client';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import { Form } from '@/components/ui/form';
-import { profileFormSchema, ProfileFormSchema } from '@/lib/validation/profile';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import CustomAddImg from '@/components/Common/CustomAddImg';
 import { useGetUserInfoQuery, useDeleteUserMutation, useUpdateUserInfoMutation } from '@/features/dashboard/user/profile/api/user';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
+import { profileFormSchema, ProfileFormSchema } from '../validation';
 
 // TODO: PICTURE IS BEING DELETED
 const EditUserForm = () => {

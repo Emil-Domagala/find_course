@@ -1,9 +1,9 @@
-import { ChapterDetailsProtectedDto, ChapterProgress, CourseProgress, SectionProgress, UpdateProgressRequest } from '@/types/courses';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-
-import { useGetChapterEnrolledStudentQuery, usePrefetch } from '@/state/endpoints/course/chapter';
-import { useUpdateCourseChapterProgressMutation, useGetUserCourseProgressQuery } from '@/state/endpoints/courseProgress/courseProgress';
+import { ChapterDetailsProtectedDto } from '../coursesProtected';
+import { ChapterProgress, CourseProgress, SectionProgress, UpdateProgressRequest } from '../courseProgress';
+import { useGetUserCourseProgressQuery, useUpdateCourseChapterProgressMutation } from '../api/courseProgress';
+import { useGetChapterEnrolledStudentQuery, usePrefetch } from '../api/chapter';
 
 type UseChapterAndCourseSidebarDataReturn = {
   chapterData: ChapterDetailsProtectedDto | undefined;

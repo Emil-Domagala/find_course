@@ -1,4 +1,4 @@
-import { SectionProgress } from '@/types/courses';
+import { SectionProgress } from '../../courseProgress';
 import ChapterItem from './ChapterItem';
 
 type Props = {

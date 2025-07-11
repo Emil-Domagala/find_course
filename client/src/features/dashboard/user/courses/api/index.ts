@@ -1,7 +1,7 @@
-import { CourseDtoWithFirstChapter } from '@/types/courses';
-import { api } from '../../../../../state/api';
+import { api } from '@/state/api';
 import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { CourseCategory } from '@/types/courses-enum';
+import { CourseDtoWithFirstChapter } from '../courseWithFirstChapter';
 
 type PaginationProps = {
   page?: number;

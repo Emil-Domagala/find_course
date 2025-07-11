@@ -44,6 +44,7 @@ const ConfirmEmail = () => {
     setIsError(false);
     setMessage('Sending request...');
     setShowInputs(false);
+    router.prefetch('/confirm-email');
     try {
       await resendConfirmEmail({}).unwrap();
       setMessage('New confirmation email sent!');

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { ChapterProgress } from '@/types/courses';
+import { ChapterProgress } from '../../courseProgress';
 import { ChapterType } from '@/types/search-enums';
 import { CheckCircle, FileText, Video } from 'lucide-react';
 

@@ -7,7 +7,7 @@ import SidebarGroupCustom from './components/SidebarGroupCustom';
 import { jwtDecode } from 'jwt-decode';
 import { AuthToken } from '@/types/accessToken';
 import { useRouter } from 'next/navigation';
-import { useLogoutMutation } from '@/features/nondashboard/auth/api/auth';
+import { useLogoutMutation } from '@/state/api';
 
 type Props = { authToken?: string };
 

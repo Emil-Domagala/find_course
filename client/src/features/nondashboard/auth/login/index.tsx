@@ -3,13 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { UserLoginRequest, UserLoginSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { useLoginMutation } from './api';
+import { UserLoginRequest, UserLoginSchema } from './validation';
 
 const Login = () => {
   const searchParams = useSearchParams();

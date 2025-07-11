@@ -1,6 +1,5 @@
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
 import { Popover } from '@/components/ui/popover';
 import { AuthToken } from '@/types/accessToken';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
@@ -8,10 +7,10 @@ import LogoutButton from './LogoutButton';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
-
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname } from 'next/navigation';
-import { useLogoutMutation, useRefetchTokenMutation } from '@/features/nondashboard/auth/api/auth';
+import { useLogoutMutation, useRefetchTokenMutation } from '@/state/api';
+
 
 type Props = {
   authToken?: AuthToken;

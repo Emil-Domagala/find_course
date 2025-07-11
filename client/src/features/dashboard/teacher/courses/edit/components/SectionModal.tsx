@@ -1,10 +1,8 @@
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import CustomModal from '@/components/Common/CustomModal';
-
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { SectionFormData, sectionSchema } from '@/lib/validation/course';
-import { addSection, closeSectionModal, editSection } from '@/state';
+import { SectionFormData, sectionSchema } from '@/features/dashboard/teacher/courses/edit/validation';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
@@ -12,10 +10,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
+import { addSection, closeSectionModal, editSection } from '../redux/courseEditorSlice';
 
 const SectionModal = () => {
   const dispatch = useAppDispatch();
-  const { isSectionModalOpen, selectedSectionIndex, sections } = useAppSelector((state) => state.global.courseEditor);
+  const { isSectionModalOpen, selectedSectionIndex, sections } = useAppSelector((state) => state.courseEditor);
 
   const section = selectedSectionIndex !== null ? sections[selectedSectionIndex] : null;
 

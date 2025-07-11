@@ -1,5 +1,5 @@
-import { CourseProgress, UpdateProgressRequest } from '@/types/courses';
-import { api } from '../../api';
+import { CourseProgress, UpdateProgressRequest } from '@/features/dashboard/user/watchChapter/courseProgress';
+import { api } from '@/state/api';
 
 export const courseProgressApi = api.injectEndpoints({
   endpoints: (build) => ({

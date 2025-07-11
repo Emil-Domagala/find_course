@@ -2,7 +2,7 @@
 
 import Filter from '@/components/Common/Filter/Filter';
 import Pagination from '@/components/Common/Filter/Pagination';
-import Header from '@/components/Dashboard/Header';
+import Header from '@/features/dashboard/components/Header';
 import TeacherCourseCard from '@/features/dashboard/teacher/courses/my-courses/components/TeacherCourseCard';
 import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
 import { useSelectFilter } from '@/hooks/useSelectFilter';

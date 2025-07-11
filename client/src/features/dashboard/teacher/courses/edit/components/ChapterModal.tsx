@@ -2,9 +2,8 @@ import { CustomFormField } from '@/components/Common/CustomFormField';
 import CustomModal from '@/components/Common/CustomModal';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { ChapterFormData, chapterSchema } from '@/lib/validation/course';
+import { ChapterFormData, chapterSchema } from '@/features/dashboard/teacher/courses/edit/validation';
 
-import { addChapter, closeChapterModal, editChapter } from '@/state';
 import { useAppDispatch, useAppSelector } from '@/state/redux';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
@@ -12,10 +11,11 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
+import { addChapter, closeChapterModal, editChapter } from '../redux/courseEditorSlice';
 
 const ChapterModal = () => {
   const dispatch = useAppDispatch();
-  const { isChapterModalOpen, selectedSectionIndex, selectedChapterIndex, sections } = useAppSelector((state) => state.global.courseEditor);
+  const { isChapterModalOpen, selectedSectionIndex, selectedChapterIndex, sections } = useAppSelector((state) => state.courseEditor);
 
   const chapter = selectedSectionIndex !== null && selectedChapterIndex !== null ? sections[selectedSectionIndex].chapters![selectedChapterIndex] : undefined;
 

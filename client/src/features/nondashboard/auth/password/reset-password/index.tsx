@@ -3,12 +3,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { NewPassword, NewPasswordSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { useResetPasswordMutation } from '../api';
+import { NewPassword, NewPasswordSchema } from './validation';
 
 const ResetPassword = ({}) => {
   const router = useRouter();

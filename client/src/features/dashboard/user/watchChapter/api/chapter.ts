@@ -1,5 +1,5 @@
-import { ChapterDetailsProtectedDto } from '@/types/courses';
-import { api } from '../../api';
+import { ChapterDetailsProtectedDto } from '@/features/dashboard/user/watchChapter/coursesProtected';
+import { api } from '../../../../../state/api';
 
 export const chapterApi = api.injectEndpoints({
   endpoints: (build) => ({

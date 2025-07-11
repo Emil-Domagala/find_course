@@ -1,4 +1,4 @@
-import EditCourseForm from '@/components/Dashboard/Teacher/courses/edit/EditCourseForm';
+import EditCourseForm from '@/features/dashboard/teacher/courses/edit';
 
 const EditCoursePage = () => {
   return <EditCourseForm />;

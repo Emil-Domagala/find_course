@@ -3,12 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { ForgotPasswordRequest, ForgotPasswordShema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
 import { ApiErrorResponse } from '@/types/apiError';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { useSendResetPasswordEmailMutation } from '../api';
+import { ForgotPasswordRequest, ForgotPasswordShema } from './validation';
 
 const ForgotPassword = () => {
   const [sendResetPassword, { isLoading }] = useSendResetPasswordEmailMutation();

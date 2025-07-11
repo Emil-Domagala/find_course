@@ -8,7 +8,7 @@ import Filter from '@/components/Common/Filter/Filter';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
 import { CourseCategory } from '@/types/courses-enum';
 import { SearchDirection, CourseDtoSortField } from '@/types/search-enums';
-import { useLazyGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
+import { useLazyGetCoursesPublicQuery } from '@/features/api/coursePublic';
 
 const PublicSearchCourses = () => {
   const [category, setCategory] = useSelectFilter<CourseCategory>({ valueName: 'category' });

@@ -15,6 +15,7 @@ jest.mock('next/navigation', () => ({
 
 const push = jest.fn();
 const refresh = jest.fn();
+const prefetch = jest.fn();
 const confirmEmail = jest.fn();
 const resendConfirmEmail = jest.fn();
 
@@ -25,7 +26,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  (useRouter as jest.Mock).mockReturnValue({ push, refresh });
+  (useRouter as jest.Mock).mockReturnValue({ push, refresh, prefetch });
   (useConfirmEmailMutation as jest.Mock).mockReturnValue([confirmEmail]);
   (useResendConfirmEmailTokenMutation as jest.Mock).mockReturnValue([resendConfirmEmail, { isLoading: false }]);
   confirmEmail.mockReset();

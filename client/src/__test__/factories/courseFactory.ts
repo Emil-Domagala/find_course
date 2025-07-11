@@ -1,15 +1,15 @@
 import { v4 as uuid } from 'uuid';
 import {
-  ChapterDetailsProtectedDto,
   ChapterDto,
   CourseDetailsPublicDto,
-  CourseDtoWithFirstChapter,
   SectionDetailsPublicDto,
   SectionDto,
 } from '@/types/courses';
 import { CourseCategory, CourseStatus, Level } from '@/types/courses-enum';
 import { ChapterType } from '@/types/search-enums';
 import { createUserDto } from './userFactory';
+import { ChapterDetailsProtectedDto } from '@/features/dashboard/user/watchChapter/coursesProtected';
+import { CourseDtoWithFirstChapter } from '@/features/dashboard/user/courses/courseWithFirstChapter';
 
 // CHAPTERS
 

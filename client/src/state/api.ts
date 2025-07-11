@@ -52,4 +52,4 @@ export const api = createApi({
   }),
 });
 
-export const { usePrefetch } = api;
+export const { usePrefetch, useLogoutMutation, useRefetchTokenMutation } = api;

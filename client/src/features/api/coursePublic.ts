@@ -1,5 +1,5 @@
 import { CourseDtoSortField, SearchDirection } from '@/types/search-enums';
-import { api } from '../../api';
+import { api } from '../../state/api';
 import { CourseCategory } from '@/types/courses-enum';
 
 type PaginationProps = {

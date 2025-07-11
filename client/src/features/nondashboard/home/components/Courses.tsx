@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 
 import CourseCard, { CourseCardSkeleton } from '@/components/Common/CourseCard';
-import { useGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
+import { useGetCoursesPublicQuery } from '@/features/api/coursePublic';
 
 export const CoursesSkeleton = ({ size }: { size: number }) => {
   return (

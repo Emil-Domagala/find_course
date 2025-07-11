@@ -1,8 +1,8 @@
 'use client';
 
-import Header from '@/components/Dashboard/Header';
+import Header from '@/features/dashboard/components/Header';
 import { useSelectFilter } from '@/hooks/useSelectFilter';
-import {  SearchDirection } from '@/types/search-enums';
+import { SearchDirection } from '@/types/search-enums';
 import TeacherRequestFilter from '@/features/dashboard/admin/teacher-request/components/TeacherRequestFilter';
 import Pagination from '@/components/Common/Filter/Pagination';
 import BecomeTeacherItem from '@/features/dashboard/admin/teacher-request/components/BecomeTeacherItem';

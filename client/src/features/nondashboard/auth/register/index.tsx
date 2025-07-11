@@ -3,14 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
-import { UserRegisterRequest, UserRegisterSchema } from '@/lib/validation/userAuth';
 import { useState } from 'react';
-
 import { ApiErrorResponse } from '@/types/apiError';
 import { useRouter } from 'next/navigation';
 import { CustomFormField } from '@/components/Common/CustomFormField';
 import ButtonWithSpinner from '@/components/Common/ButtonWithSpinner';
 import { useRegisterMutation } from './api';
+import { UserRegisterRequest, UserRegisterSchema } from './validation';
 
 const Register = () => {
   const router = useRouter();

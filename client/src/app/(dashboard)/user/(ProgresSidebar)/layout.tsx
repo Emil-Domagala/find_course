@@ -1,5 +1,5 @@
 import DashboardNav from '@/features/dashboard/navigation/DashboardNav';
-import ProgresSidebar from '@/components/Dashboard/User/Course/ProgresSidebar/ProgresSidebar';
+import ProgresSidebar from '@/features/dashboard/user/watchChapter/components/progres-sidebar/ProgresSidebar';
 
 export default async function UserLayout({
   children,

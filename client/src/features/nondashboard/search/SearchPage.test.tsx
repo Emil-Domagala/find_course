@@ -4,13 +4,13 @@ import Search from '.';
 import { CourseCategory } from '@/types/courses-enum';
 import { createCourseDto } from '@/__test__/factories/courseFactory';
 import { createPageResponse } from '@/__test__/factories/pageFactory';
-import { useLazyGetCoursesPublicQuery } from '@/state/endpoints/course/coursePublic';
+import { useLazyGetCoursesPublicQuery } from '@/features/api/coursePublic';
 
 const replace = jest.fn();
 const get = jest.fn();
 const fetchCourses = jest.fn();
 
-jest.mock('@/state/endpoints/course/coursePublic', () => ({
+jest.mock('@/features/api/coursePublic', () => ({
   useLazyGetCoursesPublicQuery: jest.fn(),
 }));
 jest.mock('next/navigation', () => ({

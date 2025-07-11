@@ -20,22 +20,7 @@ export type SectionDetailsPublicDto = SectionDto & {
   chapters?: ChapterDto[];
 };
 
-export type CourseDetailsProtectedDto = CourseDto & {
-  sections?: SectionDetailsProtectedDto[];
-};
 
-export type SectionDetailsProtectedDto = SectionDto & {
-  chapters?: ChapterDetailsProtectedDto[];
-};
-
-export type ChapterDetailsProtectedDto = ChapterDto & {
-  content?: string;
-  videoUrl?: string;
-};
-
-export type CourseDtoWithFirstChapter = CourseDto & {
-  firstChapter: string;
-};
 
 declare global {
   type CourseDto = {

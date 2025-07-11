@@ -1,4 +1,4 @@
-import Header from '@/components/Dashboard/Header';
+import Header from '@/features/dashboard/components/Header';
 import EnrolledCourses from './page';
 
 const EnrolledCoursesLayout = () => {
