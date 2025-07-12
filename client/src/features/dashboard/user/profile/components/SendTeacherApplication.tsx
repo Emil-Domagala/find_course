@@ -1,14 +1,14 @@
 'use client';
 
-import BecomeTeacherUserLoading from '@/features/dashboard/user/profile/components/BecomeTeacherUserLoading';
+import SendTeacherApplicationLoading from '@/features/dashboard/user/profile/components/SendTeacherApplicationLoading';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { transformToFrontendFormat } from '@/lib/utils';
-import { useSendTeacherApplicationMutation, useGetTeacherApplicationInformationQuery } from '@/features/dashboard/user/profile/api/teacherApplicationUser';
 import { ApiErrorResponse } from '@/types/apiError';
 import { useState } from 'react';
+import { useGetTeacherApplicationInformationQuery, useSendTeacherApplicationMutation } from '../api/teacherApplicationUser';
 
-const BecomeTeacherUser = () => {
+const SendTeacherApplication = () => {
   const [sendBecomeTeacherRequest] = useSendTeacherApplicationMutation();
   const { data: myTeacherRequest, isLoading } = useGetTeacherApplicationInformationQuery();
 
@@ -23,24 +23,22 @@ const BecomeTeacherUser = () => {
     try {
       await sendBecomeTeacherRequest().unwrap();
       setMessage('Request sent');
-    } catch (e) {
-      const errorFull = e as ApiErrorResponse;
-
+    } catch (e: unknown) {
       setIsError(true);
-
-      if (errorFull.data.message) {
-        setMessage(errorFull.data.message);
-      } else {
-        setMessage('An unexpected error occurred.');
-      }
+      const errorMessage = (e as ApiErrorResponse)?.data?.message || (e instanceof Error ? e.message : 'Something went wrong');
+      setMessage(errorMessage);
     }
   };
 
-  if (isLoading) return <BecomeTeacherUserLoading />;
+  if (isLoading) return <SendTeacherApplicationLoading />;
   return (
     <Accordion type="single" collapsible className=" mt-7 bg-customgreys-primarybg/50 rounded-lg overflow-hidden">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="bg-customgreys-primarybg p-3 w-full rounded-lg text-white-100 text-lg font-semibold  ">Become a Teacher</AccordionTrigger>
+        <AccordionTrigger
+          aria-label="Teacher Application Status"
+          className="bg-customgreys-primarybg p-3 w-full rounded-lg text-white-100 text-lg font-semibold  ">
+          Teacher Application Status
+        </AccordionTrigger>
         <AccordionContent className=" px-3 py-5">
           {myTeacherRequest?.id ? (
             <p>
@@ -55,7 +53,7 @@ const BecomeTeacherUser = () => {
           ) : showSendRequest ? (
             <>
               <p className="mb-3">Let your dream job come true!</p>
-              <Button className="w-full" variant="primary" onClick={handleBecomeTeacher}>
+              <Button aria-label="Become a Teacher" className="w-full" variant="primary" onClick={handleBecomeTeacher}>
                 Become a Teacher
               </Button>
             </>
@@ -68,4 +66,4 @@ const BecomeTeacherUser = () => {
   );
 };
 
-export default BecomeTeacherUser;
+export default SendTeacherApplication;
