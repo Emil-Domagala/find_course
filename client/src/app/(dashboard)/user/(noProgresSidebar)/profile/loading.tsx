@@ -1,11 +1,11 @@
-import BecomeTeacherUserLoading from '@/features/dashboard/user/profile/components/BecomeTeacherUserLoading';
+import SendTeacherApplicationLoading from '@/features/dashboard/user/profile/components/SendTeacherApplicationLoading';
 import EditUserFormLoading from '@/features/dashboard/user/profile/components/EditUserFormLoading';
 
 const ProfileLoading = () => {
   return (
     <>
       <EditUserFormLoading />
-      <BecomeTeacherUserLoading />
+      <SendTeacherApplicationLoading />
     </>
   );
 };
